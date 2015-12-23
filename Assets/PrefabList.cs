@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace CoreSys
 {
-    public static class PrefabList
+    public class PrefabList : MonoBehaviour
     {
-        [SerializeField]
-        public static List<Object> prefabList = new List<Object>();
+        public List<Object> prefabList = new List<Object>();
     }
 }

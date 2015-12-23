@@ -7,10 +7,11 @@ namespace CoreSys
 {
     public class Week
     {
+        public int earliestStart, latestEnd;
         public int suStartHour, mStartHour, tuStartHour, wStartHour, thStartHour, fStartHour, saStartHour;
         public int suEndHour, mEndHour, tuEndHour, wEndHour, thEndHour, fEndHour, saEndHour;
         public int suHoursOpen, mHoursOpen, tuHoursOpen, wHoursOpen, thHoursOpen, fHoursOpen, saHoursOpen;
-        private bool sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        public bool sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Dictionary<int, int> sSundayHourReqs, sMondayHourReqs, sTuesdayHourReqs, sWednesdayHourReqs, sThursdayHourReqs, sFridayHourReqs, sSaturdayHourReqs;//Solutions Spec Hour Reqs
         public Dictionary<int, int> eSundayHourReqs, eMondayHourReqs, eTuesdayHourReqs, eWednesdayHourReqs, eThursdayHourReqs, eFridayHourReqs, eSaturdayHourReqs;//Experience Spec Hour Reqs
         // Use this for initialization
@@ -50,30 +51,56 @@ namespace CoreSys
         {
             if (sunday)
             {
+                earliestStart = suStartHour;
+                latestEnd = suEndHour;
                 suHoursOpen = suEndHour - suStartHour;
             }
             if (monday)
             {
+                if (earliestStart > mStartHour)
+                    earliestStart = mStartHour;
+                if (latestEnd < mEndHour)
+                    latestEnd = mEndHour;
                 mHoursOpen = mEndHour - mStartHour;
             }
             if (tuesday)
             {
+                if (earliestStart > tuStartHour)
+                    earliestStart = tuStartHour;
+                if (latestEnd < tuEndHour)
+                    latestEnd = tuEndHour;
                 tuHoursOpen = tuEndHour - tuStartHour;
             }
             if (wednesday)
             {
+                if (earliestStart > wStartHour)
+                    earliestStart = wStartHour;
+                if (latestEnd < wEndHour)
+                    latestEnd = wEndHour;
                 wHoursOpen = wEndHour - wStartHour;
             }
             if (thursday)
             {
+                if (earliestStart > thStartHour)
+                    earliestStart = thStartHour;
+                if (latestEnd < thEndHour)
+                    latestEnd = thEndHour;
                 thHoursOpen = thEndHour - thStartHour;
             }
             if (friday)
             {
+                if (earliestStart > fStartHour)
+                    earliestStart = fStartHour;
+                if (latestEnd < fEndHour)
+                    latestEnd = fEndHour;
                 fHoursOpen = fEndHour - fStartHour;
             }
             if (saturday)
             {
+                if (earliestStart > saStartHour)
+                    earliestStart = saStartHour;
+                if (latestEnd < saEndHour)
+                    latestEnd = saEndHour;
                 saHoursOpen = saEndHour - saStartHour;
             }
         }

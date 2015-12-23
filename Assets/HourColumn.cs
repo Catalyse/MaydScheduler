@@ -27,37 +27,37 @@ namespace CoreSys
             //Begin setting days per hour
             if (sun)
             {
-                sundayInput.enabled = true;
+                sundayInput.gameObject.SetActive(true);
                 staffPanel.sundayList.Add(sundayInput);
             }
             if (mon)
             {
-                mondayInput.enabled = true;
+                mondayInput.gameObject.SetActive(true);
                 staffPanel.mondayList.Add(mondayInput);
             }
             if (tue)
             {
-                tuesdayInput.enabled = true;
+                tuesdayInput.gameObject.SetActive(true);
                 staffPanel.tuesdayList.Add(tuesdayInput);
             }
             if (wed)
             {
-                wednesdayInput.enabled = true;
+                wednesdayInput.gameObject.SetActive(true);
                 staffPanel.wednesdayList.Add(wednesdayInput);
             }
             if (thu)
             {
-                thursdayInput.enabled = true;
+                thursdayInput.gameObject.SetActive(true);
                 staffPanel.thursdayList.Add(thursdayInput);
             }
             if (fri)
             {
-                fridayInput.enabled = true;
+                fridayInput.gameObject.SetActive(true);
                 staffPanel.fridayList.Add(fridayInput);
             }
             if (sat)
             {
-                saturdayInput.enabled = true;
+                saturdayInput.gameObject.SetActive(true);
                 staffPanel.saturdayList.Add(saturdayInput);
             }
         }
