@@ -85,7 +85,7 @@ namespace CoreSys
                 if (suStart.text == "" || suEnd.text == "")
                 {
                     suText.enabled = true;
-                    suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, 100);
+                    suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -99,7 +99,7 @@ namespace CoreSys
                 if (mStart.text == "" || mEnd.text == "")
                 {
                     mText.enabled = true;
-                    mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, 100);
+                    mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -113,7 +113,7 @@ namespace CoreSys
                 if (tuStart.text == "" || tuEnd.text == "")
                 {
                     tuText.enabled = true;
-                    tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, 100);
+                    tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -127,7 +127,7 @@ namespace CoreSys
                 if (wStart.text == "" || wEnd.text == "")
                 {
                     wText.enabled = true;
-                    wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, 100);
+                    wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -141,7 +141,7 @@ namespace CoreSys
                 if (thStart.text == "" || thEnd.text == "")
                 {
                     thText.enabled = true;
-                    thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, 100);
+                    thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -155,7 +155,7 @@ namespace CoreSys
                 if (fStart.text == "" || fEnd.text == "")
                 {
                     fText.enabled = true;
-                    fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, 100);
+                    fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, 50);
                     validSubmit = false;
                 }
             }
@@ -169,7 +169,7 @@ namespace CoreSys
                 if (saStart.text == "" || saEnd.text == "")
                 {
                     saText.enabled = true;
-                    saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, 100);
+                    saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, 50);
                     validSubmit = false;
                 }
             }
