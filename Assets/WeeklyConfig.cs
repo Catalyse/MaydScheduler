@@ -18,51 +18,65 @@ namespace CoreSys
 
         public void Update()
         {
-            if (suText.color.a != 0)
+            if (suText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(suText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(suText.color.a, 0, 2*Time.deltaTime);
                 suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, newAlpha);
             }
-            if (mText.color.a != 0)
+            else
+                suText.enabled = false;
+            if (mText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(mText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(mText.color.a, 0, 2*Time.deltaTime);
                 mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, newAlpha);
             }
-            if (tuText.color.a != 0)
+            else
+                mText.enabled = false;
+            if (tuText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(tuText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(tuText.color.a, 0, 2*Time.deltaTime);
                 tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, newAlpha);
             }
-            if (wText.color.a != 0)
+            else
+                tuText.enabled = false;
+            if (wText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(wText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(wText.color.a, 0, 2*Time.deltaTime);
                 wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, newAlpha);
             }
-            if (thText.color.a != 0)
+            else
+                wText.enabled = false;
+            if (thText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(thText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(thText.color.a, 0, 2*Time.deltaTime);
                 thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, newAlpha);
             }
-            if (fText.color.a != 0)
+            else
+                thText.enabled = false;
+            if (fText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(fText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(fText.color.a, 0, 2*Time.deltaTime);
                 fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, newAlpha);
             }
-            if (saText.color.a != 0)
+            else
+                fText.enabled = false;
+            if (saText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(saText.color.a, 0, Time.deltaTime);
+                float newAlpha = Mathf.Lerp(saText.color.a, 0, 2*Time.deltaTime);
                 saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, newAlpha);
             }
+            else
+                saText.enabled = false;
         }
 
-        public void SubmitPushed()
+        private void SubmitPushed()
         {
             Week newWeek = new Week(int.Parse(suStart.text), int.Parse(mStart.text), int.Parse(tuStart.text), int.Parse(wStart.text), int.Parse(thStart.text), 
                 int.Parse(fStart.text), int.Parse(saStart.text), int.Parse(suEnd.text), int.Parse(mEnd.text), int.Parse(tuEnd.text), int.Parse(wEnd.text), 
                 int.Parse(thEnd.text), int.Parse(fEnd.text), int.Parse(saEnd.text), sunday.isOn, monday.isOn, tuesday.isOn, wednesday.isOn, thursday.isOn, friday.isOn, saturday.isOn);
         }
 
-        private void CheckInputBoxes()
+        public void CheckInputBoxes()
         {
             bool validSubmit = true;//Stays true unless value fails to be met
 
@@ -70,7 +84,8 @@ namespace CoreSys
             {
                 if (suStart.text == "" || suEnd.text == "")
                 {
-                    suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, 255);
+                    suText.enabled = true;
+                    suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -83,7 +98,8 @@ namespace CoreSys
             {
                 if (mStart.text == "" || mEnd.text == "")
                 {
-                    mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, 255);
+                    mText.enabled = true;
+                    mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -96,7 +112,8 @@ namespace CoreSys
             {
                 if (tuStart.text == "" || tuEnd.text == "")
                 {
-                    tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, 255);
+                    tuText.enabled = true;
+                    tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -109,7 +126,8 @@ namespace CoreSys
             {
                 if (wStart.text == "" || wEnd.text == "")
                 {
-                    wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, 255);
+                    wText.enabled = true;
+                    wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -122,7 +140,8 @@ namespace CoreSys
             {
                 if (thStart.text == "" || thEnd.text == "")
                 {
-                    thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, 255);
+                    thText.enabled = true;
+                    thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -135,7 +154,8 @@ namespace CoreSys
             {
                 if (fStart.text == "" || fEnd.text == "")
                 {
-                    fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, 255);
+                    fText.enabled = true;
+                    fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, 100);
                     validSubmit = false;
                 }
             }
@@ -148,7 +168,8 @@ namespace CoreSys
             {
                 if (saStart.text == "" || saEnd.text == "")
                 {
-                    saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, 255);
+                    saText.enabled = true;
+                    saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, 100);
                     validSubmit = false;
                 }
             }
