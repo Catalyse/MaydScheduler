@@ -14,7 +14,7 @@ namespace CoreSys
 
         public DailyHourlyStaff()
         {
-            //WeeklyConfigWindow();
+            WeeklyConfig config = new WeeklyConfig();
         }
         // Use this for initialization
         public void Start()
@@ -28,9 +28,41 @@ namespace CoreSys
 
         }
 
-        //private Week WeeklyConfigWindow()
-        //{
-            
-        //}
+        public void SetAllClick(int button)
+        {
+            if (button == 0)//sunday
+            {
+
+            }
+            else if (button == 1)//monday
+            {
+
+            }
+            else if (button == 2)//tuesday
+            {
+
+            }
+            else if (button == 3)//wednesday
+            {
+
+            }
+            else if (button == 4)//thursday
+            {
+
+            }
+            else if (button == 5)//friday
+            {
+
+            }
+            else if (button == 6)//saturday
+            {
+
+            }
+        }
+
+        public void SetWeeklyConfig(Week setWeek)
+        {
+            newWeek = setWeek;
+        }
     }
 }

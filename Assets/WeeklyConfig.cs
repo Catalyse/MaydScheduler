@@ -16,6 +16,8 @@ namespace CoreSys
         public InputField suStart, mStart, tuStart, wStart, thStart, fStart, saStart;
         public InputField suEnd, mEnd, tuEnd, wEnd, thEnd, fEnd, saEnd;
 
+        public WeeklyConfig() { }
+
         public void Update()
         {
             if (suText.color.a > .1)
@@ -74,6 +76,8 @@ namespace CoreSys
             Week newWeek = new Week(int.Parse(suStart.text), int.Parse(mStart.text), int.Parse(tuStart.text), int.Parse(wStart.text), int.Parse(thStart.text), 
                 int.Parse(fStart.text), int.Parse(saStart.text), int.Parse(suEnd.text), int.Parse(mEnd.text), int.Parse(tuEnd.text), int.Parse(wEnd.text), 
                 int.Parse(thEnd.text), int.Parse(fEnd.text), int.Parse(saEnd.text), sunday.isOn, monday.isOn, tuesday.isOn, wednesday.isOn, thursday.isOn, friday.isOn, saturday.isOn);
+            transform.parent.GetComponent<DailyHourlyStaff>().SetWeeklyConfig(newWeek);
+            transform.gameObject.SetActive(false);//Disable window when done
         }
 
         public void CheckInputBoxes()
