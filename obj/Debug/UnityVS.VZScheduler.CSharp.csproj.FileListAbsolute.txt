@@ -1,0 +1,17 @@
+X:\Documents\VZScheduler\obj\Debug\UnityVS.VZScheduler.CSharp.csprojResolveAssemblyReference.cache
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEditor.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.Analytics.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.Networking.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEditor.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.Networking.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.Analytics.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.xml
+X:\Documents\VZScheduler\obj\Debug\Assembly-CSharp.dll
+X:\Documents\VZScheduler\obj\Debug\Assembly-CSharp.pdb
