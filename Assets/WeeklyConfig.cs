@@ -21,5 +21,72 @@ namespace CoreSys
                 int.Parse(fStart.text), int.Parse(saStart.text), int.Parse(suEnd.text), int.Parse(mEnd.text), int.Parse(tuEnd.text), int.Parse(wEnd.text), 
                 int.Parse(thEnd.text), int.Parse(fEnd.text), int.Parse(saEnd.text), sunday.isOn, monday.isOn, tuesday.isOn, wednesday.isOn, thursday.isOn, friday.isOn, saturday.isOn);
         }
+
+        private void CheckInputBoxes()
+        {
+            if (sunday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (monday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (tuesday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (wednesday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (thursday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (friday.isOn)
+            {
+                
+            }
+            else
+            {
+                suStart.text = "0";
+                suEnd.text = "0";
+            }
+            if (saturday.isOn)
+            {
+                
+            }
+            else
+            {
+                saStart.text = "0";
+                saEnd.text = "0";
+            }
+        }
     }
 }
