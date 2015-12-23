@@ -14,7 +14,7 @@ namespace CoreSys
 
         public DailyHourlyStaff()
         {
-            WeeklyConfigWindow();
+            //WeeklyConfigWindow();
         }
         // Use this for initialization
         public void Start()
@@ -28,9 +28,9 @@ namespace CoreSys
 
         }
 
-        private Week WeeklyConfigWindow()
-        {
-
-        }
+        //private Week WeeklyConfigWindow()
+        //{
+            
+        //}
     }
 }

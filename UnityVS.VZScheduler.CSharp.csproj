@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Assets\CurrentTime.cs" />
     <Compile Include="Assets\DailyHourlyStaff.cs" />
+    <Compile Include="Assets\Employee.cs" />
     <Compile Include="Assets\HourColumn.cs" />
     <Compile Include="Assets\PrefabList.cs" />
     <Compile Include="Assets\SetAllButton.cs" />
