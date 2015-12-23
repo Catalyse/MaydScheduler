@@ -64,9 +64,14 @@ namespace CoreSys
 
         private void CheckInputBoxes()
         {
+            bool validSubmit = true;//Stays true unless value fails to be met
             if (sunday.isOn)
             {
-                
+                if (suStart.text == "" || suEnd.text == "")
+                {
+                    sText.color = new Color(sText.color.r, sText.color.g, sText.color.b, 255);
+                    validSubmit = false;
+                }
             }
             else
             {
