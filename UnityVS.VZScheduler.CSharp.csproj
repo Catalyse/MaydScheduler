@@ -71,8 +71,10 @@
     <Compile Include="Assets\EmployeeManagement\EmpListSerializer.cs" />
     <Compile Include="Assets\EmployeeManagement\Employee.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeStorage.cs" />
+    <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />
     <Compile Include="Assets\HourColumn.cs" />
+    <Compile Include="Assets\MainMenu.cs" />
     <Compile Include="Assets\PrefabList.cs" />
     <Compile Include="Assets\SetAllButton.cs" />
     <Compile Include="Assets\Week.cs" />

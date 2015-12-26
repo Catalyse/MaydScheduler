@@ -19,10 +19,7 @@ namespace CoreSys
         private int startXVal = 100;//Starting point for hour placement.
         private int xValIteration = 26;//This is the step for x val placement in the window when generating hours. If the window size is changed this needs to be adjusted as well.
 
-        public DailyHourlyStaff()
-        {
-            WeeklyConfig config = new WeeklyConfig();
-        }
+        public DailyHourlyStaff() { }
 
         public void SetAllClick(int button)
         {
@@ -77,16 +74,17 @@ namespace CoreSys
             }
         }
 
+        public void Start()
+        {
+            GameObject newHour = (GameObject)Instantiate(prefabs.prefabList[0], new Vector3(0, 0, 0), Quaternion.identity);
+            newHour.transform.SetParent(this.gameObject.transform);
+            newHour.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
+        }
+
         public void SetWeeklyConfig(Week setWeek)
         {
             newWeek = setWeek;
             GenerateHourColumns();
-            //int k = 0;
-            //for (int i = 0; i < hourList.Count; i++)
-            //{
-            //    hourList[i].transform.position = new Vector3((startXVal + (xValIteration * k)), -145, 0);
-            //    k++;
-            //}
         }
 
         private void GenerateHourColumns()

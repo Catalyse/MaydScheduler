@@ -1,22 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
 namespace CoreSys.Errors
 {
-    /// <summary>
-    /// Generic Employee list not found error message.
-    /// </summary>
-    public class EmpListNotFoundErr
+    public class EmpNotFoundErr : System.Exception
     {
-        public EmpListNotFoundErr()
+        private string genericError = "Employee Not Found Error: The Employee does not exist!";
+        private string directedError = "";
+
+        public EmpNotFoundErr() { }
+
+        public EmpNotFoundErr(string msg)
         {
-            Debug.Log("EmployeeList Not Found Error: The Employee List does not exist!");
+            directedError = "Employee Not Found: " + msg;
         }
 
-        public EmpListNotFoundErr(string msg)
+        public void ThrowMsg()
         {
-            Debug.Log("EmployeeList Not Found Error: " + msg);
+            if (directedError != "")
+            {
+                Debug.Log(directedError);
+            }
+            else
+                Debug.Log(genericError);
         }
     }
 }
