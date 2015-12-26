@@ -5,15 +5,19 @@ using System.Collections.Generic;
 
 namespace CoreSys
 {
+    /// <summary>
+    /// Daily Hourly Staffing requirements window script.
+    /// 
+    /// </summary>
     public class DailyHourlyStaff : MonoBehaviour
     {
         public PrefabList prefabs;
         public List<InputField> sundayList, mondayList, tuesdayList, wednesdayList, thursdayList, fridayList, saturdayList;
         private List<HourColumn> hourList = new List<HourColumn>();
         public InputField sundayInput, mondayInput, tuesdayInput, wednesdayInput, thursdayInput, fridayInput, saturdayInput;
-        public Week newWeek;
-        private int startXVal = 100;
-        private int xValIteration = 26;
+        public Week newWeek;//Week that is being generated and eventually passed to the main system
+        private int startXVal = 100;//Starting point for hour placement.
+        private int xValIteration = 26;//This is the step for x val placement in the window when generating hours. If the window size is changed this needs to be adjusted as well.
 
         public DailyHourlyStaff()
         {

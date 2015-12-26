@@ -20,51 +20,56 @@ namespace CoreSys
 
         public void Update()
         {
+            ColorToAlpha();
+        }
+
+        private void ColorToAlpha()
+        {
             if (suText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(suText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(suText.color.a, 0, 2 * Time.deltaTime);
                 suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, newAlpha);
             }
             else
                 suText.enabled = false;
             if (mText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(mText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(mText.color.a, 0, 2 * Time.deltaTime);
                 mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, newAlpha);
             }
             else
                 mText.enabled = false;
             if (tuText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(tuText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(tuText.color.a, 0, 2 * Time.deltaTime);
                 tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, newAlpha);
             }
             else
                 tuText.enabled = false;
             if (wText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(wText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(wText.color.a, 0, 2 * Time.deltaTime);
                 wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, newAlpha);
             }
             else
                 wText.enabled = false;
             if (thText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(thText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(thText.color.a, 0, 2 * Time.deltaTime);
                 thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, newAlpha);
             }
             else
                 thText.enabled = false;
             if (fText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(fText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(fText.color.a, 0, 2 * Time.deltaTime);
                 fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, newAlpha);
             }
             else
                 fText.enabled = false;
             if (saText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(saText.color.a, 0, 2*Time.deltaTime);
+                float newAlpha = Mathf.Lerp(saText.color.a, 0, 2 * Time.deltaTime);
                 saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, newAlpha);
             }
             else
