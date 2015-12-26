@@ -20,7 +20,46 @@ namespace CoreSys.Employees
 
         public void Update()
         {
+            ErrorTextFade();
+        }
 
+        private void ErrorTextFade()
+        {
+            if (empText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(empText.color.a, 0, 2 * Time.deltaTime);
+                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, newAlpha);
+            }
+            else
+                empText.enabled = false;
+            if (idText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(idText.color.a, 0, 2 * Time.deltaTime);
+                idText.color = new Color(idText.color.r, idText.color.g, idText.color.b, newAlpha);
+            }
+            else
+                idText.enabled = false;
+            if (typeText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(typeText.color.a, 0, 2 * Time.deltaTime);
+                typeText.color = new Color(typeText.color.r, typeText.color.g, typeText.color.b, newAlpha);
+            }
+            else
+                typeText.enabled = false;
+            if (timeText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(timeText.color.a, 0, 2 * Time.deltaTime);
+                timeText.color = new Color(timeText.color.r, timeText.color.g, timeText.color.b, newAlpha);
+            }
+            else
+                timeText.enabled = false;
+            if (avText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(avText.color.a, 0, 2 * Time.deltaTime);
+                avText.color = new Color(avText.color.r, avText.color.g, avText.color.b, newAlpha);
+            }
+            else
+                avText.enabled = false;
         }
 
         public void FieldValidation()
@@ -28,24 +67,36 @@ namespace CoreSys.Employees
             bool validForm = true;
             if (name.text == "")
             {
+                empText.enabled = true;
+                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);
                 validForm = false;
             }
             if (empid.text == "")
             {
+                idText.enabled = true;
+                idText.color = new Color(idText.color.r, idText.color.g, idText.color.b, 50);
                 validForm = false;
             }
-            if (solutions == false && experience == false)
+            if (solutions.isOn == false && experience.isOn == false)
             {
+                typeText.enabled = true;
+                typeText.color = new Color(typeText.color.r, typeText.color.g, typeText.color.b, 50);
                 validForm = false;
             }
-            if (fulltime == false && parttime == false)
+            if (fulltime.isOn == false && parttime.isOn == false)
             {
+                timeText.enabled = true;
+                timeText.color = new Color(timeText.color.r, timeText.color.g, timeText.color.b, 50);
                 validForm = false;
             }
-            if (sun == false && mon == false && tue == false && wed == false && thu == false && fri == false && sat)
+            if (sun.isOn == false && mon.isOn == false && tue.isOn == false && wed.isOn == false && thu.isOn == false && fri.isOn == false && sat.isOn == false)
             {
+                avText.enabled = true;
+                avText.color = new Color(avText.color.r, avText.color.g, avText.color.b, 50);
                 validForm = false;
             }
+            if (validForm == true)
+                SubmitEmployee();
         }
 
         private void SubmitEmployee()

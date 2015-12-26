@@ -20,10 +20,10 @@ namespace CoreSys
 
         public void Update()
         {
-            ColorToAlpha();
+            ErrorTextFade();
         }
 
-        private void ColorToAlpha()
+        private void ErrorTextFade()
         {
             if (suText.color.a > .1)
             {
