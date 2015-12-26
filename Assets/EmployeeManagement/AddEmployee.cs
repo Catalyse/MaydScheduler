@@ -8,7 +8,7 @@ namespace CoreSys.Employees
     public class AddEmployee : MonoBehaviour
     {
         private EmployeeStorage storage;
-        public InputField name, empid;
+        public InputField empName, empid;
         public Toggle solutions, experience, fulltime, parttime;
         public Toggle sun, mon, tue, wed, thu, fri, sat;
         public Text empText, idText, typeText, timeText, avText;
@@ -65,7 +65,7 @@ namespace CoreSys.Employees
         public void FieldValidation()
         {
             bool validForm = true;
-            if (name.text == "")
+            if (empName.text == "")
             {
                 empText.enabled = true;
                 empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);
@@ -101,7 +101,7 @@ namespace CoreSys.Employees
 
         private void SubmitEmployee()
         {
-            Employee newEmp = new Employee(name.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
+            Employee newEmp = new Employee(empName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
             storage.AddEmployee(newEmp);
         }
     }
