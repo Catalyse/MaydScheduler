@@ -77,6 +77,7 @@
     <Compile Include="Assets\MainMenu.cs" />
     <Compile Include="Assets\PrefabList.cs" />
     <Compile Include="Assets\SetAllButton.cs" />
+    <Compile Include="Assets\StartSplash.cs" />
     <Compile Include="Assets\Week.cs" />
     <Compile Include="Assets\WeeklyConfig.cs" />
     <Compile Include="Assets\Window.cs" />
