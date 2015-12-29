@@ -9,10 +9,10 @@ namespace CoreSys
     /// Daily Hourly Staffing requirements window script.
     /// 
     /// </summary>
-    public class DailyHourlyStaff : MonoBehaviour
+    public class DailyHourlyStaff : Window
     {
         private bool configured = false;//This stays false till weekly has been run
-        public GameObject configuredModeParent;
+        public GameObject configuredModeParent, needConfigModeParent;
         public PrefabList prefabs;
         public List<InputField> sundayList, mondayList, tuesdayList, wednesdayList, thursdayList, fridayList, saturdayList;
         private List<HourColumn> hourList = new List<HourColumn>();
@@ -22,6 +22,11 @@ namespace CoreSys
         private int xValIteration = 26;//This is the step for x val placement in the window when generating hours. If the window size is changed this needs to be adjusted as well.
 
         public DailyHourlyStaff() { }
+
+        public void Start()
+        {
+            
+        }
 
         public void SetAllClick(int button)
         {
@@ -74,11 +79,6 @@ namespace CoreSys
                     saturdayList[i].text = saturdayInput.text;
                 }
             }
-        }
-
-        public void Start()
-        {
-            
         }
 
         public void WeeklyConfigPopup()

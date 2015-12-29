@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CoreSys
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : Window
     {
         /// <summary>
         /// List:

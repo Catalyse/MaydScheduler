@@ -9,7 +9,7 @@ using System.Collections.Generic;
 /// </summary>
 namespace CoreSys
 {
-    public class WeeklyConfig : MonoBehaviour
+    public class WeeklyConfig : Window
     {
         public Toggle sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Text suText, mText, tuText, wText, thText, fText, saText;

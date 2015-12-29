@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CoreSys.Employees
 {
-    public class AddEmployee : MonoBehaviour
+    public class AddEmployee : Window
     {
         private EmployeeStorage storage;
         public InputField empName, empid;
