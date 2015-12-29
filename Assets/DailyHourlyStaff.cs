@@ -11,6 +11,8 @@ namespace CoreSys
     /// </summary>
     public class DailyHourlyStaff : MonoBehaviour
     {
+        private bool configured = false;//This stays false till weekly has been run
+        public GameObject configuredModeParent;
         public PrefabList prefabs;
         public List<InputField> sundayList, mondayList, tuesdayList, wednesdayList, thursdayList, fridayList, saturdayList;
         private List<HourColumn> hourList = new List<HourColumn>();
@@ -76,9 +78,17 @@ namespace CoreSys
 
         public void Start()
         {
-            GameObject newHour = (GameObject)Instantiate(prefabs.prefabList[0], new Vector3(0, 0, 0), Quaternion.identity);
-            newHour.transform.SetParent(this.gameObject.transform);
-            newHour.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
+            
+        }
+
+        public void WeeklyConfigPopup()
+        {
+            //Weekly Config Popup
+            GameObject weeklyConfig = (GameObject)Instantiate(prefabs.prefabList[0], new Vector3(0, 0, 0), Quaternion.identity);
+            weeklyConfig.transform.SetParent(this.gameObject.transform);
+            weeklyConfig.transform.localScale = new Vector3(1, 1, 1);//Moving transforms seems to screw with the scale, so its set in code for redundancy
+            weeklyConfig.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
+            //End
         }
 
         public void SetWeeklyConfig(Week setWeek)
