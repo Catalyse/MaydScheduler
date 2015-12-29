@@ -54,7 +54,7 @@ namespace CoreSys
             }
             catch (Exception ex)
             {
-                Debug.Log(ex.Data);
+                Debug.Log(ex.Message);
                 return null;
             }
         }

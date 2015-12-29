@@ -7,7 +7,6 @@ namespace CoreSys
 {
     /// <summary>
     /// Daily Hourly Staffing requirements window script.
-    /// 
     /// </summary>
     public class DailyHourlyStaff : Window
     {
