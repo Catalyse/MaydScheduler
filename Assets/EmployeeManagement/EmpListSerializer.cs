@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using System.Collections;
 using CoreSys.Errors;
 
-namespace CoreSys
+namespace CoreSys.Employees
 {
     public static class EmpListSerializer
     {

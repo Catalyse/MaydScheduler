@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace CoreSys
+namespace CoreSys.Employees
 {
     /// <summary>
     /// TODO Add hourly availability

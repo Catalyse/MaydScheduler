@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Errors;
 
-namespace CoreSys
+namespace CoreSys.Employees
 {
     public class EmployeeStorage : MonoBehaviour
     {
