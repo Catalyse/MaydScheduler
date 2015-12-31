@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace CoreSys.SplashScreen
+namespace CoreSys
 {
     /// <summary>
     /// Meant to handle splash screen fade
