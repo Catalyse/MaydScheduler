@@ -10,5 +10,16 @@ namespace CoreSys.Employees
         public InputField start, end;
         public Toggle sun, mon, tue, wed, thu, fri, sat;
         public Toggle canwork;
+
+        public EmployeeProfile() { }
+
+        public void SetProfile(Employee emp)
+        {
+            empName.text = emp.name;
+            if (emp.solutions)
+                empTitle.text = "Solutions Specialist";
+            else
+                empTitle.text = "Experience Specialist";
+        }
     }
 }
