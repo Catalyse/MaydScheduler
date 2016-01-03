@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using CoreSys.Types;
 
 namespace CoreSys.Employees
 {
@@ -12,11 +13,11 @@ namespace CoreSys.Employees
         public int empID;
         public bool solutions;//solutions if true, exp if false
         public bool fulltime;//If true, fulltime, else parttime
-        public bool sun, mon, tue, wed, thu, fri, sat;
+        public Day sun, mon, tue, wed, thu, fri, sat;
 
         public Employee() { }
 
-        public Employee(string _name, int _id, bool _solutions, bool _fulltime, bool _sun, bool _mon, bool _tue, bool _wed, bool _thu, bool _fri, bool _sat)
+        public Employee(string _name, int _id, bool _solutions, bool _fulltime, Day _sun, Day _mon, Day _tue, Day _wed, Day _thu, Day _fri, Day _sat)
         {
             empName = _name;
             empID = _id;
