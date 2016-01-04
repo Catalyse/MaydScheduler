@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using CoreSys.Windows;
 
 namespace CoreSys
 {
@@ -47,10 +48,7 @@ namespace CoreSys
             if(activeWindows <= 0 && systemActive)
             {
                 activeWindows = 0;
-                GameObject weeklyConfig = (GameObject)Instantiate(prefabs.prefabList[0], new Vector3(0, 0, 0), Quaternion.identity);
-                weeklyConfig.transform.SetParent(this.gameObject.transform);
-                weeklyConfig.transform.localScale = new Vector3(1, 1, 1);//Moving transforms seems to screw with the scale, so its set in code for redundancy
-                weeklyConfig.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
+                WindowInstantiator.SpawnWindow(prefabs.prefabList[0]);
             }
         }
     }
