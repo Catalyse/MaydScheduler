@@ -9,6 +9,7 @@ namespace CoreSys.Windows
         public Text BarText;
         private string name, title;
         private int id, status;
+        public Toggle barToggle;
 
         public EmployeeBar()
         {

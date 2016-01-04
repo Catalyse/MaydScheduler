@@ -15,3 +15,5 @@ X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEngine.Analytics.xml
 X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.xml
 X:\Documents\VZScheduler\obj\Debug\Assembly-CSharp.dll
 X:\Documents\VZScheduler\obj\Debug\Assembly-CSharp.pdb
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll.CodeAnalysisLog.xml
+X:\Documents\VZScheduler\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll.lastcodeanalysissucceeded

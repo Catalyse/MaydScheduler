@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Errors;
@@ -11,10 +12,7 @@ namespace CoreSys.Employees
         public int employeeCount;
         public List<Employee> employeeList;
 
-        public EmployeeStorage() 
-        {
-
-        }
+        public EmployeeStorage() { }
 
         public void Start()
         {
@@ -32,6 +30,14 @@ namespace CoreSys.Employees
         {
             employeeList.Add(toAdd);
             employeeCount++;
+            SortList();
+        }
+
+        public void OverWriteList(List<Employee> empList)
+        {
+            employeeList = empList;
+            employeeCount = empList.Count;
+            SortList();
         }
 
         public Employee GetEmployee(string name)
@@ -50,6 +56,39 @@ namespace CoreSys.Employees
                 e.ThrowMsg();
                 return null;
             }
+        }
+
+        private void SortList()
+        {
+            //Starts false so if list is already in order do nothing
+            bool sortAgain = false;
+            Employee current;
+            Employee next;
+            do
+            {
+                for (int i = 0; i < employeeList.Count - 1; i++)
+                {
+                    current = employeeList[i];
+                    next = employeeList[i + 1];
+                    if (current.name.CompareTo(next.name) > 0)
+                    {
+                        employeeList[i] = next;
+                        employeeList[i + 1] = current;
+                        sortAgain = true;
+                    }
+                }
+            }
+            while (sortAgain == true);
+        }
+
+        public void OnDestroy()
+        {
+            if (employeeList.Count > 0)
+            {
+                EmpListSerializer.SerializeEmpList(this);
+            }
+            else
+                Debug.Log("No employee list to serialize!");
         }
     }
 }

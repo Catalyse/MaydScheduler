@@ -71,7 +71,6 @@
     <Compile Include="Assets\EmployeeManagement\EmployeeBar.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeManagement.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeProfile.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmployeeScrollView.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeStorage.cs" />
     <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />

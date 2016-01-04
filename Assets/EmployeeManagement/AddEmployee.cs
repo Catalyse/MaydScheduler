@@ -104,5 +104,10 @@ namespace CoreSys.Employees
             Employee newEmp = new Employee(empName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
             storage.AddEmployee(newEmp);
         }
+
+        private void ClearAllFields()
+        {
+
+        }
     }
 }

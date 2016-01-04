@@ -28,7 +28,8 @@ namespace CoreSys.Windows
 
         public void EmployeeManagement()
         {
-            WindowInstantiator.SpawnWindow(prefabs.prefabList[2]);
+            GameObject newWindow = WindowInstantiator.SpawnWindow(prefabs.prefabList[2]);
+            newWindow.GetComponent<EmployeeManagement>().GenerateUI();
             Destroy(this.gameObject);
         }
 

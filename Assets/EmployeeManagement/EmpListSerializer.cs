@@ -12,7 +12,7 @@ namespace CoreSys.Employees
     {
         public static string fileName = "empList.xml";
 
-        public static void SerializeObject(EmployeeStorage list)
+        public static void SerializeEmpList(EmployeeStorage list)
         {
             if (list == null) { return; }
 
