@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace CoreSys.Employees
 {
-    public class EmployeeProfile : MonoBehaviour
+    public class EmployeeProfile : Window
     {
         private Employee employee;
         public Text empName, empTitle, empID, empTenure, empStatus;
@@ -21,7 +21,7 @@ namespace CoreSys.Employees
         public void SetProfile(Employee emp)
         {
             employee = emp;
-            empName.text = emp.name;
+            empName.text = emp.empName;
             if (emp.solutions)
                 empTitle.text = "Solutions Specialist";
             else
@@ -31,31 +31,31 @@ namespace CoreSys.Employees
 
         public void FillStartEndVals()
         {
-            if (sun)
+            if (sun.isOn)
             {
                 
             }
-            else if (mon)
+            else if (mon.isOn)
             {
 
             }
-            else if (tue)
+            else if (tue.isOn)
             {
 
             }
-            else if (wed)
+            else if (wed.isOn)
             {
 
             }
-            else if (thu)
+            else if (thu.isOn)
             {
 
             }
-            else if (fri)
+            else if (fri.isOn)
             {
 
             }
-            else if (sat)
+            else if (sat.isOn)
             {
 
             }
@@ -66,31 +66,31 @@ namespace CoreSys.Employees
         /// </summary>
         public void SetAvailability()
         {
-            if (sun)
+            if (sun.isOn)
             {
 
             }
-            else if (mon)
+            else if (mon.isOn)
             {
 
             }
-            else if (tue)
+            else if (tue.isOn)
             {
 
             }
-            else if (wed)
+            else if (wed.isOn)
             {
 
             }
-            else if (thu)
+            else if (thu.isOn)
             {
 
             }
-            else if (fri)
+            else if (fri.isOn)
             {
 
             }
-            else if (sat)
+            else if (sat.isOn)
             {
 
             }

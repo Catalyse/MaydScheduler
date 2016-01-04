@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using CoreSys.Employees;
 
-namespace CoreSys.Windows
+namespace CoreSys.Employees
 {
     public class EmployeeBar : MonoBehaviour
     {
         public Text BarText;
-        private string name, title;
+        private string empName, title, statustext;
         private int id, status;
         public Toggle barToggle;
 
-        public EmployeeBar()
-        {
-
-        }
+        public EmployeeBar() { }
         /// <summary>
         /// 
         /// </summary>
@@ -22,15 +20,35 @@ namespace CoreSys.Windows
         /// <param name="id">empid</param>
         /// <param name="title"></param>
         /// <param name="status">0 for inactive, 1 for part time, 2 for fulltime</param>
-        public EmployeeBar(string name, int id, string title, int status)
+        public void EmployeeBarSet(Employee emp)
         {
-
+            empName = emp.empName;
+            id = emp.empID;
+            if (emp.solutions)
+                title = "Solutions Specialist";
+            else
+                title = "Experience Specialist";
+            if (emp.active)
+            {
+                if (emp.fulltime)
+                    status = 2;
+                else
+                    status = 1;
+            }
+            else
+                status = 0;
+            SetBarText();
         }
 
         private void SetBarText()
         {
-            BarText.text = name + " || " + title + " || " + id + " || " + status;
-           
+            if (status == 0)
+                statustext = "Inactive";
+            else if (status == 1)
+                statustext = "Part Time";
+            else if (status == 2)
+                statustext = "Full Time";
+            BarText.text = empName + " || " + title + " || " + id + " || " + statustext;
         }
         private void SetBarColor()
         {

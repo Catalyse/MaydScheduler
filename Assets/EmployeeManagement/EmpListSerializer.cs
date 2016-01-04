@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Collections;
+using System.Collections.Generic;
 using CoreSys.Errors;
 
 namespace CoreSys.Employees
@@ -12,7 +13,7 @@ namespace CoreSys.Employees
     {
         public static string fileName = "empList.xml";
 
-        public static void SerializeEmpList(EmployeeStorage list)
+        public static void SerializeEmpList(List<Employee> list)
         {
             if (list == null) { return; }
 
@@ -31,23 +32,24 @@ namespace CoreSys.Employees
             }
             catch (Exception ex)
             {
-                Debug.Log(ex.Data);
+                Debug.Log(ex.Message);
+                Debug.Log(ex.InnerException);
             }
         }
 
 
-        public static EmployeeStorage DeserializeEmpList()
+        public static List<Employee> DeserializeEmpList()
         {
             try
             {
-                EmployeeStorage storage = null;
+                List<Employee> storage = new List<Employee>();
 
-                XmlSerializer serializer = new XmlSerializer(typeof(EmployeeStorage));
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
 
                 StreamReader reader = new StreamReader(fileName);
                 if (reader == null)
                     throw new EmpListNotFoundErr();
-                storage = (EmployeeStorage)serializer.Deserialize(reader);
+                storage = (List<Employee>)serializer.Deserialize(reader);
                 reader.Close();
 
                 return storage;

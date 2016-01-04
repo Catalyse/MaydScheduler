@@ -7,7 +7,7 @@ namespace CoreSys.Employees
     /// <summary>
     /// TODO Add hourly availability
     /// </summary>
-    public class Employee : MonoBehaviour
+    public class Employee
     {
         public string empName;
         public int empID;
@@ -18,20 +18,20 @@ namespace CoreSys.Employees
 
         public Employee() { }
 
-        public Employee(string _name, int _id, bool _solutions, bool _fulltime, bool _sun, bool _mon, bool _tue, bool _wed, bool _thu, bool _fri, bool _sat)
+        public void SetEmployee(string _name, int _id, bool _solutions, bool _fulltime, bool _sun, bool _mon, bool _tue, bool _wed, bool _thu, bool _fri, bool _sat)
         {
             active = true;
             empName = _name;
             empID = _id;
             solutions = _solutions;
             fulltime = _fulltime;
-            sunday.available = _sun;
-            monday.available = _mon;
-            tuesday.available = _tue;
-            wednesday.available = _wed;
-            thursday.available = _thu;
-            friday.available = _fri;
-            saturday.available = _sat;
+            sunday = new Day(_sun);
+            monday = new Day(_mon);
+            tuesday = new Day(_tue);
+            wednesday = new Day(_wed);
+            thursday = new Day(_thu);
+            friday = new Day(_fri);
+            saturday = new Day(_sat);
         }
     }
 }

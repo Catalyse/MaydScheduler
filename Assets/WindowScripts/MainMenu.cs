@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using CoreSys.Employees;
 
 namespace CoreSys.Windows
 {
@@ -9,7 +10,9 @@ namespace CoreSys.Windows
         /// <summary>
         /// List:
         /// Index   || Name                   || Category
-        /// 0       || DailyHourlyStaffing    || New Week
+        /// 0       || DailyHourlyStaffing    || Schedule Creation
+        /// 1
+        /// 2       || EmpMGMTWindow          || Employee Management
         /// </summary>
         public PrefabList prefabs;
         public GameObject exitPrompt;

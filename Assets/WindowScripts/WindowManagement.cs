@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Windows;
+using CoreSys.Employees;
 
 namespace CoreSys
 {
@@ -15,6 +16,7 @@ namespace CoreSys
         public void Awake()
         {
             systemActive = true;
+            EmployeeStorage.Start();
         }
 
         public void OnDisable()
@@ -24,6 +26,7 @@ namespace CoreSys
 
         public void OnDestroy()
         {
+            EmployeeStorage.OnDestroy();
             systemActive = false;
         }
 

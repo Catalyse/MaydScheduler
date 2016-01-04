@@ -7,40 +7,34 @@ using CoreSys.Errors;
 
 namespace CoreSys.Employees
 {
-    public class EmployeeStorage : MonoBehaviour
+    public static class EmployeeStorage
     {
-        public int employeeCount;
-        public List<Employee> employeeList;
+        public static List<Employee> employeeList = new List<Employee>();
 
-        public EmployeeStorage() { }
-
-        public void Start()
+        public static void Start()
         {
-            EmployeeStorage temp = EmpListSerializer.DeserializeEmpList();
+            List<Employee> temp = EmpListSerializer.DeserializeEmpList();
             if (temp != null)
             {
-                employeeCount = temp.employeeCount;
-                employeeList = temp.employeeList;
+                employeeList = temp;
             }
             else
                 Debug.Log("No employee list found");
         }
 
-        public void AddEmployee(Employee toAdd)
+        public static void AddEmployee(Employee toAdd)
         {
             employeeList.Add(toAdd);
-            employeeCount++;
             SortList();
         }
 
-        public void OverWriteList(List<Employee> empList)
+        public static void OverWriteList(List<Employee> empList)
         {
             employeeList = empList;
-            employeeCount = empList.Count;
             SortList();
         }
 
-        public Employee GetEmployee(string name)
+        public static Employee GetEmployee(string name)
         {
             try
             {
@@ -58,7 +52,7 @@ namespace CoreSys.Employees
             }
         }
 
-        private void SortList()
+        private static void SortList()
         {
             //Starts false so if list is already in order do nothing
             bool sortAgain = false;
@@ -70,7 +64,7 @@ namespace CoreSys.Employees
                 {
                     current = employeeList[i];
                     next = employeeList[i + 1];
-                    if (current.name.CompareTo(next.name) > 0)
+                    if (current.empName.CompareTo(next.empName) > 0)
                     {
                         employeeList[i] = next;
                         employeeList[i + 1] = current;
@@ -81,11 +75,11 @@ namespace CoreSys.Employees
             while (sortAgain == true);
         }
 
-        public void OnDestroy()
+        public static void OnDestroy()
         {
             if (employeeList.Count > 0)
             {
-                EmpListSerializer.SerializeEmpList(this);
+                EmpListSerializer.SerializeEmpList(employeeList);
             }
             else
                 Debug.Log("No employee list to serialize!");

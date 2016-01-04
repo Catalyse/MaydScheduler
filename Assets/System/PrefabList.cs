@@ -5,6 +5,6 @@ namespace CoreSys
 {
     public class PrefabList : MonoBehaviour
     {
-        public List<Object> prefabList = new List<Object>();
+        public List<GameObject> prefabList = new List<GameObject>();
     }
 }

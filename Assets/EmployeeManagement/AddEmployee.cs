@@ -7,16 +7,11 @@ namespace CoreSys.Employees
 {
     public class AddEmployee : Window
     {
-        private EmployeeStorage storage;
+        public EmployeeManagement empManager;
         public InputField empName, empid;
         public Toggle solutions, experience, fulltime, parttime;
         public Toggle sun, mon, tue, wed, thu, fri, sat;
         public Text empText, idText, typeText, timeText, avText;
-
-        public void Start()
-        {
-            storage = transform.root.GetComponent<EmployeeStorage>();
-        }
 
         public void Update()
         {
@@ -101,13 +96,27 @@ namespace CoreSys.Employees
 
         private void SubmitEmployee()
         {
-            Employee newEmp = new Employee(empName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
-            storage.AddEmployee(newEmp);
+            Employee newEmp = new Employee();
+            newEmp.SetEmployee(empName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
+            ClearAllFields();
+            empManager.AddEmployee(newEmp);
         }
 
         private void ClearAllFields()
         {
-
+            empName.text = "";
+            empid.text = "";
+            solutions.isOn = false;
+            experience.isOn = false;
+            fulltime.isOn = false;
+            parttime.isOn = false;
+            sun.isOn = false;
+            mon.isOn = false;
+            tue.isOn = false;
+            wed.isOn = false;
+            thu.isOn = false;
+            fri.isOn = false;
+            sat.isOn = false;
         }
     }
 }
