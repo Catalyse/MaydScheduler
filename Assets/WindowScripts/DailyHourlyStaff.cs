@@ -11,7 +11,6 @@ namespace CoreSys
     /// </summary>
     public class DailyHourlyStaff : Window
     {
-        private bool configured = false;//This stays false till weekly has been run
         public GameObject configuredModeParent, needConfigModeParent;
         public PrefabList prefabs;
         public List<InputField> sundayList, mondayList, tuesdayList, wednesdayList, thursdayList, fridayList, saturdayList;
@@ -95,6 +94,7 @@ namespace CoreSys
         {
             newWeek = setWeek;
             GenerateHourColumns();
+            configuredModeParent.SetActive(true);
         }
 
         private void GenerateHourColumns()
@@ -103,7 +103,7 @@ namespace CoreSys
             for (int i = newWeek.earliestStart; i <= newWeek.latestEnd; i++)
             {
                 GameObject newHour = (GameObject)Instantiate(prefabs.prefabList[1], new Vector3(0, 0, 0), Quaternion.identity);
-                newHour.transform.parent = transform;
+                newHour.transform.SetParent(transform);
                 newHour.transform.localScale = new Vector3(1, 1, 1);
                 newHour.GetComponent<RectTransform>().anchoredPosition3D = new Vector3((startXVal+(xValIteration*k)), -145, 0);
                 k++;
@@ -111,6 +111,7 @@ namespace CoreSys
                 newColumn.SetHourColumn(i,(newWeek.suStartHour<=i && newWeek.suEndHour >= i),(newWeek.mStartHour<=i && newWeek.mEndHour >= i),
                     (newWeek.tuStartHour<=i && newWeek.tuEndHour >= i),(newWeek.wStartHour<=i && newWeek.wEndHour >= i),(newWeek.thStartHour<=i && newWeek.thEndHour >= i),
                     (newWeek.fStartHour<=i && newWeek.fEndHour >= i),(newWeek.saStartHour<=i && newWeek.saEndHour >= i));
+                hourList.Add(newColumn);
             }
         }
     }

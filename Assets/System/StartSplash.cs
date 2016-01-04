@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using CoreSys.Windows;
 
 namespace CoreSys
 {
@@ -11,6 +12,7 @@ namespace CoreSys
     {
         public Text t1, t2, t3;
         public Image i1;
+        public GameObject mainMenu;
 
         public void Start()
         {
@@ -32,10 +34,12 @@ namespace CoreSys
             i1.color = new Color(i1.color.r, i1.color.g, i1.color.b, newAlpha);
             if (t1.color.a < .01 && t2.color.a < .01 && t3.color.a < .01 && i1.color.a < .01)
             {
-                t1.gameObject.SetActive(false);
-                t2.gameObject.SetActive(false);
-                t3.gameObject.SetActive(false);
-                i1.gameObject.SetActive(false);
+                //t1.gameObject.SetActive(false);
+                //t2.gameObject.SetActive(false);
+                //t3.gameObject.SetActive(false);
+                //i1.gameObject.SetActive(false);
+                WindowInstantiator.SpawnWindow(mainMenu);
+                this.gameObject.SetActive(false);//Kill the empty to kill the rest
             }
         }
     }

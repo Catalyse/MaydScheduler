@@ -5,14 +5,13 @@ namespace CoreSys
 {
     public class Window : MonoBehaviour
     {
-        private WindowManagement manager;
+        public WindowManagement managerSet;
+        private static WindowManagement manager;
         public void Awake()
         {
             //This script is always stored on the canvas.
-            manager = transform.root.GetComponent<WindowManagement>();
-            if (manager) { }
-            else
-                Debug.Log("WindowManager Not Found!");
+            if(managerSet)
+                manager = managerSet;
         }
         public void OnEnable()
         {
