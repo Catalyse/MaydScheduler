@@ -60,5 +60,10 @@ namespace CoreSys.Employees
                 return null;
             }
         }
+
+        public static void DeleteEmpListFile()
+        {
+            File.Delete(fileName);
+        }
     }
 }

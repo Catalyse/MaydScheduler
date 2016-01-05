@@ -8,6 +8,7 @@ namespace CoreSys.Employees
     public class EmployeeBar : MonoBehaviour
     {
         public Text BarText;
+        public Employee employee;
         private string empName, title, statustext;
         private int id, status;
         public Toggle barToggle;
@@ -22,6 +23,7 @@ namespace CoreSys.Employees
         /// <param name="status">0 for inactive, 1 for part time, 2 for fulltime</param>
         public void EmployeeBarSet(Employee emp)
         {
+            employee = emp;
             empName = emp.empName;
             id = emp.empID;
             if (emp.solutions)

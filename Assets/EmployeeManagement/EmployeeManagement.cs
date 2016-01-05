@@ -42,9 +42,30 @@ namespace CoreSys.Employees
 
         }
 
-        public void RemoveEmployee(int emp)
+        public void RemoveEmployee()
         {
-            
+            Employee toDelete = null;
+            for (int i = 0; i < currentBarList.Count; i++)
+            {
+                if (currentBarList[i].barToggle.isOn)
+                {
+                    toDelete = currentBarList[i].employee;
+                    break;
+                }
+            }
+            if (toDelete != null)
+            {
+
+            }
+            else
+            {
+                
+            }
+        }
+
+        public void ClearButton()
+        {
+            EmployeeStorage.ClearList();
         }
 
         private void ClearBars()

@@ -75,6 +75,12 @@ namespace CoreSys.Employees
             while (sortAgain == true);
         }
 
+        public static void ClearList()
+        {
+            employeeList.Clear();
+            EmpListSerializer.DeleteEmpListFile();
+        }
+
         public static void OnDestroy()
         {
             if (employeeList.Count > 0)
