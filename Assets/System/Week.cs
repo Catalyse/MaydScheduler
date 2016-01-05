@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CoreSys.Types
+namespace CoreSys
 {
     public class Week
     {
