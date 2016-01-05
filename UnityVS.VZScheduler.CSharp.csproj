@@ -72,12 +72,15 @@
     <Compile Include="Assets\EmployeeManagement\EmployeeManagement.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeProfile.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeStorage.cs" />
+    <Compile Include="Assets\EmployeeManagement\SchedulingAlgorithm.cs" />
     <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />
     <Compile Include="Assets\System\CurrentTime.cs" />
     <Compile Include="Assets\System\Day.cs" />
     <Compile Include="Assets\System\PrefabList.cs" />
+    <Compile Include="Assets\System\Schedule.cs" />
     <Compile Include="Assets\System\SetAllButton.cs" />
+    <Compile Include="Assets\System\Shift.cs" />
     <Compile Include="Assets\System\StartSplash.cs" />
     <Compile Include="Assets\System\Week.cs" />
     <Compile Include="Assets\WindowScripts\DailyHourlyStaff.cs" />

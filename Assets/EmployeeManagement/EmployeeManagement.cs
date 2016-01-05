@@ -20,6 +20,11 @@ namespace CoreSys.Employees
 
         private List<EmployeeBar> currentBarList = new List<EmployeeBar>();
 
+        public void Update()
+        {
+
+        }
+
         public void GenerateUI()
         {
             GenerateEmpBars(EmployeeStorage.employeeList);
