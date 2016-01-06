@@ -9,29 +9,29 @@ namespace CoreSys.Employees
     /// </summary>
     public class Employee
     {
-        public string empName;
+        public string empLastName, empFirstName;
         public int empID;
         public bool solutions;//solutions if true, exp if false
         public bool fulltime;//If true, fulltime, else parttime
         public bool active;
         public Day sunday, monday, tuesday, wednesday, thursday, friday, saturday;
 
-        public Employee() { }
+        public Employee() { }//Default for serialization
 
-        public void SetEmployee(string _name, int _id, bool _solutions, bool _fulltime, bool _sun, bool _mon, bool _tue, bool _wed, bool _thu, bool _fri, bool _sat)
+        public void SetEmployee(string lastName, int id, bool _solutions, bool _fulltime, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
             active = true;
-            empName = _name;
-            empID = _id;
+            empLastName = lastName;
+            empID = id;
             solutions = _solutions;
             fulltime = _fulltime;
-            sunday = new Day(_sun);
-            monday = new Day(_mon);
-            tuesday = new Day(_tue);
-            wednesday = new Day(_wed);
-            thursday = new Day(_thu);
-            friday = new Day(_fri);
-            saturday = new Day(_sat);
+            sunday = new Day(sun);
+            monday = new Day(mon);
+            tuesday = new Day(tue);
+            wednesday = new Day(wed);
+            thursday = new Day(thu);
+            friday = new Day(fri);
+            saturday = new Day(sat);
         }
     }
 }

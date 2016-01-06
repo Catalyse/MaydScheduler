@@ -86,6 +86,11 @@ namespace CoreSys
             transform.gameObject.SetActive(false);//Disable window when done
         }
 
+        private void InputValidation() //This method will correct times put in incorrectly
+        {
+            //todo
+        }
+
         public void CheckInputBoxes()
         {
             bool validSubmit = true;//Stays true unless value fails to be met

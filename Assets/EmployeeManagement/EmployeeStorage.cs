@@ -40,7 +40,7 @@ namespace CoreSys.Employees
             {
                 for (int i = 0; i < employeeList.Count; i++)
                 {
-                    if (employeeList[i].empName == name)
+                    if (employeeList[i].empLastName == name)
                         return employeeList[i];
                 }
                 throw new EmpNotFoundErr();
@@ -64,7 +64,7 @@ namespace CoreSys.Employees
                 {
                     current = employeeList[i];
                     next = employeeList[i + 1];
-                    if (current.empName.CompareTo(next.empName) > 0)
+                    if (current.empLastName.CompareTo(next.empLastName) > 0)
                     {
                         employeeList[i] = next;
                         employeeList[i + 1] = current;

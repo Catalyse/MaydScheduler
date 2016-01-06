@@ -21,7 +21,7 @@ namespace CoreSys.Employees
         public void SetProfile(Employee emp)
         {
             employee = emp;
-            empName.text = emp.empName;
+            empName.text = emp.empLastName;
             if (emp.solutions)
                 empTitle.text = "Solutions Specialist";
             else

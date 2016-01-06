@@ -14,6 +14,7 @@ namespace CoreSys
         public bool sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Dictionary<int, int> sSundayHourReqs, sMondayHourReqs, sTuesdayHourReqs, sWednesdayHourReqs, sThursdayHourReqs, sFridayHourReqs, sSaturdayHourReqs;//Solutions Spec Hour Reqs
         public Dictionary<int, int> eSundayHourReqs, eMondayHourReqs, eTuesdayHourReqs, eWednesdayHourReqs, eThursdayHourReqs, eFridayHourReqs, eSaturdayHourReqs;//Experience Spec Hour Reqs
+        public Dictionary<int, int> sDailyTotalNeeds, eDailyTotalNeeds;
         // Use this for initialization
 
         public Week() { }
@@ -45,6 +46,58 @@ namespace CoreSys
             saturday = sat;
             //End bool set
             HoursOpenCalc();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type">type 0 for sales, type 1 for experience</param>
+        public void SetHourlyNeeds(int type, List<Dictionary<int,int>> scheduleList)
+        {
+            if (type == 0)//SOlutions
+            {
+                sSundayHourReqs = scheduleList[0];
+                sDailyTotalNeeds.Add(0, TotalNeedsCalc(sSundayHourReqs));
+                sMondayHourReqs = scheduleList[1];
+                sDailyTotalNeeds.Add(1, TotalNeedsCalc(sMondayHourReqs));
+                sTuesdayHourReqs = scheduleList[2];
+                sDailyTotalNeeds.Add(2, TotalNeedsCalc(sTuesdayHourReqs));
+                sWednesdayHourReqs = scheduleList[3];
+                sDailyTotalNeeds.Add(3, TotalNeedsCalc(sWednesdayHourReqs));
+                sThursdayHourReqs = scheduleList[4];
+                sDailyTotalNeeds.Add(4, TotalNeedsCalc(sThursdayHourReqs));
+                sFridayHourReqs = scheduleList[5];
+                sDailyTotalNeeds.Add(5, TotalNeedsCalc(sFridayHourReqs));
+                sSaturdayHourReqs = scheduleList[6];
+                sDailyTotalNeeds.Add(6, TotalNeedsCalc(sSaturdayHourReqs));
+            }
+            else//Experience
+            {
+                eSundayHourReqs = scheduleList[0];
+                eDailyTotalNeeds.Add(0, TotalNeedsCalc(eSundayHourReqs));
+                eMondayHourReqs = scheduleList[1];
+                eDailyTotalNeeds.Add(1, TotalNeedsCalc(eMondayHourReqs));
+                eTuesdayHourReqs = scheduleList[2];
+                eDailyTotalNeeds.Add(2, TotalNeedsCalc(eTuesdayHourReqs));
+                eWednesdayHourReqs = scheduleList[3];
+                eDailyTotalNeeds.Add(3, TotalNeedsCalc(eWednesdayHourReqs));
+                eThursdayHourReqs = scheduleList[4];
+                eDailyTotalNeeds.Add(4, TotalNeedsCalc(eThursdayHourReqs));
+                eFridayHourReqs = scheduleList[5];
+                eDailyTotalNeeds.Add(5, TotalNeedsCalc(eFridayHourReqs));
+                eSaturdayHourReqs = scheduleList[6];
+                eDailyTotalNeeds.Add(6, TotalNeedsCalc(eSaturdayHourReqs));
+            }
+        }
+
+        private int TotalNeedsCalc(Dictionary<int,int> reqs)
+        {
+            int total = 0;
+            for (int i = 0; i < reqs.Count; i++)
+            {
+                total += reqs[i];
+            }
+            return total;
         }
 
         private void HoursOpenCalc()

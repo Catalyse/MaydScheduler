@@ -72,6 +72,7 @@
     <Compile Include="Assets\EmployeeManagement\EmployeeManagement.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeProfile.cs" />
     <Compile Include="Assets\EmployeeManagement\EmployeeStorage.cs" />
+    <Compile Include="Assets\EmployeeManagement\ScheduledEmployee.cs" />
     <Compile Include="Assets\EmployeeManagement\SchedulingAlgorithm.cs" />
     <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />
