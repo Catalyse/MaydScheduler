@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using CoreSys.Employees;
 
-public class Schedule 
+namespace CoreSys
 {
-    
+    public class Schedule
+    {
+        private List<Employee> employeeList = new List<Employee>();
+    }
 }
