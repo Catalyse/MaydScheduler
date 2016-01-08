@@ -40,9 +40,50 @@ namespace CoreSys.Employees
             saturday = new Day(sat);
         }
 
-        public List<bool> GetAvailability()
+        public bool GetAvailability(int day)
         {
-
+            switch (day)
+            {
+                case 0:
+                    if (sunday.available)
+                        return true;
+                    else
+                        return false;
+                case 1:
+                    if (monday.available)
+                        return true;
+                    else
+                        return false;
+                case 2:
+                    if (tuesday.available)
+                        return true;
+                    else
+                        return false;
+                case 3:
+                    if (wednesday.available)
+                        return true;
+                    else
+                        return false;
+                case 4:
+                    if (thursday.available)
+                        return true;
+                    else
+                        return false;
+                case 5:
+                    if (friday.available)
+                        return true;
+                    else
+                        return false;
+                case 6:
+                    if (saturday.available)
+                        return true;
+                    else
+                        return false;
+                default:
+                    Debug.Log("Invalid case chosen! :: EmployeeManagement/Employee.cs :: GetAvailability(int day): Invalid Value for Day Thrown! :: Returning false!");
+                    break;
+            }
+            return false;
         }
 
         private bool RandomBool()

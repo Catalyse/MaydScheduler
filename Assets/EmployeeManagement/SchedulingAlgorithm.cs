@@ -27,6 +27,20 @@ namespace CoreSys
             }
         }
 
+        private void GenerateAvailabilityList()
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; j < employeeList.Count; j++)
+                {
+                    if (employeeList[j].GetAvailability(i))
+                    {
+                        availableEmployees[i].Add(employeeList[j]);
+                    }
+                }
+            }
+        }
+
         private void GenerateDay()
         {
 
