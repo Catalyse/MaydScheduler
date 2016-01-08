@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using CoreSys.Types;
 
 namespace CoreSys.Employees
@@ -15,14 +17,18 @@ namespace CoreSys.Employees
         public bool fulltime;//If true, fulltime, else parttime
         public bool active;
         public Day sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        //set if prior week had 3 close 2 open
+        public bool priorWeek32;
 
         public Employee() { }//Default for serialization
 
-        public void SetEmployee(string lastName, int id, bool _solutions, bool _fulltime, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
+        public void SetEmployee(string lastName, string firstName, int id, bool _solutions, bool _fulltime, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
             active = true;
             empLastName = lastName;
+            empFirstName = firstName;
             empID = id;
+            priorWeek32 = RandomBool();
             solutions = _solutions;
             fulltime = _fulltime;
             sunday = new Day(sun);
@@ -32,6 +38,21 @@ namespace CoreSys.Employees
             thursday = new Day(thu);
             friday = new Day(fri);
             saturday = new Day(sat);
+        }
+
+        public List<bool> GetAvailability()
+        {
+
+        }
+
+        private bool RandomBool()
+        {
+            System.Random gen = new System.Random();
+            int prob = gen.Next(100);
+            if (prob < 50)
+                return true;
+            else
+                return false;
         }
     }
 }
