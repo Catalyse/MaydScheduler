@@ -27,7 +27,7 @@ namespace CoreSys
             }
         }
 
-        private void GenerateAvailabilityList()
+        private static void GenerateAvailabilityList()
         {
             for (int i = 0; i < 7; i++)
             {
@@ -41,7 +41,7 @@ namespace CoreSys
             }
         }
 
-        private void GenerateDay()
+        private static void GenerateDay()
         {
 
         }
