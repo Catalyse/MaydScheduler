@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace CoreSys.Types
+namespace CoreSys
 {
     public class Day
     {

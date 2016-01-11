@@ -51,7 +51,7 @@ namespace CoreSys
         /// </summary>
         private static void CheckTempDaysOff()
         {
-
+            //Call Window for temp days off
         }
 
         private static List<int> calcScheduleOrder(Week week, int type)
