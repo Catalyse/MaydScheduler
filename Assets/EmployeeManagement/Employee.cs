@@ -15,7 +15,8 @@ namespace CoreSys.Employees
         public bool solutions;//solutions if true, exp if false
         public bool fulltime;//If true, fulltime, else parttime
         public bool active;
-        public Day sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        public Availability availability;//Holds 7 day week and hourly availability.
+        public Availability tempAvailability;
         //set if prior week had 3 close 2 open
         public bool priorWeek32;
 
@@ -30,13 +31,13 @@ namespace CoreSys.Employees
             priorWeek32 = RandomBool();
             solutions = _solutions;
             fulltime = _fulltime;
-            sunday = new Day(sun);
-            monday = new Day(mon);
-            tuesday = new Day(tue);
-            wednesday = new Day(wed);
-            thursday = new Day(thu);
-            friday = new Day(fri);
-            saturday = new Day(sat);
+            availability.sunday = new Day(sun);
+            availability.monday = new Day(mon);
+            availability.tuesday = new Day(tue);
+            availability.wednesday = new Day(wed);
+            availability.thursday = new Day(thu);
+            availability.friday = new Day(fri);
+            availability.saturday = new Day(sat);
         }
 
         public bool GetAvailability(int day)
@@ -44,37 +45,37 @@ namespace CoreSys.Employees
             switch (day)
             {
                 case 0:
-                    if (sunday.available)
+                    if (availability.sunday.available)
                         return true;
                     else
                         return false;
                 case 1:
-                    if (monday.available)
+                    if (availability.monday.available)
                         return true;
                     else
                         return false;
                 case 2:
-                    if (tuesday.available)
+                    if (availability.tuesday.available)
                         return true;
                     else
                         return false;
                 case 3:
-                    if (wednesday.available)
+                    if (availability.wednesday.available)
                         return true;
                     else
                         return false;
                 case 4:
-                    if (thursday.available)
+                    if (availability.thursday.available)
                         return true;
                     else
                         return false;
                 case 5:
-                    if (friday.available)
+                    if (availability.friday.available)
                         return true;
                     else
                         return false;
                 case 6:
-                    if (saturday.available)
+                    if (availability.saturday.available)
                         return true;
                     else
                         return false;
@@ -83,6 +84,16 @@ namespace CoreSys.Employees
                     break;
             }
             return false;
+        }
+
+        public void SetTempAvailability(Day avail, int day)
+        {
+
+        }
+
+        public void MakeTempAvailabilityPermanent()
+        {
+
         }
 
         private bool RandomBool()

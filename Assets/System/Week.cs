@@ -7,6 +7,7 @@ namespace CoreSys
 {
     public class Week
     {
+        public int WeekID;
         public int earliestStart, latestEnd;
         public int suStartHour, mStartHour, tuStartHour, wStartHour, thStartHour, fStartHour, saStartHour;
         public int suEndHour, mEndHour, tuEndHour, wEndHour, thEndHour, fEndHour, saEndHour;

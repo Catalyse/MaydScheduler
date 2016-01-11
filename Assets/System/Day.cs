@@ -43,7 +43,5 @@ namespace CoreSys
             startTime = s;
             endTime = e;
         }
-
-        //The true false return operators are overloaded so that this type can be treated like a bool while still holding information
     }
 }

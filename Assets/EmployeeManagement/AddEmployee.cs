@@ -8,7 +8,7 @@ namespace CoreSys.Employees
     public class AddEmployee : Window
     {
         public EmployeeManagement empManager;
-        public InputField empName, empid;
+        public InputField empFirstName, empLastName, empid;
         public Toggle solutions, experience, fulltime, parttime;
         public Toggle sun, mon, tue, wed, thu, fri, sat;
         public Text empText, idText, typeText, timeText, avText;
@@ -97,14 +97,15 @@ namespace CoreSys.Employees
         private void SubmitEmployee()
         {
             Employee newEmp = new Employee();
-            newEmp.SetEmployee(empName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
+            newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
             ClearAllFields();
             empManager.AddEmployee(newEmp);
         }
 
         private void ClearAllFields()
         {
-            empName.text = "";
+            empFirstName.text = "";
+            empLastName.text = "";
             empid.text = "";
             solutions.isOn = false;
             experience.isOn = false;
