@@ -88,12 +88,44 @@ namespace CoreSys.Employees
 
         public void SetTempAvailability(Day avail, int day)
         {
+            if (tempAvailability == null)
+            {
+                GenerateTempAvailability();
+            }
+            switch (day)
+            {
+                case 1:
+                    tempAvailability.sunday = avail;
+                    break;
+                case 2:
+                    tempAvailability.monday = avail;
+                    break;
+                case 3:
+                    tempAvailability.tuesday = avail;
+                    break;
+                case 4:
+                    tempAvailability.wednesday = avail;
+                    break;
+                case 5:
+                    tempAvailability.thursday = avail;
+                    break;
+                case 6:
+                    tempAvailability.friday = avail;
+                    break;
+                case 7:
+                    tempAvailability.saturday = avail;
+                    break;
+            }
+        }
 
+        private void GenerateTempAvailability()
+        {
+            tempAvailability = availability;
         }
 
         public void MakeTempAvailabilityPermanent()
         {
-
+            availability = tempAvailability;
         }
 
         private bool RandomBool()

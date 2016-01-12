@@ -11,7 +11,7 @@ namespace CoreSys.Employees
         public InputField empFirstName, empLastName, empid;
         public Toggle solutions, experience, fulltime, parttime;
         public Toggle sun, mon, tue, wed, thu, fri, sat;
-        public Text empText, idText, typeText, timeText, avText;
+        public Text empLastText, empFirstText, idText, typeText, timeText, avText;
 
         public void Update()
         {
@@ -20,13 +20,20 @@ namespace CoreSys.Employees
 
         private void ErrorTextFade()
         {
-            if (empText.color.a > .1)
+            if (empFirstText.color.a > .1)
             {
-                float newAlpha = Mathf.Lerp(empText.color.a, 0, 2 * Time.deltaTime);
-                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, newAlpha);
+                float newAlpha = Mathf.Lerp(empFirstText.color.a, 0, 2 * Time.deltaTime);
+                empFirstText.color = new Color(empFirstText.color.r, empFirstText.color.g, empFirstText.color.b, newAlpha);
             }
             else
-                empText.enabled = false;
+                empFirstText.enabled = false;
+            if (empLastText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(empLastText.color.a, 0, 2 * Time.deltaTime);
+                empLastText.color = new Color(empLastText.color.r, empLastText.color.g, empLastText.color.b, newAlpha);
+            }
+            else
+                empLastText.enabled = false;
             if (idText.color.a > .1)
             {
                 float newAlpha = Mathf.Lerp(idText.color.a, 0, 2 * Time.deltaTime);
@@ -60,7 +67,13 @@ namespace CoreSys.Employees
         public void FieldValidation()
         {
             bool validForm = true;
-            if (empName.text == "")
+            if (empLastName.text == "")
+            {
+                empText.enabled = true;
+                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);
+                validForm = false;
+            }
+            if (empFirstName.text == "")
             {
                 empText.enabled = true;
                 empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);

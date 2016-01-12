@@ -43,5 +43,11 @@ namespace CoreSys
             startTime = s;
             endTime = e;
         }
+        public Day(Day copy)
+        {
+            available = copy.available;
+            startTime = copy.startTime;
+            endTime = copy.endTime;
+        }
     }
 }
