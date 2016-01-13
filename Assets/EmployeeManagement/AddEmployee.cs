@@ -69,14 +69,14 @@ namespace CoreSys.Employees
             bool validForm = true;
             if (empLastName.text == "")
             {
-                empText.enabled = true;
-                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);
+                empLastText.enabled = true;
+                empLastText.color = new Color(empLastText.color.r, empLastText.color.g, empLastText.color.b, 50);
                 validForm = false;
             }
             if (empFirstName.text == "")
             {
-                empText.enabled = true;
-                empText.color = new Color(empText.color.r, empText.color.g, empText.color.b, 50);
+                empFirstText.enabled = true;
+                empFirstText.color = new Color(empFirstText.color.r, empFirstText.color.g, empFirstText.color.b, 50);
                 validForm = false;
             }
             if (empid.text == "")

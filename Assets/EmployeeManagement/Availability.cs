@@ -11,13 +11,13 @@ namespace CoreSys
         public Availability() { }
         public Availability(Availability copy)
         {
-            sunday = copy.sunday;
-            monday = copy.monday;
-            tuesday = copy.tuesday;
-            wednesday = copy.wednesday;
-            thursday = copy.thursday;
-            friday = copy.friday;
-            saturday = copy.saturday;
+            sunday = new Day(copy.sunday);
+            monday = new Day(copy.monday);
+            tuesday = new Day(copy.tuesday);
+            wednesday = new Day(copy.wednesday);
+            thursday = new Day(copy.thursday);
+            friday = new Day(copy.friday);
+            saturday = new Day(copy.saturday);
         }
     }
 }
