@@ -87,6 +87,7 @@
     <Compile Include="Assets\System\StartSplash.cs" />
     <Compile Include="Assets\System\Week.cs" />
     <Compile Include="Assets\WindowScripts\DailyHourlyStaff.cs" />
+    <Compile Include="Assets\WindowScripts\DailyStaffing.cs" />
     <Compile Include="Assets\WindowScripts\EmpSelectionWindow.cs" />
     <Compile Include="Assets\WindowScripts\HourColumn.cs" />
     <Compile Include="Assets\WindowScripts\MainMenu.cs" />

@@ -9,6 +9,8 @@ namespace CoreSys.Windows
     public class EmpSelectionWindow : MonoBehaviour
     {
         private List<EmployeeBar> currentBarList = new List<EmployeeBar>();
+        public PrefabList prefabs;
+        public GameObject empBarSpawnGrid;
 
         public void GenerateEmpBars(List<Employee> empList)
         {

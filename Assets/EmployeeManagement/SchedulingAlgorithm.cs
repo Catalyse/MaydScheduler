@@ -8,7 +8,7 @@ namespace CoreSys
     public static class SchedulingAlgorithm
     {
         private static List<Employee> employeeList = new List<Employee>();
-        private static Schedule schedule;
+        private static Schedule schedule = new Schedule();
         private static Dictionary<int, List<ScheduledEmployee>> scheduleDictionary = new Dictionary<int, List<ScheduledEmployee>>();
         private static Dictionary<int, List<Employee>> availableEmployees = new Dictionary<int, List<Employee>>();//Use this to list all employees available for each day.
 
