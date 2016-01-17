@@ -17,6 +17,7 @@ namespace CoreSys
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
         public PrefabList prefabs;
         public Week newWeek;//Week that is being generated and eventually passed to the main system
+        private int defaultShift = 8;//TODO put this in settings window
 
         public DailyStaffing() { }
 
@@ -39,33 +40,96 @@ namespace CoreSys
 
         private void CalculateHourlyNeed()
         {
-            if (sunday)
+            if (newWeek.sunday)
+            {
+                for (int i = newWeek.suStartHour; i < defaultShift; i++)//TODO initialize dictionary!
+                {
+                    newWeek.sSundayHourReqs[i] += int.Parse(sundayOpen.text);
+                }
+            }
+            if (newWeek.monday)
             {
 
             }
-            if (monday)
+            if (newWeek.tuesday)
             {
 
             }
-            if (tuesday)
+            if (newWeek.wednesday)
             {
 
             }
-            if (wednesday)
+            if (newWeek.thursday)
             {
 
             }
-            if (thursday)
+            if (newWeek.friday)
             {
 
             }
-            if (friday)
+            if (newWeek.saturday)
             {
 
             }
-            if (saturday)
-            {
+        }
 
+        private void InitializeWeeklyDictionaries()
+        {
+            if (newWeek.sunday)
+            {
+                for (int i = newWeek.suStartHour; i <= newWeek.suEndHour; i++)
+                {
+                    newWeek.sSundayHourReqs.Add(i, 0);
+                    newWeek.eSundayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.monday)
+            {
+                for (int i = newWeek.mStartHour; i <= newWeek.mEndHour; i++)
+                {
+                    newWeek.sMondayHourReqs.Add(i, 0);
+                    newWeek.eMondayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.tuesday)
+            {
+                for (int i = newWeek.tuStartHour; i <= newWeek.tuEndHour; i++)
+                {
+                    newWeek.sTuesdayHourReqs.Add(i, 0);
+                    newWeek.eTuesdayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.wednesday)
+            {
+                for (int i = newWeek.wStartHour; i <= newWeek.wEndHour; i++)
+                {
+                    newWeek.sWednesdayHourReqs.Add(i, 0);
+                    newWeek.eWednesdayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.thursday)
+            {
+                for (int i = newWeek.thStartHour; i <= newWeek.thEndHour; i++)
+                {
+                    newWeek.sThursdayHourReqs.Add(i, 0);
+                    newWeek.eThursdayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.friday)
+            {
+                for (int i = newWeek.fStartHour; i <= newWeek.fEndHour; i++)
+                {
+                    newWeek.sFridayHourReqs.Add(i, 0);
+                    newWeek.eFridayHourReqs.Add(i, 0);
+                }
+            }
+            if (newWeek.saturday)
+            {
+                for (int i = newWeek.saStartHour; i <= newWeek.saEndHour; i++)
+                {
+                    newWeek.sSaturdayHourReqs.Add(i, 0);
+                    newWeek.eSaturdayHourReqs.Add(i, 0);
+                }
             }
         }
 
@@ -82,6 +146,7 @@ namespace CoreSys
         public void SetWeeklyConfig(Week week)
         {
             newWeek = week;
+            InitializeWeeklyDictionaries();
             if (week.sunday)
             {
                 suOpenText.text = week.suStartHour.ToString();
