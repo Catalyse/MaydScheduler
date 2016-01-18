@@ -22,6 +22,12 @@ namespace CoreSys.Windows
             return newWindow;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="window">gameObject</param>
+        /// <param name="parentTransform">gameObject</param>
+        /// <returns></returns>
         public static GameObject SpawnWindow(GameObject window, GameObject parentTransform)
         {
             GameObject newWindow = (GameObject)Instantiate(window, new Vector3(0, 0, 0), Quaternion.identity);

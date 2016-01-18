@@ -15,8 +15,9 @@ namespace CoreSys.Employees
         public bool solutions;//solutions if true, exp if false
         public bool fulltime;//If true, fulltime, else parttime
         public bool active;
-        public Availability availability;//Holds 7 day week and hourly availability.
-        public Availability tempAvailability;
+        public bool hasTempAvail;
+        public Availability availability = new Availability();//Holds 7 day week and hourly availability.
+        public Availability tempAvailability = new Availability();
         //set if prior week had 3 close 2 open
         public bool priorWeek32;
 

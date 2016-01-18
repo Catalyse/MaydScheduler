@@ -11,6 +11,7 @@ namespace CoreSys
 {
     public class WeeklyConfig : Window
     {
+        private DailyStaffing parent;
         public Toggle sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Text suText, mText, tuText, wText, thText, fText, saText;
         public InputField suStart, mStart, tuStart, wStart, thStart, fStart, saStart;
@@ -83,6 +84,11 @@ namespace CoreSys
                 int.Parse(thEnd.text), int.Parse(fEnd.text), int.Parse(saEnd.text), sunday.isOn, monday.isOn, tuesday.isOn, wednesday.isOn, thursday.isOn, friday.isOn, saturday.isOn);
             transform.parent.GetComponent<DailyStaffing>().SetWeeklyConfig(newWeek);//This needs to be changed IF you use the hourly staffing XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX///
             transform.gameObject.SetActive(false);//Disable window when done
+        }
+
+        public void SetParent(DailyStaffing newParent)
+        {
+            parent = newParent;
         }
 
         private void InputValidation() //This method will correct times put in incorrectly

@@ -24,7 +24,7 @@ namespace CoreSys.Employees
         public void EmployeeBarSet(Employee emp)
         {
             employee = emp;
-            empName = emp.empLastName;
+            empName = emp.empFirstName + emp.empLastName;
             id = emp.empID;
             if (emp.solutions)
                 title = "Solutions Specialist";
