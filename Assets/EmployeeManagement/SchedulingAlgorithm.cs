@@ -20,6 +20,7 @@ namespace CoreSys
             List<int> sScheduleOrder = new List<int>(calcScheduleOrder(week, 0));//ss
             List<int> eScheduleOrder = new List<int>(calcScheduleOrder(week, 1));//es
             CheckTempDaysOff();
+            GenerateAvailabilityList();
 
             for (int i = 0; i < 7; i++)//Primary Scheduling loop
             {

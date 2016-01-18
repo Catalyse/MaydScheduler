@@ -42,34 +42,43 @@ namespace CoreSys
         {
             if (newWeek.sunday)
             {
-                for (int i = newWeek.suStartHour; i < defaultShift; i++)//TODO initialize dictionary!
-                {
-                    newWeek.sSundayHourReqs[i] += int.Parse(sundayOpen.text);
-                }
+                SetHourlyNeedCounts(newWeek.suStartHour, newWeek.suEndHour, newWeek.sSundayHourReqs, int.Parse(sundayOpen.text), int.Parse(sundayClose.text));
             }
             if (newWeek.monday)
             {
-
+                SetHourlyNeedCounts(newWeek.mStartHour, newWeek.mEndHour, newWeek.sMondayHourReqs, int.Parse(mondayOpen.text), int.Parse(mondayClose.text));
             }
             if (newWeek.tuesday)
             {
-
+                SetHourlyNeedCounts(newWeek.tuStartHour, newWeek.tuEndHour, newWeek.sTuesdayHourReqs, int.Parse(tuesdayOpen.text), int.Parse(tuesdayClose.text));
             }
             if (newWeek.wednesday)
             {
-
+                SetHourlyNeedCounts(newWeek.wStartHour, newWeek.wEndHour, newWeek.sWednesdayHourReqs, int.Parse(wednesdayOpen.text), int.Parse(wednesdayClose.text));
             }
             if (newWeek.thursday)
             {
-
+                SetHourlyNeedCounts(newWeek.thStartHour, newWeek.thEndHour, newWeek.sThursdayHourReqs, int.Parse(thursdayOpen.text), int.Parse(thursdayClose.text));
             }
             if (newWeek.friday)
             {
-
+                SetHourlyNeedCounts(newWeek.fStartHour, newWeek.fEndHour, newWeek.sFridayHourReqs, int.Parse(fridayOpen.text), int.Parse(fridayClose.text));
             }
             if (newWeek.saturday)
             {
+                SetHourlyNeedCounts(newWeek.saStartHour, newWeek.saEndHour, newWeek.sSaturdayHourReqs, int.Parse(saturdayOpen.text), int.Parse(saturdayClose.text));
+            }
+        }
 
+        private void SetHourlyNeedCounts(int startTime, int endTime, Dictionary<int,int> dictionary, int hourlyNeedOpen, int hourlyNeedClose)
+        {
+            for (int i = startTime; i <= (startTime + defaultShift); i++)
+            {
+                dictionary[i] += hourlyNeedOpen;
+            }
+            for (int i = endTime; i > (endTime - defaultShift); i--)
+            {
+                dictionary[i] += hourlyNeedClose;
             }
         }
 
