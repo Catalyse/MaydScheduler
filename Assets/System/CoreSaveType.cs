@@ -3,8 +3,8 @@ using System.Collections;
 
 namespace CoreSys
 {
-    public class CoreSystem
+    public class CoreSaveType
     {
-        private CoreSaveType coreSave;
+
     }
 }

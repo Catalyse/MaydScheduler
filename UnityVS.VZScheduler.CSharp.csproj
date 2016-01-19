@@ -77,6 +77,7 @@
     <Compile Include="Assets\EmployeeManagement\SchedulingAlgorithm.cs" />
     <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />
+    <Compile Include="Assets\System\CoreSaveType.cs" />
     <Compile Include="Assets\System\CoreSystem.cs" />
     <Compile Include="Assets\System\CurrentTime.cs" />
     <Compile Include="Assets\System\Day.cs" />
