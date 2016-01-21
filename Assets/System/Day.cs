@@ -6,6 +6,7 @@ namespace CoreSys
     public class Day
     {
         public bool available;
+        public bool openAvail;
         public int startTime, endTime;
         private int defaultStart = 0800;
         private int defaultEnd = 2200;
@@ -16,6 +17,7 @@ namespace CoreSys
         public Day()
         {
             available = false;
+            openAvail = false;
             startTime = 0;
             endTime = 0;
         }
@@ -28,11 +30,13 @@ namespace CoreSys
             available = on;
             if (available)
             {
+                openAvail = true;
                 startTime = defaultStart;
                 endTime = defaultEnd;
             }
             else
             {
+                openAvail = false;
                 startTime = 0;
                 endTime = 0;
             }
@@ -40,12 +44,14 @@ namespace CoreSys
         public Day(bool on, int s, int e)
         {
             available = on;
+            openAvail = false;
             startTime = s;
             endTime = e;
         }
         public Day(Day copy)
         {
             available = copy.available;
+            openAvail = copy.openAvail;
             startTime = copy.startTime;
             endTime = copy.endTime;
         }
