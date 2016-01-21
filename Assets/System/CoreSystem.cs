@@ -56,5 +56,22 @@ namespace CoreSys
                 return default(T);
             }
         }
+        
+        public static int RandomInt(int count)
+        {
+            System.Random gen = new System.Random();
+            int returnVal = gen.Next(count);
+            return returnVal;
+        }
+        
+        public static bool RandomBool(int maxVal)
+        {
+            System.Random gen = new System.Random();
+            int prob = gen.Next(maxVal);
+            if (prob < (maxVal/2))
+                return true;
+            else
+                return false;
+        }
     }
 }
