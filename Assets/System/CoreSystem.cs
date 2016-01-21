@@ -39,22 +39,21 @@ namespace CoreSys
         {
             try
             {
-                
-
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
 
                 StreamReader reader = new StreamReader(fileName);
                 if (reader == null)
                     throw new EmpListNotFoundErr();
-                storage = (List<Employee>)serializer.Deserialize(reader);
+                returnObject = (T)serializer.Deserialize(reader);
                 reader.Close();
 
-                return storage;
+                return returnObject;
             }
             catch (Exception ex)
             {
+                Debug.Log("FileNotFound Exception!");
                 Debug.Log(ex.Message);
-                return null;
+                return default(T);
             }
         }
     }
