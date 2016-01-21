@@ -12,12 +12,10 @@ namespace CoreSys.Employees
     {
         public string empLastName, empFirstName;
         public int empID;
-        public bool solutions;//solutions if true, exp if false
-        public bool fulltime;//If true, fulltime, else parttime
+        public string position;
+        public int hourTarget;//If fulltime/parttime
         public bool active;
-        public bool hasTempAvail;
         public Availability availability = new Availability();//Holds 7 day week and hourly availability.
-        public Availability tempAvailability = new Availability();
         //set if prior week had 3 close 2 open
         public bool priorWeek32;
 
@@ -87,6 +85,7 @@ namespace CoreSys.Employees
             return false;
         }
 
+        //DEPRECIATED -- Get rid of this
         public void SetTempAvailability(Day avail, int day)
         {
             if (tempAvailability == null)
@@ -118,25 +117,17 @@ namespace CoreSys.Employees
                     break;
             }
         }
-
+        
+        //DEPRECIATED -- Get rid of this
         private void GenerateTempAvailability()
         {
             tempAvailability = availability;
         }
 
+        //DEPRECIATED -- Get rid of this
         public void MakeTempAvailabilityPermanent()
         {
             availability = tempAvailability;
-        }
-
-        private bool RandomBool()
-        {
-            System.Random gen = new System.Random();
-            int prob = gen.Next(100);
-            if (prob < 50)
-                return true;
-            else
-                return false;
         }
     }
 }
