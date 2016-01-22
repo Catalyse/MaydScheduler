@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace CoreSys
     public class Week
     {
         public int WeekID;
+        public int JulianStartDay;
         public int earliestStart, latestEnd;
         public int suStartHour, mStartHour, tuStartHour, wStartHour, thStartHour, fStartHour, saStartHour;
         public int suEndHour, mEndHour, tuEndHour, wEndHour, thEndHour, fEndHour, saEndHour;
@@ -20,7 +22,12 @@ namespace CoreSys
 
         public Week() { }
 
-        public Week(int _suStartHour, int _mStartHour, int _tuStartHour, int _wStartHour, int _thStartHour, int _fStartHour, int _saStartHour, int _suEndHour, int _mEndHour,
+        public Week(int startDate)
+        {
+            WeekID = CoreSystem.GenerateWeekID();
+        }
+
+        public void SetWeek(int _suStartHour, int _mStartHour, int _tuStartHour, int _wStartHour, int _thStartHour, int _fStartHour, int _saStartHour, int _suEndHour, int _mEndHour,
             int _tuEndHour, int _wEndHour, int _thEndHour, int _fEndHour, int _saEndHour, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
             suStartHour = _suStartHour;

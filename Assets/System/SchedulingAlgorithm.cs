@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Employees;
@@ -23,7 +24,7 @@ namespace CoreSys
 
             for (int i = 0; i < 7; i++)//Primary Scheduling loop
             {
-
+                //TODO FINISH
             }
         }
 
@@ -59,8 +60,16 @@ namespace CoreSys
             return returnDictionary;
         }
 
+        private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DayOfWeek day);
+
         private static void GenerateDay()
         {
+            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
+            List<EmployeeScheduleWrapper> tier0List = new List<EmployeeScheduleWrapper>();//No shifts (scheduledhours == 0)
+            List<EmployeeScheduleWrapper> tier1List = new List<EmployeeScheduleWrapper>();//Up to one shift
+            List<EmployeeScheduleWrapper> tier2List = new List<EmployeeScheduleWrapper>();//Up to two shifts
+            List<EmployeeScheduleWrapper> tier3List = new List<EmployeeScheduleWrapper>();//Up to three shifts
+            List<EmployeeScheduleWrapper> tier4List = new List<EmployeeScheduleWrapper>();//Up to four shifts
 
         }
 

@@ -16,6 +16,7 @@ namespace CoreSys
         public static int currentWeekID;
         public static int defaultShift;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
+        public static Dictionary<int, Day> dayList = new Dictionary<int, Day>();
         public static List<string> savedFileList = new List<string>();
 
         public static void LoadCoreSave()
@@ -24,9 +25,19 @@ namespace CoreSys
             coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
         }
 
-        public static void SystemInitialization()
+        private static void SystemInitialization()
         {
+            //use this to find the first day of the week of the year
+            int yearLength = 365;
+            DateTime dt = new DateTime(DateTime.Now.Year, 1, 1);
+            DayOfWeek yearStart = dt.DayOfWeek;
+            int startDay = (int)yearStart;
+            if (DateTime.IsLeapYear(dt.Year))
+                yearLength = 366;
+            for (int i = 0; i < yearLength; i++)
+            {
 
+            }
         }
 
         public static int GenerateWeekID()
@@ -44,7 +55,7 @@ namespace CoreSys
             }
             else
             {
-                Debug.Log("Position that does not exist was queried for! ERR || CoreSystem.cs || GetPositionName");
+                Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName");
                 return "Error!";
             }
         }
@@ -81,6 +92,8 @@ namespace CoreSys
                     xmlDocument.Save(fileName);
                     stream.Close();
                 }
+                if (fileName != "CoreSaveFile")
+                    savedFileList.Add(fileName);
             }
             catch (Exception ex)
             {
