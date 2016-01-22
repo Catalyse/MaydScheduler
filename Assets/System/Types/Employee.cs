@@ -27,7 +27,7 @@ namespace CoreSys.Employees
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
-            priorWeek32 = RandomBool();
+            priorWeek32 = CoreSystem.RandomBool();
             solutions = _solutions;
             fulltime = _fulltime;
             availability.sunday = new Day(sun);

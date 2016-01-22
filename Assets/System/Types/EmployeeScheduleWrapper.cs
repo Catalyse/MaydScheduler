@@ -4,7 +4,7 @@ using CoreSys.Employees;
 
 namespace CoreSys
 {
-    public class ScheduledEmployee
+    public class EmployeeScheduleWrapper
     {
         public Employee employee;
         //startShift and endShift will be used as the primaries, if there is a split these will still be the main shift.

@@ -13,9 +13,10 @@ namespace CoreSys
         public int suEndHour, mEndHour, tuEndHour, wEndHour, thEndHour, fEndHour, saEndHour;
         public int suHoursOpen, mHoursOpen, tuHoursOpen, wHoursOpen, thHoursOpen, fHoursOpen, saHoursOpen;
         public bool sunday, monday, tuesday, wednesday, thursday, friday, saturday;
-        public Dictionary<int, int>sSundayHourReqs, sMondayHourReqs, sTuesdayHourReqs, sWednesdayHourReqs, sThursdayHourReqs, sFridayHourReqs, sSaturdayHourReqs;//Solutions Spec Hour Reqs
-        public Dictionary<int, int> eSundayHourReqs, eMondayHourReqs, eTuesdayHourReqs, eWednesdayHourReqs, eThursdayHourReqs, eFridayHourReqs, eSaturdayHourReqs;//Experience Spec Hour Reqs
-        public Dictionary<int, int> sDailyTotalNeeds, eDailyTotalNeeds;
+        //Position type(refer to CoreSystem for definition)
+        //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
+        public Dictionary<int, Dictionary<int, Dictionary<int, int>>> staffingNeeds = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
+        //public Dictionary<int, Dictionary<int,int>> 
         // Use this for initialization
 
         public Week() { }

@@ -12,6 +12,7 @@ namespace CoreSys
     public static class CoreSystem
     {
         private static CoreSaveType coreSave;
+        public static int defaultShift;
 
         public static void SerializeFile<T>(T objectToSerialize, string fileName)
         {
@@ -56,6 +57,31 @@ namespace CoreSys
                 return default(T);
             }
         }
+
+        public static Dictionary<int, List<EmployeeScheduleWrapper>> GenerateSortList(List<EmployeeScheduleWrapper> masterList)
+        {
+            Dictionary<int, List<EmployeeScheduleWrapper>> returnDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
+
+            //All categories are based on default shift
+            for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
+            {
+                for (int j = 0; j < masterList.Count; j++)
+                {
+                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours > (CoreSystem.defaultShift * i))
+                    {
+                        returnDictionary[i].Add(masterList[j]);
+                    }
+                }
+            }
+        }
+
+        public static List<EmployeeScheduleWrapper> GenerateRestrictionsList(List<EmployeeScheduleWrapper> masterList, int startHour, int endHour, int day)
+        {
+            for (int i = 0; i < masterList.Count; i++)
+            {
+                //probably dont use this method, makes shit more complicated.
+            }
+        }
         
         public static int RandomInt(int count)
         {
@@ -64,11 +90,11 @@ namespace CoreSys
             return returnVal;
         }
         
-        public static bool RandomBool(int maxVal)
+        public static bool RandomBool()
         {
             System.Random gen = new System.Random();
-            int prob = gen.Next(maxVal);
-            if (prob < (maxVal/2))
+            int prob = gen.Next(100);
+            if (prob < 50)
                 return true;
             else
                 return false;
