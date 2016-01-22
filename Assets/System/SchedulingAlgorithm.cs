@@ -81,7 +81,6 @@ namespace CoreSys
             //Call Window for temp days off
         }
 
-        /*
         private static List<int> calcScheduleOrder(Week week, int type)
         {
             List<int> retList = new List<int>();
@@ -117,6 +116,6 @@ namespace CoreSys
                 }
             }
             return retList;
-        }*/
+        }
     }
 }

@@ -8,9 +8,11 @@ namespace CoreSys
     public class DailySchedule
     {
         public int dayOfYear;
-        public List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
+        public int openTime, closeTime;
+        //Dictionary<(position), List<(Employees)>>
+        public Dictionary<int, List<EmployeeScheduleWrapper>> employeeList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
         //Dictionary<(Hour), List<(scheduled shifts)>>
-        public Dictionary<int, List<Shift>> schedule = new Dictionary<int, List<Shift>>();
+        public Dictionary<int, Dictionary<int, List<Shift>>> schedule = new Dictionary<int, Dictionary<int, List<Shift>>>();
 
         public DailySchedule()
         {

@@ -20,10 +20,14 @@ namespace CoreSys
         public Dictionary<int, Dictionary<int, Dictionary<int, int>>> staffingNeeds = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
         // Use this for initialization
 
+        /// <summary>
+        /// Week should not be initialized with the default constructor || This exists for serialization
+        /// </summary>
         public Week() { }
 
         public Week(int startDate)
         {
+            JulianStartDay = startDate;
             WeekID = CoreSystem.GenerateWeekID();
         }
 

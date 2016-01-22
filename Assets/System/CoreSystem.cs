@@ -9,15 +9,20 @@ using CoreSys.Errors;
 
 namespace CoreSys
 {
+    /// <summary>
+    /// This class serves as the central control point for the program
+    /// </summary>
     public static class CoreSystem
     {
         private static CoreSaveType coreSave;
-        private static bool systemInitialized; 
+        public static bool systemInitialized; 
         public static int currentWeekID;
         public static int defaultShift;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
-        public static Dictionary<int, Day> dayList = new Dictionary<int, Day>();
+        public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
+        public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
         public static List<string> savedFileList = new List<string>();
+        public static string GenerationDate;
 
         public static void LoadCoreSave()
         {
@@ -32,12 +37,27 @@ namespace CoreSys
             DateTime dt = new DateTime(DateTime.Now.Year, 1, 1);
             DayOfWeek yearStart = dt.DayOfWeek;
             int startDay = (int)yearStart;
-            if (DateTime.IsLeapYear(dt.Year))
+            if (DateTime.IsLeapYear(DateTime.Now.Year))
                 yearLength = 366;
             for (int i = 0; i < yearLength; i++)
             {
-
+                DailySchedule newDay = new DailySchedule(i);
+                dayList.Add(i, newDay);
             }
+
+            int startDayOfWeek = (int)dt.DayOfWeek;
+            int firstWeekDate = 7 - startDayOfWeek;
+            int j = firstWeekDate;
+            int k = 0;//Keep track of which week we are in (from 0 to 51)
+
+            for (; j < yearLength; j += 7)
+            {
+                Week newWeek = new Week(j);
+                weekList.Add(k, newWeek);
+                k++;
+            }
+
+            GenerationDate = DateTime.Now.ToString();
         }
 
         public static int GenerateWeekID()
@@ -56,10 +76,12 @@ namespace CoreSys
             else
             {
                 Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName");
-                return "Error!";
+                return "Error! Contact Dev";
+                //TODO, make this force a popup to define the queried type
             }
         }
 
+        //Random Common Methods ======================================================================================
         public static int RandomInt(int count)
         {
             System.Random gen = new System.Random();
@@ -78,6 +100,14 @@ namespace CoreSys
         }
 
         //FILE SERIALIZATION ========================================================================================
+        public static bool CheckIfFileExists(string fileName)
+        {
+            if(savedFileList.Contains(fileName))
+                return true;
+            else
+                return false;
+        }
+
         public static void SerializeFile<T>(T objectToSerialize, string fileName)
         {
             try
