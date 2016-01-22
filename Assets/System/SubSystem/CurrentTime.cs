@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 
-namespace CoreSys
+namespace CoreSys.SubSystem
 {
     public class CurrentTime : MonoBehaviour
     {

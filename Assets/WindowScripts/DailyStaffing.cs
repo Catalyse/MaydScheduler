@@ -36,9 +36,10 @@ namespace CoreSys
 
         private void SubmitWeek()
         {
-            CalculateHourlyNeed();
+            //CalculateHourlyNeed();
         }
 
+        /*
         private void CalculateHourlyNeed()
         {
             if (newWeek.sunday)
@@ -69,7 +70,7 @@ namespace CoreSys
             {
                 SetHourlyNeedCounts(newWeek.saStartHour, newWeek.saEndHour, newWeek.sSaturdayHourReqs, int.Parse(saturdayOpen.text), int.Parse(saturdayClose.text));
             }
-        }
+        }*/
 
         private void SetHourlyNeedCounts(int startTime, int endTime, Dictionary<int,int> dictionary, int hourlyNeedOpen, int hourlyNeedClose)
         {
@@ -83,6 +84,7 @@ namespace CoreSys
             }
         }
 
+        /*
         private void InitializeWeeklyDictionaries()
         {
             if (newWeek.sunday)
@@ -141,7 +143,7 @@ namespace CoreSys
                     newWeek.eSaturdayHourReqs.Add(i, 0);
                 }
             }
-        }
+        }*/
 
         public void WeeklyConfigPopup()
         {
@@ -153,7 +155,7 @@ namespace CoreSys
         public void SetWeeklyConfig(Week week)
         {
             newWeek = week;
-            InitializeWeeklyDictionaries();
+            //InitializeWeeklyDictionaries();
             if (week.sunday)
             {
                 suOpenText.text = week.suStartHour.ToString();

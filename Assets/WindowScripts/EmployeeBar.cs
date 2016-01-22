@@ -26,13 +26,10 @@ namespace CoreSys.Employees
             employee = emp;
             empName = emp.empFirstName + emp.empLastName;
             id = emp.empID;
-            if (emp.solutions)
-                title = "Solutions Specialist";
-            else
-                title = "Experience Specialist";
+            title = CoreSystem.GetPositionName(emp.position);
             if (emp.active)
             {
-                if (emp.fulltime)
+                if (emp.hourTarget >= 40)
                     status = 2;
                 else
                     status = 1;

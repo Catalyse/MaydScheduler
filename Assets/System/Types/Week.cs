@@ -16,7 +16,6 @@ namespace CoreSys
         //Position type(refer to CoreSystem for definition)
         //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
         public Dictionary<int, Dictionary<int, Dictionary<int, int>>> staffingNeeds = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
-        //public Dictionary<int, Dictionary<int,int>> 
         // Use this for initialization
 
         public Week() { }
@@ -53,43 +52,10 @@ namespace CoreSys
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="type">type 0 for sales, type 1 for experience</param>
+        /// <param name="type">position as defined in coresystem preferences</param>
         public void SetHourlyNeeds(int type, List<Dictionary<int,int>> scheduleList)
         {
-            if (type == 0)//SOlutions
-            {
-                sSundayHourReqs = scheduleList[0];
-                sDailyTotalNeeds.Add(0, TotalNeedsCalc(sSundayHourReqs));
-                sMondayHourReqs = scheduleList[1];
-                sDailyTotalNeeds.Add(1, TotalNeedsCalc(sMondayHourReqs));
-                sTuesdayHourReqs = scheduleList[2];
-                sDailyTotalNeeds.Add(2, TotalNeedsCalc(sTuesdayHourReqs));
-                sWednesdayHourReqs = scheduleList[3];
-                sDailyTotalNeeds.Add(3, TotalNeedsCalc(sWednesdayHourReqs));
-                sThursdayHourReqs = scheduleList[4];
-                sDailyTotalNeeds.Add(4, TotalNeedsCalc(sThursdayHourReqs));
-                sFridayHourReqs = scheduleList[5];
-                sDailyTotalNeeds.Add(5, TotalNeedsCalc(sFridayHourReqs));
-                sSaturdayHourReqs = scheduleList[6];
-                sDailyTotalNeeds.Add(6, TotalNeedsCalc(sSaturdayHourReqs));
-            }
-            else//Experience
-            {
-                eSundayHourReqs = scheduleList[0];
-                eDailyTotalNeeds.Add(0, TotalNeedsCalc(eSundayHourReqs));
-                eMondayHourReqs = scheduleList[1];
-                eDailyTotalNeeds.Add(1, TotalNeedsCalc(eMondayHourReqs));
-                eTuesdayHourReqs = scheduleList[2];
-                eDailyTotalNeeds.Add(2, TotalNeedsCalc(eTuesdayHourReqs));
-                eWednesdayHourReqs = scheduleList[3];
-                eDailyTotalNeeds.Add(3, TotalNeedsCalc(eWednesdayHourReqs));
-                eThursdayHourReqs = scheduleList[4];
-                eDailyTotalNeeds.Add(4, TotalNeedsCalc(eThursdayHourReqs));
-                eFridayHourReqs = scheduleList[5];
-                eDailyTotalNeeds.Add(5, TotalNeedsCalc(eFridayHourReqs));
-                eSaturdayHourReqs = scheduleList[6];
-                eDailyTotalNeeds.Add(6, TotalNeedsCalc(eSaturdayHourReqs));
-            }
+            //staffingNeeds[type].
         }
 
         private int TotalNeedsCalc(Dictionary<int,int> reqs)

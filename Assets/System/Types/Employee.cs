@@ -12,7 +12,7 @@ namespace CoreSys.Employees
     {
         public string empLastName, empFirstName;
         public int empID;
-        public string position;
+        public int position;
         public int hourTarget;//If fulltime/parttime
         public bool active;
         public Availability availability = new Availability();//Holds 7 day week and hourly availability.
@@ -21,15 +21,15 @@ namespace CoreSys.Employees
 
         public Employee() { }//Default for serialization
 
-        public void SetEmployee(string lastName, string firstName, int id, bool _solutions, bool _fulltime, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
+        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
             active = true;
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
             priorWeek32 = CoreSystem.RandomBool();
-            solutions = _solutions;
-            fulltime = _fulltime;
+            position = pos;
+            hourTarget = targetHours;
             availability.sunday = new Day(sun);
             availability.monday = new Day(mon);
             availability.tuesday = new Day(tue);
@@ -83,51 +83,6 @@ namespace CoreSys.Employees
                     break;
             }
             return false;
-        }
-
-        //DEPRECIATED -- Get rid of this
-        public void SetTempAvailability(Day avail, int day)
-        {
-            if (tempAvailability == null)
-            {
-                GenerateTempAvailability();
-            }
-            switch (day)
-            {
-                case 1:
-                    tempAvailability.sunday = avail;
-                    break;
-                case 2:
-                    tempAvailability.monday = avail;
-                    break;
-                case 3:
-                    tempAvailability.tuesday = avail;
-                    break;
-                case 4:
-                    tempAvailability.wednesday = avail;
-                    break;
-                case 5:
-                    tempAvailability.thursday = avail;
-                    break;
-                case 6:
-                    tempAvailability.friday = avail;
-                    break;
-                case 7:
-                    tempAvailability.saturday = avail;
-                    break;
-            }
-        }
-        
-        //DEPRECIATED -- Get rid of this
-        private void GenerateTempAvailability()
-        {
-            tempAvailability = availability;
-        }
-
-        //DEPRECIATED -- Get rid of this
-        public void MakeTempAvailabilityPermanent()
-        {
-            availability = tempAvailability;
         }
     }
 }

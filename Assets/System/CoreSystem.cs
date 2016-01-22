@@ -12,8 +12,61 @@ namespace CoreSys
     public static class CoreSystem
     {
         private static CoreSaveType coreSave;
+        private static bool systemInitialized; 
+        public static int currentWeekID;
         public static int defaultShift;
+        public static Dictionary<int, string> positionList = new Dictionary<int, string>();
+        public static List<string> savedFileList = new List<string>();
 
+        public static void LoadCoreSave()
+        {
+            coreSave = new CoreSaveType();
+            coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
+        }
+
+        public static void SystemInitialization()
+        {
+
+        }
+
+        public static int GenerateWeekID()
+        {
+            int returnID = currentWeekID;
+            currentWeekID++;
+            return returnID;
+        }
+
+        public static string GetPositionName(int type)
+        {
+            if (positionList.ContainsKey(type))
+            {
+                return positionList[type];
+            }
+            else
+            {
+                Debug.Log("Position that does not exist was queried for! ERR || CoreSystem.cs || GetPositionName");
+                return "Error!";
+            }
+        }
+
+        public static int RandomInt(int count)
+        {
+            System.Random gen = new System.Random();
+            int returnVal = gen.Next(count);
+            return returnVal;
+        }
+
+        public static bool RandomBool()
+        {
+            System.Random gen = new System.Random();
+            int prob = gen.Next(100);
+            if (prob < 50)
+                return true;
+            else
+                return false;
+        }
+
+        //FILE SERIALIZATION ========================================================================================
         public static void SerializeFile<T>(T objectToSerialize, string fileName)
         {
             try
@@ -31,18 +84,21 @@ namespace CoreSys
             }
             catch (Exception ex)
             {
+                Debug.Log("Serialization Error || CoreSystem || SerializeFile<T>");
                 Debug.Log(ex.Message);
                 Debug.Log(ex.InnerException);
             }
         }
 
-        public static T DeserializeEmpList<T> (T returnObject, string fileName)
+        public static T DeserializeFile<T> (string fileName)
         {
+            string file = fileName + ".xml";
+            T returnObject;
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
 
-                StreamReader reader = new StreamReader(fileName);
+                StreamReader reader = new StreamReader(file);
                 if (reader == null)
                     throw new EmpListNotFoundErr();
                 returnObject = (T)serializer.Deserialize(reader);
@@ -57,47 +113,6 @@ namespace CoreSys
                 return default(T);
             }
         }
-
-        public static Dictionary<int, List<EmployeeScheduleWrapper>> GenerateSortList(List<EmployeeScheduleWrapper> masterList)
-        {
-            Dictionary<int, List<EmployeeScheduleWrapper>> returnDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
-
-            //All categories are based on default shift
-            for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
-            {
-                for (int j = 0; j < masterList.Count; j++)
-                {
-                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours > (CoreSystem.defaultShift * i))
-                    {
-                        returnDictionary[i].Add(masterList[j]);
-                    }
-                }
-            }
-        }
-
-        public static List<EmployeeScheduleWrapper> GenerateRestrictionsList(List<EmployeeScheduleWrapper> masterList, int startHour, int endHour, int day)
-        {
-            for (int i = 0; i < masterList.Count; i++)
-            {
-                //probably dont use this method, makes shit more complicated.
-            }
-        }
-        
-        public static int RandomInt(int count)
-        {
-            System.Random gen = new System.Random();
-            int returnVal = gen.Next(count);
-            return returnVal;
-        }
-        
-        public static bool RandomBool()
-        {
-            System.Random gen = new System.Random();
-            int prob = gen.Next(100);
-            if (prob < 50)
-                return true;
-            else
-                return false;
-        }
+        //FILE SERIALIZATION ========================================================================================
     }
 }

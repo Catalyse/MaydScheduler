@@ -65,35 +65,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\EmployeeManagement\AddEmployee.cs" />
-    <Compile Include="Assets\EmployeeManagement\Availability.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmpListSerializer.cs" />
-    <Compile Include="Assets\EmployeeManagement\Employee.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmployeeBar.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmployeeManagement.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmployeeProfile.cs" />
-    <Compile Include="Assets\EmployeeManagement\EmployeeStorage.cs" />
-    <Compile Include="Assets\EmployeeManagement\ScheduledEmployee.cs" />
-    <Compile Include="Assets\EmployeeManagement\SchedulingAlgorithm.cs" />
     <Compile Include="Assets\Errors\EmpListNotFoundErr.cs" />
     <Compile Include="Assets\Errors\EmpNotFoundErr.cs" />
-    <Compile Include="Assets\System\CoreSaveType.cs" />
     <Compile Include="Assets\System\CoreSystem.cs" />
-    <Compile Include="Assets\System\CurrentTime.cs" />
-    <Compile Include="Assets\System\Day.cs" />
-    <Compile Include="Assets\System\PrefabList.cs" />
-    <Compile Include="Assets\System\Schedule.cs" />
-    <Compile Include="Assets\System\SetAllButton.cs" />
-    <Compile Include="Assets\System\Shift.cs" />
-    <Compile Include="Assets\System\StartSplash.cs" />
-    <Compile Include="Assets\System\Week.cs" />
+    <Compile Include="Assets\System\EmpListSerializer.cs" />
+    <Compile Include="Assets\System\EmployeeStorage.cs" />
+    <Compile Include="Assets\System\SchedulingAlgorithm.cs" />
+    <Compile Include="Assets\System\SubSystem\CurrentTime.cs" />
+    <Compile Include="Assets\System\SubSystem\StartSplash.cs" />
+    <Compile Include="Assets\System\Types\Availability.cs" />
+    <Compile Include="Assets\System\Types\CoreSaveType.cs" />
+    <Compile Include="Assets\System\Types\DailySchedule.cs" />
+    <Compile Include="Assets\System\Types\Day.cs" />
+    <Compile Include="Assets\System\Types\Employee.cs" />
+    <Compile Include="Assets\System\Types\EmployeeScheduleWrapper.cs" />
+    <Compile Include="Assets\System\Types\PrefabList.cs" />
+    <Compile Include="Assets\System\Types\Schedule.cs" />
+    <Compile Include="Assets\System\Types\Shift.cs" />
+    <Compile Include="Assets\System\Types\Week.cs" />
+    <Compile Include="Assets\WindowScripts\AddEmployee.cs" />
     <Compile Include="Assets\WindowScripts\DailyHourlyStaff.cs" />
     <Compile Include="Assets\WindowScripts\DailyStaffing.cs" />
     <Compile Include="Assets\WindowScripts\EmpSelectionWindow.cs" />
-    <Compile Include="Assets\WindowScripts\HourColumn.cs" />
+    <Compile Include="Assets\WindowScripts\EmployeeBar.cs" />
+    <Compile Include="Assets\WindowScripts\EmployeeManagement.cs" />
+    <Compile Include="Assets\WindowScripts\EmployeeProfile.cs" />
     <Compile Include="Assets\WindowScripts\MainMenu.cs" />
+    <Compile Include="Assets\WindowScripts\SetAllButton.cs" />
     <Compile Include="Assets\WindowScripts\WeeklyConfig.cs" />
     <Compile Include="Assets\WindowScripts\Window.cs" />
+    <Compile Include="Assets\WindowScripts\WindowElements\HourColumn.cs" />
     <Compile Include="Assets\WindowScripts\WindowInstantiator.cs" />
     <Compile Include="Assets\WindowScripts\WindowManagement.cs" />
   </ItemGroup>

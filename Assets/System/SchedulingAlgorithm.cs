@@ -17,8 +17,7 @@ namespace CoreSys
             employeeList = empList;
             schedule.employeeList = empList;
             schedule.scheduledWeek = week;
-            List<int> sScheduleOrder = new List<int>(calcScheduleOrder(week, 0));//ss
-            List<int> eScheduleOrder = new List<int>(calcScheduleOrder(week, 1));//es
+            
             CheckTempDaysOff();
             GenerateAvailabilityList();
 
@@ -42,6 +41,24 @@ namespace CoreSys
             }
         }
 
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> GenerateSortList(List<EmployeeScheduleWrapper> masterList)
+        {
+            Dictionary<int, List<EmployeeScheduleWrapper>> returnDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
+
+            //All categories are based on default shift
+            for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
+            {
+                for (int j = 0; j < masterList.Count; j++)
+                {
+                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours > (CoreSystem.defaultShift * i))
+                    {
+                        returnDictionary[i].Add(masterList[j]);
+                    }
+                }
+            }
+            return returnDictionary;
+        }
+
         private static void GenerateDay()
         {
 
@@ -55,6 +72,7 @@ namespace CoreSys
             //Call Window for temp days off
         }
 
+        /*
         private static List<int> calcScheduleOrder(Week week, int type)
         {
             List<int> retList = new List<int>();
@@ -90,6 +108,6 @@ namespace CoreSys
                 }
             }
             return retList;
-        }
+        }*/
     }
 }

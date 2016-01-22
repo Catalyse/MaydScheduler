@@ -110,7 +110,7 @@ namespace CoreSys.Employees
         private void SubmitEmployee()
         {
             Employee newEmp = new Employee();
-            newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
+            //newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
             ClearAllFields();
             empManager.AddEmployee(newEmp);
         }

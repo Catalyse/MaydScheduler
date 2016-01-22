@@ -22,11 +22,7 @@ namespace CoreSys.Employees
         {
             employee = emp;
             empName.text = emp.empLastName;
-            if (emp.solutions)
-                empTitle.text = "Solutions Specialist";
-            else
-                empTitle.text = "Experience Specialist";
-
+            empTitle.text = CoreSystem.GetPositionName(emp.position);
         }
 
         public void FillStartEndVals()
