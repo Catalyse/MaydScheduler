@@ -7,8 +7,9 @@ namespace CoreSys
 {
     public class DailySchedule
     {
-        public int dayOfYear;
+        public DateTime date;
         public int openTime, closeTime;
+        public DayOfWeek dayOfWeek;
         //Dictionary<(position), List<(Employees)>>
         public Dictionary<int, List<EmployeeScheduleWrapper>> employeeList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
         //Dictionary<(Hour), List<(scheduled shifts)>>
@@ -19,9 +20,10 @@ namespace CoreSys
             Debug.Log("DailySchedule Initialized without a date! || DailySchedule.cs || Default CTOR");
         }
 
-        public DailySchedule(int day)
+        public DailySchedule(DateTime day)
         {
-            dayOfYear = day;
+            date = day;
+            dayOfWeek = day.DayOfWeek;
         }
     }
 }

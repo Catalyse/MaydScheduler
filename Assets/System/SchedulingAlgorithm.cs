@@ -60,7 +60,30 @@ namespace CoreSys
             return returnDictionary;
         }
 
-        private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DayOfWeek day);
+        private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DailySchedule day)
+        {
+            switch (day.dayOfWeek)
+            {
+                case DayOfWeek.Sunday:
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+
+                    }
+                case DayOfWeek.Monday:
+
+                case DayOfWeek.Tuesday:
+
+                case DayOfWeek.Wednesday:
+
+                case DayOfWeek.Thursday:
+
+                case DayOfWeek.Friday:
+
+                case DayOfWeek.Saturday:
+
+
+            }
+        }
 
         private static void GenerateDay()
         {

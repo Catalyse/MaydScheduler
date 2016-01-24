@@ -41,7 +41,9 @@ namespace CoreSys
                 yearLength = 366;
             for (int i = 0; i < yearLength; i++)
             {
-                DailySchedule newDay = new DailySchedule(i);
+                //                          TODO FIX THIS SHIT (Cause hardcoding shit is bad mkay)
+                DateTime date = new DateTime(DateTime.Now.Year, 1, 1).AddDays(i - 1);
+                DailySchedule newDay = new DailySchedule(date);
                 dayList.Add(i, newDay);
             }
 
