@@ -62,38 +62,86 @@ namespace CoreSys
 
         private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DailySchedule day)
         {
+            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
             switch (day.dayOfWeek)
             {
                 case DayOfWeek.Sunday:
                     for (int i = 0; i < masterList.Count; i++)
                     {
-
+                        if (masterList[i].availability.sunday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
                     }
+                    return restrictionList;
                 case DayOfWeek.Monday:
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.monday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
                 case DayOfWeek.Tuesday:
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.tuesday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
                 case DayOfWeek.Wednesday:
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.wednesday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
                 case DayOfWeek.Thursday:
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.thursday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
                 case DayOfWeek.Friday:
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.friday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
                 case DayOfWeek.Saturday:
-
-
+                    for (int i = 0; i < masterList.Count; i++)
+                    {
+                        if (masterList[i].availability.saturday.openAvail == false)
+                        {
+                            restrictionList.Add(masterList[i]);
+                        }
+                    }
+                    return restrictionList;
+                default:
+                    Debug.Log("This error is literally impossible to get to, BUT THAT BEING SAID || ERROR || SchedulingAlgorithm.cs || GenerateRestrictionList || Default case chosen");
+                    return null;//Totally fucked up return but again, should be impossible to hit this error.
             }
         }
 
-        private static void GenerateDay()
+        private static void GenerateDay(DailySchedule day, List<EmployeeScheduleWrapper> empList)
         {
-            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
-            List<EmployeeScheduleWrapper> tier0List = new List<EmployeeScheduleWrapper>();//No shifts (scheduledhours == 0)
-            List<EmployeeScheduleWrapper> tier1List = new List<EmployeeScheduleWrapper>();//Up to one shift
-            List<EmployeeScheduleWrapper> tier2List = new List<EmployeeScheduleWrapper>();//Up to two shifts
-            List<EmployeeScheduleWrapper> tier3List = new List<EmployeeScheduleWrapper>();//Up to three shifts
-            List<EmployeeScheduleWrapper> tier4List = new List<EmployeeScheduleWrapper>();//Up to four shifts
+            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();//Holds a list of people who do not have open availability this day, but are able to work.
+            //Dictionary of the scheduling tiers.  Tier 0: no shifts || Tier 1: Up to one shift of default length || Tier 2: up to 2 || Tier 3: up to 3 || Tier 4: up to 4
+            Dictionary<int, List<EmployeeScheduleWrapper>> tierList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
 
+            restrictionList = GenerateRestrictionList(empList, day);
+            tierList = GenerateSortList(empList);
         }
 
         /// <summary>
