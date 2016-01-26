@@ -12,7 +12,7 @@ namespace CoreSys
         private static Schedule schedule = new Schedule();
         private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this to list all employees available for each day.
 
-        public static void GenerateSchedule(Week week, List<Employee> empList)
+        public static void GenerateScheduleSetup(Week week, List<Employee> empList)
         {
             GenerateWrapperList(empList);
             schedule.employeeList = empList;
@@ -20,10 +20,13 @@ namespace CoreSys
             
             CheckTempDaysOff();
             GenerateAvailabilityList();
-
-            for (int i = 0; i < 7; i++)//Primary Scheduling loop
+        }
+        
+        public static void GenerateSchedule()
+        {
+            for(int d = 0; d < 7; d++)
             {
-                //TODO FINISH
+                List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d);
             }
         }
 
@@ -46,17 +49,26 @@ namespace CoreSys
         /// <summary>
         /// This method iterates through each employee on the active list, and finds out if they are available for each day of the week.
         /// </summary>
-        private static void GenerateAvailabilityList()
+        private static List<EmployeeScheduleWrapper GenerateAvailabilityList(int day)
         {
-            for (int i = 0; i < 7; i++)
+            List<EmployeeScheduleWrapper> returnList = new List<EmployeeScheduleWrapper>();
+            for (int j = 0; j < employeeList.Count; j++)
             {
-                for (int j = 0; j < employeeList.Count; j++)
+                //Check to make sure they can 1. work that day and 2. have hours left to be scheduled
+                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours)
                 {
-                    if (employeeList[j].GetAvailability(i))
-                    {
-                        employeeDictionary[i].Add(employeeList[j]);
-                    }
+                    returnList.Add(employeeList[j]);
+                    employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
                 }
+            }
+            return 
+        }
+        
+        private static void CalculateManHours(List<DailySchedule> dayList)
+        {
+            for(int i = 0; i < dayList.Count; i++)
+            {
+                int dailyEmpsNeeded = dayList
             }
         }
 
