@@ -10,6 +10,7 @@ namespace CoreSys
         public DateTime date;
         public int openTime, closeTime;
         public DayOfWeek dayOfWeek;
+        public Dictionary<int, int> openShifts, closeShifts;
         //Dictionary<(position), List<(Employees)>>
         public Dictionary<int, List<EmployeeScheduleWrapper>> employeeList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
         //Dictionary<(Hour), List<(scheduled shifts)>>
