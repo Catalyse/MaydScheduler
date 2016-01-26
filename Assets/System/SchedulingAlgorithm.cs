@@ -8,14 +8,13 @@ namespace CoreSys
 {
     public static class SchedulingAlgorithm
     {
-        private static List<Employee> employeeList = new List<Employee>();
+        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
         private static Schedule schedule = new Schedule();
-        //private static Dictionary<int, List<ScheduledEmployee>> scheduleDictionary = new Dictionary<int, List<ScheduledEmployee>>();
-        private static Dictionary<int, List<Employee>> availableEmployees = new Dictionary<int, List<Employee>>();//Use this to list all employees available for each day.
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this to list all employees available for each day.
 
         public static void GenerateSchedule(Week week, List<Employee> empList)
         {
-            employeeList = empList;
+            GenerateWrapperList(empList);
             schedule.employeeList = empList;
             schedule.scheduledWeek = week;
             
@@ -28,6 +27,25 @@ namespace CoreSys
             }
         }
 
+        /// <summary>
+        /// This method accepts a list of employees, then adds all active employees to a wrapper for more information to be placed on top of them without affecting the base saved data
+        /// </summary>
+        /// <param name="empList">Unsorted list of all employees in the system</param>
+        private static void GenerateWrapperList(List<Employee> empList)
+        {
+            for (int i = 0; i < employeeList.Count; i++)
+            {
+                if (empList[i].active)//Check if the employee is active
+                {
+                    EmployeeScheduleWrapper newWrapper = new EmployeeScheduleWrapper(empList[i]);
+                    employeeList.Add(newWrapper);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method iterates through each employee on the active list, and finds out if they are available for each day of the week.
+        /// </summary>
         private static void GenerateAvailabilityList()
         {
             for (int i = 0; i < 7; i++)
@@ -36,7 +54,7 @@ namespace CoreSys
                 {
                     if (employeeList[j].GetAvailability(i))
                     {
-                        availableEmployees[i].Add(employeeList[j]);
+                        employeeDictionary[i].Add(employeeList[j]);
                     }
                 }
             }
