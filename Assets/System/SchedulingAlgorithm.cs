@@ -9,23 +9,23 @@ namespace CoreSys
     public static class SchedulingAlgorithm
     {
         private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
-        private static Schedule schedule = new Schedule();
         private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this as a list of all employees of a given position
         private static Dictionary<int, DailySchedule> currentSchedule = new Dictionary<int, DailySchedule>();
 
         public static void GenerateScheduleSetup(Week week, List<Employee> empList)
         {
             GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
-            
             CheckTempDaysOff();
-            GenerateAvailabilityList();
         }
-        
-        public static void GenerateSchedule()
+
+        public static void GenerateSchedule(Week week)
         {
             for(int d = 0; d < 7; d++)
             {
                 List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d);
+                Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
+                List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
+
             }
         }
 

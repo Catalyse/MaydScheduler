@@ -11,10 +11,7 @@ namespace CoreSys
         public int WeekID;
         public int JulianStartDay;
         public int earliestStart, latestEnd;
-        public int suStartHour, mStartHour, tuStartHour, wStartHour, thStartHour, fStartHour, saStartHour;
-        public int suEndHour, mEndHour, tuEndHour, wEndHour, thEndHour, fEndHour, saEndHour;
-        public int suHoursOpen, mHoursOpen, tuHoursOpen, wHoursOpen, thHoursOpen, fHoursOpen, saHoursOpen;
-        public bool sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         //Position type(refer to CoreSystem for definition)
         //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
         public Dictionary<int, Dictionary<int, Dictionary<int, int>>> staffingNeeds = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
@@ -31,110 +28,47 @@ namespace CoreSys
             WeekID = CoreSystem.GenerateWeekID();
         }
 
-        public void SetWeek(int _suStartHour, int _mStartHour, int _tuStartHour, int _wStartHour, int _thStartHour, int _fStartHour, int _saStartHour, int _suEndHour, int _mEndHour,
-            int _tuEndHour, int _wEndHour, int _thEndHour, int _fEndHour, int _saEndHour, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
+        public DailySchedule SelectDay(int i)
         {
-            suStartHour = _suStartHour;
-            mStartHour = _mStartHour;
-            tuStartHour = _tuStartHour;
-            wStartHour = _wStartHour;
-            thStartHour = _thStartHour;
-            fStartHour = _fStartHour;
-            saStartHour = _saStartHour;
-            suEndHour = _suEndHour;
-            mEndHour = _mEndHour;
-            tuEndHour = _tuEndHour;
-            wEndHour = _wEndHour;
-            thEndHour = _thEndHour;
-            fEndHour = _fEndHour;
-            saEndHour = _saEndHour;
-            //Begin bool set
-            sunday = sun;
-            monday = mon;
-            tuesday = tue;
-            wednesday = wed;
-            thursday = thu;
-            friday = fri;
-            saturday = sat;
+            switch (i)
+            {
+                case 1:
+                    return sunday;
+                case 2:
+                    return monday;
+                case 3:
+                    return tuesday;
+                case 4:
+                    return wednesday;
+                case 5:
+                    return thursday;
+                case 6:
+                    return friday;
+                case 7:
+                    return saturday;
+                default:
+                    Debug.Log("Default case chosen! || Week.cs || SelectDay");
+                    return null;
+            }
+        }
+
+        public void FillWeekDays(Dictionary<int, DailySchedule> days)
+        {
+
+        }
+
+        //Set the basics of the week on a day to day basis.
+        public void SetWeek(int suStartHour, int mStartHour, int tuStartHour, int wStartHour, int thStartHour, int fStartHour, int saStartHour, int suEndHour, int mEndHour,
+            int tuEndHour, int wEndHour, int thEndHour, int fEndHour, int saEndHour, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
+        {
+            sunday.SetBaseInfo(sun, suStartHour, suEndHour);
+            monday.SetBaseInfo(mon, mStartHour, mEndHour);
+            tuesday.SetBaseInfo(tue, tuStartHour, tuEndHour);
+            wednesday.SetBaseInfo(wed, wStartHour, wEndHour);
+            thursday.SetBaseInfo(thu, thStartHour, thEndHour);
+            friday.SetBaseInfo(fri, fStartHour, fEndHour);
+            saturday.SetBaseInfo(sat, saStartHour, saEndHour);
             //End bool set
-            HoursOpenCalc();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type">position as defined in coresystem preferences</param>
-        public void SetHourlyNeeds(int type, List<Dictionary<int,int>> scheduleList)
-        {
-            //staffingNeeds[type].
-        }
-
-        private int TotalNeedsCalc(Dictionary<int,int> reqs)
-        {
-            int total = 0;
-            for (int i = 0; i < reqs.Count; i++)
-            {
-                total += reqs[i];
-            }
-            return total;
-        }
-
-        private void HoursOpenCalc()
-        {
-            if (sunday)
-            {
-                earliestStart = suStartHour;
-                latestEnd = suEndHour;
-                suHoursOpen = suEndHour - suStartHour;
-            }
-            if (monday)
-            {
-                if (earliestStart > mStartHour)
-                    earliestStart = mStartHour;
-                if (latestEnd < mEndHour)
-                    latestEnd = mEndHour;
-                mHoursOpen = mEndHour - mStartHour;
-            }
-            if (tuesday)
-            {
-                if (earliestStart > tuStartHour)
-                    earliestStart = tuStartHour;
-                if (latestEnd < tuEndHour)
-                    latestEnd = tuEndHour;
-                tuHoursOpen = tuEndHour - tuStartHour;
-            }
-            if (wednesday)
-            {
-                if (earliestStart > wStartHour)
-                    earliestStart = wStartHour;
-                if (latestEnd < wEndHour)
-                    latestEnd = wEndHour;
-                wHoursOpen = wEndHour - wStartHour;
-            }
-            if (thursday)
-            {
-                if (earliestStart > thStartHour)
-                    earliestStart = thStartHour;
-                if (latestEnd < thEndHour)
-                    latestEnd = thEndHour;
-                thHoursOpen = thEndHour - thStartHour;
-            }
-            if (friday)
-            {
-                if (earliestStart > fStartHour)
-                    earliestStart = fStartHour;
-                if (latestEnd < fEndHour)
-                    latestEnd = fEndHour;
-                fHoursOpen = fEndHour - fStartHour;
-            }
-            if (saturday)
-            {
-                if (earliestStart > saStartHour)
-                    earliestStart = saStartHour;
-                if (latestEnd < saEndHour)
-                    latestEnd = saEndHour;
-                saHoursOpen = saEndHour - saStartHour;
-            }
         }
     }
 }
