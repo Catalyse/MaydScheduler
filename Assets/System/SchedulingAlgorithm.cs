@@ -8,15 +8,14 @@ namespace CoreSys
 {
     public static class SchedulingAlgorithm
     {
-        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
+        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
         private static Schedule schedule = new Schedule();
-        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this to list all employees available for each day.
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this as a list of all employees of a given position
+        private static Dictionary<int, DailySchedule> currentSchedule = new Dictionary<int, DailySchedule>();
 
         public static void GenerateScheduleSetup(Week week, List<Employee> empList)
         {
-            GenerateWrapperList(empList);
-            schedule.employeeList = empList;
-            schedule.scheduledWeek = week;
+            GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
             
             CheckTempDaysOff();
             GenerateAvailabilityList();
@@ -36,7 +35,7 @@ namespace CoreSys
         /// <param name="empList">Unsorted list of all employees in the system</param>
         private static void GenerateWrapperList(List<Employee> empList)
         {
-            for (int i = 0; i < employeeList.Count; i++)
+            for (int i = 0; i < empList.Count; i++)
             {
                 if (empList[i].active)//Check if the employee is active
                 {
@@ -44,12 +43,24 @@ namespace CoreSys
                     employeeList.Add(newWrapper);
                 }
             }
+            //Post wrapper generation sort into dictionary of positions.
+            for (int j = 0; j < CoreSystem.positionList.Count; j++)
+            {
+                for (int i = 0; i < employeeList.Count; i++)
+                {
+                    if (employeeList[i].employee.position == j)
+                    {
+                        employeeDictionary[j].Add(employeeList[i]);
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// This method iterates through each employee on the active list, and finds out if they are available for each day of the week.
+        /// This method makes wrappers for both employee position types
         /// </summary>
-        private static List<EmployeeScheduleWrapper GenerateAvailabilityList(int day)
+        private static List<EmployeeScheduleWrapper> GenerateAvailabilityList(int day)
         {
             List<EmployeeScheduleWrapper> returnList = new List<EmployeeScheduleWrapper>();
             for (int j = 0; j < employeeList.Count; j++)
@@ -61,14 +72,17 @@ namespace CoreSys
                     employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
                 }
             }
-            return 
+            return returnList;
         }
         
         private static void CalculateManHours(List<DailySchedule> dayList)
         {
-            for(int i = 0; i < dayList.Count; i++)
+            for(int j = 0; j < CoreSystem.positionList.Count; j++)
             {
-                int dailyEmpsNeeded = dayList
+                for(int i = 0; i < dayList.Count; i++)
+                {
+                    int dailyEmpsNeeded = dayList
+                }
             }
         }
 
@@ -182,6 +196,7 @@ namespace CoreSys
             //Call Window for temp days off
         }
 
+        /* //This is being replaced with the total hours for the week
         private static List<int> calcScheduleOrder(Week week, int type)
         {
             List<int> retList = new List<int>();
@@ -217,6 +232,6 @@ namespace CoreSys
                 }
             }
             return retList;
-        }
+        }*/
     }
 }
