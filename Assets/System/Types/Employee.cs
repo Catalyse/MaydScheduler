@@ -14,7 +14,8 @@ namespace CoreSys.Employees
         public int empID;
         public int position;
         public int hourTarget;//If fulltime/parttime
-        public bool active;
+        public float skillLevel;
+        public bool active, overtimeAllowed;
         public Availability availability = new Availability();//Holds 7 day week and hourly availability.
         //set if prior week had 3 close 2 open
         public bool priorWeek32;
@@ -24,10 +25,11 @@ namespace CoreSys.Employees
         public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
             active = true;
+            overtimeAllowed = false;
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
-            priorWeek32 = CoreSystem.RandomBool();
+            priorWeek32 = CoreSystem.RandomBool();//Depreciated
             position = pos;
             hourTarget = targetHours;
             availability.sunday = new Day(sun);

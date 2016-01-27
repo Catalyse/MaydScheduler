@@ -18,6 +18,7 @@ namespace CoreSys
         public static bool systemInitialized; 
         public static int currentWeekID;
         public static int defaultShift;
+        public static float skillLevelCap;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
         public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
         public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
@@ -39,7 +40,7 @@ namespace CoreSys
             int startDay = (int)yearStart;
             if (DateTime.IsLeapYear(DateTime.Now.Year))
                 yearLength = 366;
-            for (int i = 0; i < yearLength; i++)
+            for (int i = 1; i < yearLength; i++)
             {
                 //                          TODO FIX THIS SHIT (Cause hardcoding shit is bad mkay)
                 DateTime date = new DateTime(DateTime.Now.Year, 1, 1).AddDays(i - 1);

@@ -20,13 +20,63 @@ namespace CoreSys
 
         public static void GenerateSchedule(Week week)
         {
-            for(int d = 0; d < 7; d++)
+            for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
             {
-                List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d);
-                Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
-                List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
+                for (int d = 0; d < 7; d++)
+                {
+                    DailySchedule day = week.SelectDay(d);
+                    List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d);
+                    Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
+                    List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
+                    float avgSkill = CalcAvgSkill(empList);
 
+                    do
+                    {
+                        for (int i = 0; i < priorityList.Count; i++)
+                        {
+                            for (int j = 0; j < priorityList[i].Count; j++)
+                            {
+
+                            }
+                        }
+                    } while (day.openShifts[pos] > day.openScheduled[pos]);
+                }
             }
+        }
+
+        private static List<int> GenerateShift(List<int> pickList, Dictionary<int, List<EmployeeScheduleWrapper>> sortList)
+        {
+
+            return pickList;
+        }
+
+        private static int GenerateRandomNumber(List<int> pickList, int max)
+        {
+            int temp = 0;
+            while(true)//yes i know infinite
+            {
+                temp = CoreSystem.RandomInt(max);
+                if (!pickList.Contains(temp))
+                {
+                    return temp;
+                }                   
+            }
+        }
+
+        /// <summary>
+        /// Calculates the average skill level of a list of employees
+        /// </summary>
+        /// <param name="empList"></param>
+        /// <returns></returns>
+        private static float CalcAvgSkill(List<EmployeeScheduleWrapper> empList)
+        {
+            float average = 0.0f;
+            for (int i = 0; i < empList.Count; i++)
+            {
+                average += empList[i].employee.skillLevel;
+            }
+            average = average / empList.Count;
+            return average;
         }
 
         /// <summary>
