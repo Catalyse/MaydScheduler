@@ -14,11 +14,12 @@ namespace CoreSys.Employees
         public int empID;
         public int position;
         public int hourTarget;//If fulltime/parttime
+        public int shiftPreference;
         public float skillLevel;
         public bool active, overtimeAllowed;
         public Availability availability = new Availability();//Holds 7 day week and hourly availability.
         //set if prior week had 3 close 2 open
-        public bool priorWeek32;
+        //public bool priorWeek32;//Depreciated(Or at least im not using it for now because its biast)
 
         public Employee() { }//Default for serialization
 
@@ -29,7 +30,7 @@ namespace CoreSys.Employees
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
-            priorWeek32 = CoreSystem.RandomBool();//Depreciated
+            //priorWeek32 = CoreSystem.RandomBool();//Depreciated
             position = pos;
             hourTarget = targetHours;
             availability.sunday = new Day(sun);
@@ -39,6 +40,27 @@ namespace CoreSys.Employees
             availability.thursday = new Day(thu);
             availability.friday = new Day(fri);
             availability.saturday = new Day(sat);
+            shiftPreference = 8;
+        }
+        
+        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat, int shiftPref)
+        {
+            active = true;
+            overtimeAllowed = false;
+            empLastName = lastName;
+            empFirstName = firstName;
+            empID = id;
+            //priorWeek32 = CoreSystem.RandomBool();//Depreciated
+            position = pos;
+            hourTarget = targetHours;
+            availability.sunday = new Day(sun);
+            availability.monday = new Day(mon);
+            availability.tuesday = new Day(tue);
+            availability.wednesday = new Day(wed);
+            availability.thursday = new Day(thu);
+            availability.friday = new Day(fri);
+            availability.saturday = new Day(sat);
+            shiftPreference = shiftPref;
         }
 
         public bool GetAvailability(int day)
@@ -81,7 +103,7 @@ namespace CoreSys.Employees
                     else
                         return false;
                 default:
-                    Debug.Log("Invalid case chosen! :: EmployeeManagement/Employee.cs :: GetAvailability(int day): Invalid Value for Day Thrown! :: Returning false!");
+                    Debug.Log("Invalid case chosen! :: Employee.cs :: GetAvailability(int day): Invalid Value for Day Thrown! :: Returning false!");
                     break;
             }
             return false;
