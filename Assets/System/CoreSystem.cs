@@ -25,6 +25,11 @@ namespace CoreSys
         public static List<string> savedFileList = new List<string>();
         public static string GenerationDate;
 
+        public static void DebugStop()
+        {
+            Debug.Log("Debug Stop!");//Throw debug marker here
+        }
+
         public static void LoadCoreSave()
         {
             coreSave = new CoreSaveType();
