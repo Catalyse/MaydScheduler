@@ -17,6 +17,7 @@ namespace CoreSys
         //Dictionary<(Hour), List<(scheduled shifts)>>
         //This was redesigned for open/close specific shifting, not meant to handle hourly anymore. However it should be redesigned to be more flexible in the future.
         //public Dictionary<int, List<Shift>> openShifts = new Dictionary<int, List<Shift>>(), closeShifts = new Dictionary<int, List<Shift>>();
+        public Dictionary<EmployeeScheduleWrapper, List<Shift>> shiftDictionary = new Dictionary<EmployeeScheduleWrapper, List<Shift>>();
 
         public DailySchedule()
         {
