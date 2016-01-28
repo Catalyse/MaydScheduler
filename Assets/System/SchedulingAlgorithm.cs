@@ -134,6 +134,7 @@ namespace CoreSys
                 }
             }
             //Post wrapper generation sort into dictionary of positions.
+            /*
             for (int j = 0; j < CoreSystem.positionList.Count; j++)
             {
                 for (int i = 0; i < employeeList.Count; i++)
@@ -143,7 +144,7 @@ namespace CoreSys
                         employeeDictionary[j].Add(employeeList[i]);
                     }
                 }
-            }
+            }*///This is not needed as the availability list of the main loop will organize this//I think
         }
 
         /// <summary>
