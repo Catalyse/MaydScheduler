@@ -24,36 +24,76 @@ namespace CoreSys
             {
                 for (int d = 0; d < 7; d++)
                 {
-                    DailySchedule day = week.SelectDay(d);
-                    List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d);
+                    DailySchedule day = week.SelectDay(d);//make this pick days based on the priority
+                    List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d, pos);
                     Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
                     List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
                     float avgSkill = CalcAvgSkill(empList);
-
-                    do
+                    
+                    Dictionary<int, List<int>> pickList = Dictionary<int, List<int>>();
+                    
+                    //Open loop
+                    for (int i = 0; i < priorityList.Count; i++)
                     {
-                        for (int i = 0; i < priorityList.Count; i++)
+                        if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
                         {
-                            for (int j = 0; j < priorityList[i].Count; j++)
+                            for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
-
+                                pickList[i].Add(GenerateShift(pickList, priorityList[i], day));//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                day.openScheduled[pos]++;
+                                if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                                    break;
                             }
                         }
-                    } while (day.openShifts[pos] > day.openScheduled[pos]);
+                        if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                            break;
+                    }
+                    
+                    //Close loop
+                    for (int i = 0; i < priorityList.Count; i++)
+                    {
+                        if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
+                        {
+                            for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
+                            {
+                                pickList[i].Add(GenerateShift(pickList, priorityList[i], day));//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                day.closeScheduled[pos]++;
+                                if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                                    break;
+                            }
+                        }
+                        if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                            break;
+                    }
                 }
             }
         }
 
-        private static List<int> GenerateShift(List<int> pickList, Dictionary<int, List<EmployeeScheduleWrapper>> sortList)
+        private static List<int> GenerateShift(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
         {
-
+            int pick = GenerateRandomNumber(pickList, sortList.Count);
+            int shiftLength = CoreSystem.defaultShift;
+            pickList.Add(pick);
+            if(sortList[pick].employee.shiftPreference != shiftLength)
+                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+            Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date);//Need to make this adaptive to shift
+            if(day.shiftDictionary.Contains(sortList[pick]))
+            {
+                day.shiftDictionary[sortList[pick]].Add(newShift);
+            }
+            else 
+            {
+                List<Shift> newShiftList = new List<Shift>();
+                newShiftList.Add(newShift);
+                day.shiftDictionary.Add(sortList[pick], newShiftList)
+            }
             return pickList;
         }
 
         private static int GenerateRandomNumber(List<int> pickList, int max)
         {
             int temp = 0;
-            while(true)//yes i know infinite
+            while(true)//yes i know infinite stfu //TODO FIX THIS
             {
                 temp = CoreSystem.RandomInt(max);
                 if (!pickList.Contains(temp))
@@ -110,13 +150,13 @@ namespace CoreSys
         /// This method iterates through each employee on the active list, and finds out if they are available for each day of the week.
         /// This method makes wrappers for both employee position types
         /// </summary>
-        private static List<EmployeeScheduleWrapper> GenerateAvailabilityList(int day)
+        private static List<EmployeeScheduleWrapper> GenerateAvailabilityList(int day, int pos)
         {
             List<EmployeeScheduleWrapper> returnList = new List<EmployeeScheduleWrapper>();
             for (int j = 0; j < employeeList.Count; j++)
             {
                 //Check to make sure they can 1. work that day and 2. have hours left to be scheduled
-                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours)
+                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].position == pos)
                 {
                     returnList.Add(employeeList[j]);
                     employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
