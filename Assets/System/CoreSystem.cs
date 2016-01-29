@@ -40,6 +40,7 @@ namespace CoreSys
         {
             //use this to find the first day of the week of the year
             int yearLength = 365;
+            defaultShift = 8;
             DateTime dt = new DateTime(DateTime.Now.Year, 1, 1);
             DayOfWeek yearStart = dt.DayOfWeek;
             int startDay = (int)yearStart;

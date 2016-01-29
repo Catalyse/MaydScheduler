@@ -16,6 +16,7 @@ namespace CoreSys
         public GameObject sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Text suOpenText, moOpenText, tuOpenText, weOpenText, thOpenText, frOpenText, saOpenText;
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
+        public Text suText, mText, tuText, wText, thText, fText, saText;
         public PrefabList prefabs;
         public Week newWeek;//Week that is being generated and eventually passed to the main system
         private int defaultShift = 8;//TODO put this in settings window
@@ -24,10 +25,109 @@ namespace CoreSys
 
         public void Start() { }
 
+        public void Update()
+        {
+            ErrorTextFade();
+        }
+
+        private void ErrorTextFade()
+        {
+            if (suText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(suText.color.a, 0, 2 * Time.deltaTime);
+                suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, newAlpha);
+            }
+            else
+                suText.enabled = false;
+            if (mText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(mText.color.a, 0, 2 * Time.deltaTime);
+                mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, newAlpha);
+            }
+            else
+                mText.enabled = false;
+            if (tuText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(tuText.color.a, 0, 2 * Time.deltaTime);
+                tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, newAlpha);
+            }
+            else
+                tuText.enabled = false;
+            if (wText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(wText.color.a, 0, 2 * Time.deltaTime);
+                wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, newAlpha);
+            }
+            else
+                wText.enabled = false;
+            if (thText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(thText.color.a, 0, 2 * Time.deltaTime);
+                thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, newAlpha);
+            }
+            else
+                thText.enabled = false;
+            if (fText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(fText.color.a, 0, 2 * Time.deltaTime);
+                fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, newAlpha);
+            }
+            else
+                fText.enabled = false;
+            if (saText.color.a > .1)
+            {
+                float newAlpha = Mathf.Lerp(saText.color.a, 0, 2 * Time.deltaTime);
+                saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, newAlpha);
+            }
+            else
+                saText.enabled = false;
+        }
+
         public void ValidateSubmission()
         {
             bool validForm = true;
-
+            if (sundayOpen.text == "" || sundayClose.text == "")
+            {
+                suText.enabled = true;
+                suText.color = new Color(suText.color.r, suText.color.g, suText.color.b, 50);
+                validForm = false;
+            }
+            if (mondayOpen.text == "" || mondayClose.text == "")
+            {
+                mText.enabled = true;
+                mText.color = new Color(mText.color.r, mText.color.g, mText.color.b, 50);
+                validForm = false;
+            }
+            if (tuesdayOpen.text == "" || tuesdayClose.text == "")
+            {
+                tuText.enabled = true;
+                tuText.color = new Color(tuText.color.r, tuText.color.g, tuText.color.b, 50);
+                validForm = false;
+            }
+            if (wednesdayOpen.text == "" || wednesdayClose.text == "")
+            {
+                wText.enabled = true;
+                wText.color = new Color(wText.color.r, wText.color.g, wText.color.b, 50);
+                validForm = false;
+            }
+            if (thursdayOpen.text == "" || thursdayClose.text == "")
+            {
+                thText.enabled = true;
+                thText.color = new Color(thText.color.r, thText.color.g, thText.color.b, 50);
+                validForm = false;
+            }
+            if (fridayOpen.text == "" || fridayClose.text == "")
+            {
+                fText.enabled = true;
+                fText.color = new Color(fText.color.r, fText.color.g, fText.color.b, 50);
+                validForm = false;
+            }
+            if (saturdayOpen.text == "" || saturdayClose.text == "")
+            {
+                saText.enabled = true;
+                saText.color = new Color(saText.color.r, saText.color.g, saText.color.b, 50);
+                validForm = false;
+            }
 
 
             if (validForm)
@@ -39,112 +139,6 @@ namespace CoreSys
             //CalculateHourlyNeed();
         }
 
-        /*
-        private void CalculateHourlyNeed()
-        {
-            if (newWeek.sunday)
-            {
-                SetHourlyNeedCounts(newWeek.suStartHour, newWeek.suEndHour, newWeek.sSundayHourReqs, int.Parse(sundayOpen.text), int.Parse(sundayClose.text));
-            }
-            if (newWeek.monday)
-            {
-                SetHourlyNeedCounts(newWeek.mStartHour, newWeek.mEndHour, newWeek.sMondayHourReqs, int.Parse(mondayOpen.text), int.Parse(mondayClose.text));
-            }
-            if (newWeek.tuesday)
-            {
-                SetHourlyNeedCounts(newWeek.tuStartHour, newWeek.tuEndHour, newWeek.sTuesdayHourReqs, int.Parse(tuesdayOpen.text), int.Parse(tuesdayClose.text));
-            }
-            if (newWeek.wednesday)
-            {
-                SetHourlyNeedCounts(newWeek.wStartHour, newWeek.wEndHour, newWeek.sWednesdayHourReqs, int.Parse(wednesdayOpen.text), int.Parse(wednesdayClose.text));
-            }
-            if (newWeek.thursday)
-            {
-                SetHourlyNeedCounts(newWeek.thStartHour, newWeek.thEndHour, newWeek.sThursdayHourReqs, int.Parse(thursdayOpen.text), int.Parse(thursdayClose.text));
-            }
-            if (newWeek.friday)
-            {
-                SetHourlyNeedCounts(newWeek.fStartHour, newWeek.fEndHour, newWeek.sFridayHourReqs, int.Parse(fridayOpen.text), int.Parse(fridayClose.text));
-            }
-            if (newWeek.saturday)
-            {
-                SetHourlyNeedCounts(newWeek.saStartHour, newWeek.saEndHour, newWeek.sSaturdayHourReqs, int.Parse(saturdayOpen.text), int.Parse(saturdayClose.text));
-            }
-        }*/
-
-        private void SetHourlyNeedCounts(int startTime, int endTime, Dictionary<int,int> dictionary, int hourlyNeedOpen, int hourlyNeedClose)
-        {
-            for (int i = startTime; i <= (startTime + defaultShift); i++)
-            {
-                dictionary[i] += hourlyNeedOpen;
-            }
-            for (int i = endTime; i > (endTime - defaultShift); i--)
-            {
-                dictionary[i] += hourlyNeedClose;
-            }
-        }
-
-        /*
-        private void InitializeWeeklyDictionaries()
-        {
-            if (newWeek.sunday)
-            {
-                for (int i = newWeek.suStartHour; i <= newWeek.suEndHour; i++)
-                {
-                    newWeek.sSundayHourReqs.Add(i, 0);
-                    newWeek.eSundayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.monday)
-            {
-                for (int i = newWeek.mStartHour; i <= newWeek.mEndHour; i++)
-                {
-                    newWeek.sMondayHourReqs.Add(i, 0);
-                    newWeek.eMondayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.tuesday)
-            {
-                for (int i = newWeek.tuStartHour; i <= newWeek.tuEndHour; i++)
-                {
-                    newWeek.sTuesdayHourReqs.Add(i, 0);
-                    newWeek.eTuesdayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.wednesday)
-            {
-                for (int i = newWeek.wStartHour; i <= newWeek.wEndHour; i++)
-                {
-                    newWeek.sWednesdayHourReqs.Add(i, 0);
-                    newWeek.eWednesdayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.thursday)
-            {
-                for (int i = newWeek.thStartHour; i <= newWeek.thEndHour; i++)
-                {
-                    newWeek.sThursdayHourReqs.Add(i, 0);
-                    newWeek.eThursdayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.friday)
-            {
-                for (int i = newWeek.fStartHour; i <= newWeek.fEndHour; i++)
-                {
-                    newWeek.sFridayHourReqs.Add(i, 0);
-                    newWeek.eFridayHourReqs.Add(i, 0);
-                }
-            }
-            if (newWeek.saturday)
-            {
-                for (int i = newWeek.saStartHour; i <= newWeek.saEndHour; i++)
-                {
-                    newWeek.sSaturdayHourReqs.Add(i, 0);
-                    newWeek.eSaturdayHourReqs.Add(i, 0);
-                }
-            }
-        }*/
-
         public void WeeklyConfigPopup()
         {
             //Weekly Config Popup
@@ -155,53 +149,53 @@ namespace CoreSys
         public void SetWeeklyConfig(Week week)
         {
             newWeek = week;
-            //InitializeWeeklyDictionaries();
+            
             if (week.sunday.activeDay)
             {
-                suOpenText.text = week.suStartHour.ToString();
-                suCloseText.text = week.suEndHour.ToString();
+                suOpenText.text = week.sunday.openTime.ToString();
+                suCloseText.text = week.sunday.closeTime.ToString();
             }
             else
                 sunday.SetActive(false);
             if (week.monday.activeDay)
             {
-                moOpenText.text = week.mStartHour.ToString();
-                moCloseText.text = week.mEndHour.ToString();
+                moOpenText.text = week.monday.openTime.ToString();
+                moCloseText.text = week.monday.closeTime.ToString();
             }
             else
                 monday.SetActive(false);
             if (week.tuesday.activeDay)
             {
-                tuOpenText.text = week.tuStartHour.ToString();
-                tuCloseText.text = week.tuEndHour.ToString();
+                tuOpenText.text = week.tuesday.openTime.ToString();
+                tuCloseText.text = week.tuesday.closeTime.ToString();
             }
             else
                 tuesday.SetActive(false);
             if (week.wednesday.activeDay)
             {
-                weOpenText.text = week.wStartHour.ToString();
-                weCloseText.text = week.wEndHour.ToString();
+                weOpenText.text = week.wednesday.openTime.ToString();
+                weCloseText.text = week.wednesday.closeTime.ToString();
             }
             else
                 wednesday.SetActive(false);
             if (week.thursday.activeDay)
             {
-                thOpenText.text = week.thStartHour.ToString();
-                thCloseText.text = week.thEndHour.ToString();
+                thOpenText.text = week.thursday.openTime.ToString();
+                thCloseText.text = week.thursday.closeTime.ToString();
             }
             else
                 thursday.SetActive(false);
             if (week.friday.activeDay)
             {
-                frOpenText.text = week.fStartHour.ToString();
-                frCloseText.text = week.fEndHour.ToString();
+                frOpenText.text = week.friday.openTime.ToString();
+                frCloseText.text = week.friday.closeTime.ToString();
             }
             else
                 friday.SetActive(false);
             if (week.saturday.activeDay)
             {
-                saOpenText.text = week.saStartHour.ToString();
-                saCloseText.text = week.saEndHour.ToString();
+                saOpenText.text = week.saturday.openTime.ToString();
+                saCloseText.text = week.saturday.closeTime.ToString();
             }
             else
                 saturday.SetActive(false);
