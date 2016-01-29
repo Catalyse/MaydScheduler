@@ -156,49 +156,49 @@ namespace CoreSys
         {
             newWeek = week;
             //InitializeWeeklyDictionaries();
-            if (week.sunday)
+            if (week.sunday.activeDay)
             {
                 suOpenText.text = week.suStartHour.ToString();
                 suCloseText.text = week.suEndHour.ToString();
             }
             else
                 sunday.SetActive(false);
-            if (week.monday)
+            if (week.monday.activeDay)
             {
                 moOpenText.text = week.mStartHour.ToString();
                 moCloseText.text = week.mEndHour.ToString();
             }
             else
                 monday.SetActive(false);
-            if (week.tuesday)
+            if (week.tuesday.activeDay)
             {
                 tuOpenText.text = week.tuStartHour.ToString();
                 tuCloseText.text = week.tuEndHour.ToString();
             }
             else
                 tuesday.SetActive(false);
-            if (week.wednesday)
+            if (week.wednesday.activeDay)
             {
                 weOpenText.text = week.wStartHour.ToString();
                 weCloseText.text = week.wEndHour.ToString();
             }
             else
                 wednesday.SetActive(false);
-            if (week.thursday)
+            if (week.thursday.activeDay)
             {
                 thOpenText.text = week.thStartHour.ToString();
                 thCloseText.text = week.thEndHour.ToString();
             }
             else
                 thursday.SetActive(false);
-            if (week.friday)
+            if (week.friday.activeDay)
             {
                 frOpenText.text = week.fStartHour.ToString();
                 frCloseText.text = week.fEndHour.ToString();
             }
             else
                 friday.SetActive(false);
-            if (week.saturday)
+            if (week.saturday.activeDay)
             {
                 saOpenText.text = week.saStartHour.ToString();
                 saCloseText.text = week.saEndHour.ToString();

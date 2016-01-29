@@ -92,10 +92,11 @@ namespace CoreSys
         public void SetWeeklyConfig(Week setWeek)
         {
             newWeek = setWeek;
-            GenerateHourColumns();
+            //GenerateHourColumns();
             configuredModeParent.SetActive(true);
         }
 
+        /*
         private void GenerateHourColumns()
         {
             int k = 0;
@@ -112,6 +113,6 @@ namespace CoreSys
                     (newWeek.fStartHour<=i && newWeek.fEndHour >= i),(newWeek.saStartHour<=i && newWeek.saEndHour >= i));
                 hourList.Add(newColumn);
             }
-        }
+        }*/
     }
 }

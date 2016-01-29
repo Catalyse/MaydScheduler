@@ -30,7 +30,7 @@ namespace CoreSys
                     List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
                     float avgSkill = CalcAvgSkill(empList);
                     
-                    Dictionary<int, List<int>> pickList = Dictionary<int, List<int>>();
+                    Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
                     
                     //Open loop
                     for (int i = 0; i < priorityList.Count; i++)
@@ -39,7 +39,7 @@ namespace CoreSys
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
-                                pickList[i].Add(GenerateShift(pickList, priorityList[i], day));//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                pickList[i] = GenerateShift(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
                                 day.openScheduled[pos]++;
                                 if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
@@ -56,7 +56,7 @@ namespace CoreSys
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
-                                pickList[i].Add(GenerateShift(pickList, priorityList[i], day));//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                pickList[i] = GenerateShift(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
                                 day.closeScheduled[pos]++;
                                 if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
@@ -77,7 +77,7 @@ namespace CoreSys
             if(sortList[pick].employee.shiftPreference != shiftLength)
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date);//Need to make this adaptive to shift
-            if(day.shiftDictionary.Contains(sortList[pick]))
+            if(day.shiftDictionary.ContainsKey(sortList[pick]))
             {
                 day.shiftDictionary[sortList[pick]].Add(newShift);
             }
@@ -85,7 +85,7 @@ namespace CoreSys
             {
                 List<Shift> newShiftList = new List<Shift>();
                 newShiftList.Add(newShift);
-                day.shiftDictionary.Add(sortList[pick], newShiftList)
+                day.shiftDictionary.Add(sortList[pick], newShiftList);
             }
             return pickList;
         }
@@ -157,7 +157,7 @@ namespace CoreSys
             for (int j = 0; j < employeeList.Count; j++)
             {
                 //Check to make sure they can 1. work that day and 2. have hours left to be scheduled
-                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].position == pos)
+                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].employee.position == pos)
                 {
                     returnList.Add(employeeList[j]);
                     employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
@@ -172,7 +172,7 @@ namespace CoreSys
             {
                 for(int i = 0; i < dayList.Count; i++)
                 {
-                    int dailyEmpsNeeded = dayList
+                    //int dailyEmpsNeeded = dayList
                 }
             }
         }
