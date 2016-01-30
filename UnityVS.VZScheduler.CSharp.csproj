@@ -90,7 +90,9 @@
     <Compile Include="Assets\WindowScripts\EmployeeBar.cs" />
     <Compile Include="Assets\WindowScripts\EmployeeManagement.cs" />
     <Compile Include="Assets\WindowScripts\EmployeeProfile.cs" />
+    <Compile Include="Assets\WindowScripts\EmployeeScheduleBar.cs" />
     <Compile Include="Assets\WindowScripts\MainMenu.cs" />
+    <Compile Include="Assets\WindowScripts\ScheduleWindow.cs" />
     <Compile Include="Assets\WindowScripts\SetAllButton.cs" />
     <Compile Include="Assets\WindowScripts\WeeklyConfig.cs" />
     <Compile Include="Assets\WindowScripts\Window.cs" />
