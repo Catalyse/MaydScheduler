@@ -15,7 +15,10 @@ namespace CoreSys.Windows
 
         public ScheduleWindow() { }
 
-        public void StartSchedule();
+        public void StartSchedule()
+        {
+
+        }
 
         private void GenerateSchedule()
         {
