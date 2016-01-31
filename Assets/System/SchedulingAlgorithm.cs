@@ -18,7 +18,7 @@ namespace CoreSys
             CheckTempDaysOff();
         }
 
-        public static void GenerateSchedule(Week week)
+        public static Week GenerateSchedule(Week week)
         {
             for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
             {
@@ -39,7 +39,7 @@ namespace CoreSys
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
-                                pickList[i] = GenerateShift(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                pickList[i] = GenerateShiftOpen(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
                                 day.openScheduled[pos]++;
                                 if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
@@ -56,7 +56,7 @@ namespace CoreSys
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
-                                pickList[i] = GenerateShift(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
+                                pickList[i] = GenerateShiftClose(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
                                 day.closeScheduled[pos]++;
                                 if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
@@ -67,9 +67,10 @@ namespace CoreSys
                     }
                 }
             }
+            return week;
         }
 
-        private static List<int> GenerateShift(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
+        private static List<int> GenerateShiftOpen(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
         {
             int pick = GenerateRandomNumber(pickList, sortList.Count);
             int shiftLength = CoreSystem.defaultShift;
@@ -77,11 +78,34 @@ namespace CoreSys
             if(sortList[pick].employee.shiftPreference != shiftLength)
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date);//Need to make this adaptive to shift
+            sortList[pick].shiftList.Add(newShift);
             if(day.shiftDictionary.ContainsKey(sortList[pick]))
             {
                 day.shiftDictionary[sortList[pick]].Add(newShift);
             }
             else 
+            {
+                List<Shift> newShiftList = new List<Shift>();
+                newShiftList.Add(newShift);
+                day.shiftDictionary.Add(sortList[pick], newShiftList);
+            }
+            return pickList;
+        }
+
+        private static List<int> GenerateShiftClose(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
+        {
+            int pick = GenerateRandomNumber(pickList, sortList.Count);
+            int shiftLength = CoreSystem.defaultShift;
+            pickList.Add(pick);
+            if (sortList[pick].employee.shiftPreference != shiftLength)
+                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+            Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date);//Need to make this adaptive to shift
+            sortList[pick].shiftList.Add(newShift);
+            if (day.shiftDictionary.ContainsKey(sortList[pick]))
+            {
+                day.shiftDictionary[sortList[pick]].Add(newShift);
+            }
+            else
             {
                 List<Shift> newShiftList = new List<Shift>();
                 newShiftList.Add(newShift);

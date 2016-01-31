@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CoreSys.Employees;
 
 namespace CoreSys
 {
@@ -11,6 +12,7 @@ namespace CoreSys
         public int WeekID;
         public int JulianStartDay;
         public int earliestStart, latestEnd;
+        public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily)
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         //Position type(refer to CoreSystem for definition)
         //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
