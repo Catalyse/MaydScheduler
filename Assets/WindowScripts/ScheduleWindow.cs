@@ -17,6 +17,11 @@ namespace CoreSys.Windows
 
         public void StartSchedule()
         {
+            weeklyConfig.SetActive(true);
+        }
+
+        private void DailyStaffing()
+        {
 
         }
 
