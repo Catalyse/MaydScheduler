@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CoreSys.Windows;
 
 /// <summary>
 /// TODO Set a system for implementing defaults
@@ -11,13 +12,19 @@ namespace CoreSys
 {
     public class WeeklyConfig : Window
     {
-        private DailyStaffing parent;
+        private Week week;
+        public ScheduleWindow parent;
         public Toggle sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Text suText, mText, tuText, wText, thText, fText, saText;
         public InputField suStart, mStart, tuStart, wStart, thStart, fStart, saStart;
         public InputField suEnd, mEnd, tuEnd, wEnd, thEnd, fEnd, saEnd;
 
         public WeeklyConfig() { }
+
+        public void SetWeek(Week wk)
+        {
+            week = wk;
+        }
 
         public void Update()
         {
@@ -79,17 +86,11 @@ namespace CoreSys
 
         private void SubmitPushed()
         {
-            Week newWeek = new Week();//TODO FIX THIS. Needs to receive a week to set, not create a new one.
-            newWeek.SetWeek(int.Parse(suStart.text), int.Parse(mStart.text), int.Parse(tuStart.text), int.Parse(wStart.text), int.Parse(thStart.text), 
+            week.SetWeek(int.Parse(suStart.text), int.Parse(mStart.text), int.Parse(tuStart.text), int.Parse(wStart.text), int.Parse(thStart.text), 
                 int.Parse(fStart.text), int.Parse(saStart.text), int.Parse(suEnd.text), int.Parse(mEnd.text), int.Parse(tuEnd.text), int.Parse(wEnd.text), 
                 int.Parse(thEnd.text), int.Parse(fEnd.text), int.Parse(saEnd.text), sunday.isOn, monday.isOn, tuesday.isOn, wednesday.isOn, thursday.isOn, friday.isOn, saturday.isOn);
-            transform.parent.GetComponent<DailyStaffing>().SetWeeklyConfig(newWeek);//This needs to be changed IF you use the hourly staffing XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX///
+            parent.DailyStaffing(week);//This needs to be changed IF you use the hourly staffing XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX///
             transform.gameObject.SetActive(false);//Disable window when done
-        }
-
-        public void SetParent(DailyStaffing newParent)
-        {
-            parent = newParent;
         }
 
         private void InputValidation() //This method will correct times put in incorrectly

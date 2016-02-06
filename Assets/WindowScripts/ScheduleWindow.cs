@@ -10,6 +10,7 @@ namespace CoreSys.Windows
     public class ScheduleWindow : Window
     {
         public Text title;
+        public Week currentWeek;
         public GameObject grid, dailyStaffing, weeklyConfig;
         public PrefabList prefabs;
 
@@ -17,18 +18,20 @@ namespace CoreSys.Windows
 
         public void StartSchedule()
         {
+            currentWeek = new Week();
             weeklyConfig.SetActive(true);
+            weeklyConfig.GetComponent<WeeklyConfig>().SetWeek(currentWeek);
         }
 
-        private void DailyStaffing()
+        public void DailyStaffing(Week week)
         {
-
+            dailyStaffing.SetActive(true);
         }
 
-        private void GenerateSchedule()
+        public void GenerateSchedule(Week week)
         {
             //Week newWeek = SetupWeek();
-            SchedulingAlgorithm.GenerateSchedule(newWeek);//This needs to run setup first after its done being tested
+            SchedulingAlgorithm.GenerateSchedule(week);//This needs to run setup first after its done being tested
         }
 
         private void SetupWeek()

@@ -11,6 +11,7 @@ namespace CoreSys
     /// </summary>
     public class DailyStaffing : Window
     {
+        public ScheduleWindow parent;
         public InputField sundayOpen, mondayOpen, tuesdayOpen, wednesdayOpen, thursdayOpen, fridayOpen, saturdayOpen;
         public InputField sundayClose, mondayClose, tuesdayClose, wednesdayClose, thursdayClose, fridayClose, saturdayClose;
         public GameObject sunday, monday, tuesday, wednesday, thursday, friday, saturday;
