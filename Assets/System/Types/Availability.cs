@@ -24,19 +24,19 @@ namespace CoreSys
         {
             switch(d)
             {
-                case Sunday:
+                case DayOfWeek.Sunday:
                     return sunday;
-                case Monday:
+                case DayOfWeek.Monday:
                     return monday;
-                case Tuesday:
+                case DayOfWeek.Tuesday:
                     return tuesday;
-                case Wednesday:
+                case DayOfWeek.Wednesday:
                     return wednesday;
-                case Thursday:
+                case DayOfWeek.Thursday:
                     return thursday;
-                case Friday:
+                case DayOfWeek.Friday:
                     return friday;
-                case Saturday:
+                case DayOfWeek.Saturday:
                     return saturday;
             }
         }
