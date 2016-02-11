@@ -6,6 +6,12 @@ using CoreSys.Employees;
 
 namespace CoreSys
 {
+    struct RestrictedReturn
+    {
+        public bool canWork;
+        public int maxShift;
+    }
+    
     public static class SchedulingAlgorithm
     {
         private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
@@ -114,16 +120,22 @@ namespace CoreSys
             return pickList;
         }
 
+        /// <summary>
+        /// Runs a loop to find a random number that hasnt already been chosen
+        /// </summary>
         private static int GenerateRandomNumber(List<int> pickList, int max)
         {
             int temp = 0;
-            while(true)//yes i know infinite stfu //TODO FIX THIS
+            if(pickList.Count >= max)//This is a partial fix.  This will check to see if the max is less than the number of picks already made theoretically skipping 
             {
-                temp = CoreSystem.RandomInt(max);
-                if (!pickList.Contains(temp))
+                while(true)//yes i know infinite stfu //TODO FIX THIS
                 {
-                    return temp;
-                }                   
+                    temp = CoreSystem.RandomInt(max);
+                    if (!pickList.Contains(temp))
+                    {
+                        return temp;
+                    }                   
+                }
             }
         }
 
@@ -301,6 +313,74 @@ namespace CoreSys
 
             restrictionList = GenerateRestrictionList(empList, day);
             tierList = GenerateSortList(empList);
+        }
+        
+        private RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
+        {
+            RestrictedReturn empStatus;
+            if(open)//open shift check
+            {
+                if(emp.availability[day.dayOfWeek].startTime > day.openTime)//cannot start, reject.
+                {
+                    empStatus.canWork = false;
+                    return empStatus;
+                }
+                else//Figure out how long they can work//minshift 4 hours
+                {
+                    if(day.openTime + CoreSystem.defaultShift <= emp.availability[day.dayOfWeek].endTime)
+                    {//No restriction
+                        empStatus.canWork = true;
+                        empStatus.maxShift = 8;
+                        return empStatus;
+                    }
+                    else
+                    {//loop till we find when they can start working as long as it is greater than the min shift length allowed
+                        int i = (day.openTime + CoreSystem.defaultShift);
+                        for( ; i > (day.openTime + CoreSystem.minShift); i--)
+                        {
+                            if(i <= emp.availability[day.dayOfWeek].endTime)
+                            {
+                                empStatus.canWork = true;
+                                empStatus.maxShift = (i - day.openTime);
+                                return empStatus;
+                            }
+                        }//If it exits the loop they cannot work shift is too short
+                        empStatus.canWork = false;
+                        return empStatus;
+                    }
+                }
+            }
+            else//close shift check
+            {
+                if(emp.availability[day.dayOfWeek].endTime < day.closeTime)//cannot close, reject.
+                {
+                    empStatus.canWork = false;
+                    return empStatus;
+                }
+                else//Figure out how long they can work//minshift 4 hours
+                {
+                    if(day.closeTime - CoreSystem.defaultShift >= emp.availability[day.dayOfWeek].openTime)
+                    {//No restriction
+                        empStatus.canWork = true;
+                        empStatus.maxShift = 8;
+                        return empStatus;
+                    }
+                    else
+                    {//loop till we find when they can start working as long as it is greater than the min shift length allowed
+                        int i = (day.openTime + CoreSystem.defaultShift);
+                        for( ; i > (day.openTime + CoreSystem.minShift); i--)
+                        {
+                            if(i <= emp.availability[day.dayOfWeek].endTime)
+                            {
+                                empStatus.canWork = true;
+                                empStatus.maxShift = (i - day.openTime);
+                                return empStatus;
+                            }
+                        }//If it exits the loop they cannot work shift is too short
+                        empStatus.canWork = false;
+                        return empStatus;
+                    }
+            }
         }
 
         /// <summary>
