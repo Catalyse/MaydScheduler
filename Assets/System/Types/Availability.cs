@@ -19,5 +19,26 @@ namespace CoreSys
             friday = new Day(copy.friday);
             saturday = new Day(copy.saturday);
         }
+        
+        public Day this[DayOfWeek d]
+        {
+            switch(d)
+            {
+                case Sunday:
+                    return sunday;
+                case Monday:
+                    return monday;
+                case Tuesday:
+                    return tuesday;
+                case Wednesday:
+                    return wednesday;
+                case Thursday:
+                    return thursday;
+                case Friday:
+                    return friday;
+                case Saturday:
+                    return saturday;
+            }
+        }
     }
 }
