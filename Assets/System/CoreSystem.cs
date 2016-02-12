@@ -9,6 +9,12 @@ using CoreSys.Errors;
 
 namespace CoreSys
 {
+    struct RestrictedReturn
+    {
+        public bool canWork;
+        public int maxShift;
+    }
+    
     /// <summary>
     /// This class serves as the central control point for the program
     /// </summary>
@@ -17,7 +23,7 @@ namespace CoreSys
         private static CoreSaveType coreSave;
         public static bool systemInitialized; 
         public static int currentWeekID;
-        public static int defaultShift;
+        public static int defaultShift, minShift;
         public static float skillLevelCap;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
         public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();

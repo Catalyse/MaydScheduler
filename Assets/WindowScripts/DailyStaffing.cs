@@ -19,7 +19,7 @@ namespace CoreSys
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
         public Text suText, mText, tuText, wText, thText, fText, saText;
         public PrefabList prefabs;
-        public Week newWeek;//Week that is being generated and eventually passed to the main system
+        private Week week;
         private int defaultShift = 8;//TODO put this in settings window
 
         public DailyStaffing() { }
@@ -147,9 +147,9 @@ namespace CoreSys
             //End
         }
 
-        public void SetWeeklyConfig(Week week)
+        public void SetWeeklyConfig(Week wk)
         {
-            newWeek = week;
+            week = wk;
             
             if (week.sunday.activeDay)
             {

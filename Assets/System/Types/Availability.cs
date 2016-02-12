@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using CoreSys.Employees;
 
@@ -22,22 +23,31 @@ namespace CoreSys
         
         public Day this[DayOfWeek d]
         {
-            switch(d)
+            get
             {
-                case DayOfWeek.Sunday:
-                    return sunday;
-                case DayOfWeek.Monday:
-                    return monday;
-                case DayOfWeek.Tuesday:
-                    return tuesday;
-                case DayOfWeek.Wednesday:
-                    return wednesday;
-                case DayOfWeek.Thursday:
-                    return thursday;
-                case DayOfWeek.Friday:
-                    return friday;
-                case DayOfWeek.Saturday:
-                    return saturday;
+                switch (d)
+                {
+                    case DayOfWeek.Sunday:
+                        return sunday;
+                    case DayOfWeek.Monday:
+                        return monday;
+                    case DayOfWeek.Tuesday:
+                        return tuesday;
+                    case DayOfWeek.Wednesday:
+                        return wednesday;
+                    case DayOfWeek.Thursday:
+                        return thursday;
+                    case DayOfWeek.Friday:
+                        return friday;
+                    case DayOfWeek.Saturday:
+                        return saturday;
+                    default:
+                        return null;
+                }
+            }
+            set
+            {
+                Debug.Log("Availability [] Operator Set Method Used. ERROR || Availability.cs || [] Operator");
             }
         }
     }

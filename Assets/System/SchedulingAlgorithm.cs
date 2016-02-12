@@ -6,12 +6,6 @@ using CoreSys.Employees;
 
 namespace CoreSys
 {
-    struct RestrictedReturn
-    {
-        public bool canWork;
-        public int maxShift;
-    }
-    
     public static class SchedulingAlgorithm
     {
         private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
@@ -137,6 +131,7 @@ namespace CoreSys
                     }                   
                 }
             }
+            return -1;//If the check fails return -1
         }
 
         /// <summary>
@@ -314,20 +309,20 @@ namespace CoreSys
             restrictionList = GenerateRestrictionList(empList, day);
             tierList = GenerateSortList(empList);
         }
-        
-        private RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
+
+        private static RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
         {
-            RestrictedReturn empStatus;
-            if(open)//open shift check
+            RestrictedReturn empStatus = new RestrictedReturn();
+            if (open)//open shift check
             {
-                if(emp.availability[day.dayOfWeek].startTime > day.openTime)//cannot start, reject.
+                if (emp.availability[day.dayOfWeek].startTime > day.openTime)//cannot start, reject.
                 {
                     empStatus.canWork = false;
                     return empStatus;
                 }
                 else//Figure out how long they can work//minshift 4 hours
                 {
-                    if(day.openTime + CoreSystem.defaultShift <= emp.availability[day.dayOfWeek].endTime)
+                    if (day.openTime + CoreSystem.defaultShift <= emp.availability[day.dayOfWeek].endTime)
                     {//No restriction
                         empStatus.canWork = true;
                         empStatus.maxShift = 8;
@@ -336,9 +331,9 @@ namespace CoreSys
                     else
                     {//loop till we find when they can start working as long as it is greater than the min shift length allowed
                         int i = (day.openTime + CoreSystem.defaultShift);
-                        for( ; i > (day.openTime + CoreSystem.minShift); i--)
+                        for (; i > (day.openTime + CoreSystem.minShift); i--)
                         {
-                            if(i <= emp.availability[day.dayOfWeek].endTime)
+                            if (i <= emp.availability[day.dayOfWeek].endTime)
                             {
                                 empStatus.canWork = true;
                                 empStatus.maxShift = (i - day.openTime);
@@ -352,14 +347,14 @@ namespace CoreSys
             }
             else//close shift check
             {
-                if(emp.availability[day.dayOfWeek].endTime < day.closeTime)//cannot close, reject.
+                if (emp.availability[day.dayOfWeek].endTime < day.closeTime)//cannot close, reject.
                 {
                     empStatus.canWork = false;
                     return empStatus;
                 }
                 else//Figure out how long they can work//minshift 4 hours
                 {
-                    if(day.closeTime - CoreSystem.defaultShift >= emp.availability[day.dayOfWeek].openTime)
+                    if (day.closeTime - CoreSystem.defaultShift >= emp.availability[day.dayOfWeek].startTime)
                     {//No restriction
                         empStatus.canWork = true;
                         empStatus.maxShift = 8;
@@ -368,9 +363,9 @@ namespace CoreSys
                     else
                     {//loop till we find when they can start working as long as it is greater than the min shift length allowed
                         int i = (day.openTime + CoreSystem.defaultShift);
-                        for( ; i > (day.openTime + CoreSystem.minShift); i--)
+                        for (; i > (day.openTime + CoreSystem.minShift); i--)
                         {
-                            if(i <= emp.availability[day.dayOfWeek].endTime)
+                            if (i <= emp.availability[day.dayOfWeek].endTime)
                             {
                                 empStatus.canWork = true;
                                 empStatus.maxShift = (i - day.openTime);
@@ -380,6 +375,7 @@ namespace CoreSys
                         empStatus.canWork = false;
                         return empStatus;
                     }
+                }
             }
         }
 
