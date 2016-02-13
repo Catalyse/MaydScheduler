@@ -11,7 +11,7 @@ namespace CoreSys.Windows
         /// List:
         /// Index   || Name                   || Category
         /// 0       || DailyHourlyStaffing    || Schedule Creation
-        /// 1
+        /// 1.
         /// 2       || EmpMGMTWindow          || Employee Management
         /// </summary>
         public PrefabList prefabs;

@@ -23,11 +23,12 @@ namespace CoreSys
         private static CoreSaveType coreSave;
         public static bool systemInitialized; 
         public static int currentWeekID;
-        public static int defaultShift, minShift;
+        public static int defaultShift = 8, minShift = 4;//Need to make config window
         public static float skillLevelCap;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
         public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
-        public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
+        //public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
+        public static Dictionary<DateTime, Week> weekList = new Dictionary<DateTime, Week>();//uses a datetime to define a week, beginning with Sunday the start date
         public static List<string> savedFileList = new List<string>();
         public static string GenerationDate;
 
@@ -42,6 +43,17 @@ namespace CoreSys
             coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
         }
 
+        public Week FindWeek(DateTime weekStartDate)
+        {
+            if(weekList.ContainsKey(weekStartDate))
+                return weekList[weekStartDate];
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Likely wont use this
+        /// </summary>
         private static void SystemInitialization()
         {
             //use this to find the first day of the week of the year
@@ -91,7 +103,7 @@ namespace CoreSys
             else
             {
                 Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName");
-                return "Error! Contact Dev";
+                return "Error! Contact Developer!";
                 //TODO, make this force a popup to define the queried type
             }
         }
