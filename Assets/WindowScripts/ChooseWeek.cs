@@ -9,6 +9,8 @@ namespace CoreSys
     public class ChooseWeek : Window
     {
         public ScheduleWindow parent;
+        public GameObject weekBarParent;
+        public PrefabList prefabs;
         private int weekDistance = 4;//This is how many weeks forward it will check/generate
         public DateTime date;
         public List<Week> weekList = new List<Week>();
@@ -35,6 +37,19 @@ namespace CoreSys
                     weekList.Add(tempWeek);
                 }
             }
+
+            for (int i = 0; i < weekList.Count; i++)
+            {
+                GameObject temp = WindowInstantiator.SpawnWindow(prefabs.prefabList[0], weekBarParent);
+                WeekBar tempWeekBar = temp.GetComponent<WeekBar>();
+                string weekText = ("Week of " + weekList[i].startDate.ToShortDateString());
+                tempWeekBar.SetBar(this, i, weekText);
+            }
+        }
+
+        public void WeekSelected(int index)
+        {
+            parent.
         }
 
         //This method converts the current day of the week into a value needed to get to the start of the next week

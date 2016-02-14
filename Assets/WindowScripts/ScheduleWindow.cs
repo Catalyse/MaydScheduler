@@ -11,27 +11,33 @@ namespace CoreSys.Windows
     {
         public Text title;
         public Week currentWeek;
-        public GameObject grid, dailyStaffing, weeklyConfig;
+        public GameObject grid, dailyStaffing, weeklyConfig, chooseWeek;
         public PrefabList prefabs;
 
         public ScheduleWindow() { }
 
         public void StartSchedule()
         {
-            currentWeek = new Week();
-            weeklyConfig.SetActive(true);
-            weeklyConfig.GetComponent<WeeklyConfig>().SetWeek(currentWeek);
+            chooseWeek.SetActive(true);
+            chooseWeek.GetComponent<ChooseWeek>().FindWeeks();
         }
 
-        public void DailyStaffing(Week week)
+        public void WeeklyConfig(Week week)
         {
+            currentWeek = week;
+            weeklyConfig.SetActive(true);
+            chooseWeek.SetActive(false);
+        }
+
+        public void DailyStaffing()
+        {
+            weeklyConfig.SetActive(false);
             dailyStaffing.SetActive(true);
         }
 
-        public void GenerateSchedule(Week week)
+        public void GenerateSchedule()
         {
-            //Week newWeek = SetupWeek();
-            SchedulingAlgorithm.GenerateSchedule(week);//This needs to run setup first after its done being tested
+            SchedulingAlgorithm.GenerateSchedule(currentWeek);
         }
 
         private void SetupWeek()

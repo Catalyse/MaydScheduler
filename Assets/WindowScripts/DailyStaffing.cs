@@ -19,8 +19,7 @@ namespace CoreSys
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
         public Text suText, mText, tuText, wText, thText, fText, saText;
         public PrefabList prefabs;
-        private Week week;
-        private int defaultShift = 8;//TODO put this in settings window
+        private int currentSubmit;
 
         public DailyStaffing() { }
 
@@ -140,63 +139,56 @@ namespace CoreSys
             //CalculateHourlyNeed();
         }
 
-        public void WeeklyConfigPopup()
-        {
-            //Weekly Config Popup
-            WindowInstantiator.SpawnWindow(prefabs.prefabList[0], this.gameObject);
-            //End
-        }
+        public void SetWeeklyConfig()
+        {            
 
-        public void SetWeeklyConfig(Week wk)
-        {
-            week = wk;
-            
-            if (week.sunday.activeDay)
+
+            if (parent.currentWeek.sunday.activeDay)
             {
-                suOpenText.text = week.sunday.openTime.ToString();
-                suCloseText.text = week.sunday.closeTime.ToString();
+                suOpenText.text = parent.currentWeek.sunday.openTime.ToString();
+                suCloseText.text = parent.currentWeek.sunday.closeTime.ToString();
             }
             else
                 sunday.SetActive(false);
-            if (week.monday.activeDay)
+            if (parent.currentWeek.monday.activeDay)
             {
-                moOpenText.text = week.monday.openTime.ToString();
-                moCloseText.text = week.monday.closeTime.ToString();
+                moOpenText.text = parent.currentWeek.monday.openTime.ToString();
+                moCloseText.text = parent.currentWeek.monday.closeTime.ToString();
             }
             else
                 monday.SetActive(false);
-            if (week.tuesday.activeDay)
+            if (parent.currentWeek.tuesday.activeDay)
             {
-                tuOpenText.text = week.tuesday.openTime.ToString();
-                tuCloseText.text = week.tuesday.closeTime.ToString();
+                tuOpenText.text = parent.currentWeek.tuesday.openTime.ToString();
+                tuCloseText.text = parent.currentWeek.tuesday.closeTime.ToString();
             }
             else
                 tuesday.SetActive(false);
-            if (week.wednesday.activeDay)
+            if (parent.currentWeek.wednesday.activeDay)
             {
-                weOpenText.text = week.wednesday.openTime.ToString();
-                weCloseText.text = week.wednesday.closeTime.ToString();
+                weOpenText.text = parent.currentWeek.wednesday.openTime.ToString();
+                weCloseText.text = parent.currentWeek.wednesday.closeTime.ToString();
             }
             else
                 wednesday.SetActive(false);
-            if (week.thursday.activeDay)
+            if (parent.currentWeek.thursday.activeDay)
             {
-                thOpenText.text = week.thursday.openTime.ToString();
-                thCloseText.text = week.thursday.closeTime.ToString();
+                thOpenText.text = parent.currentWeek.thursday.openTime.ToString();
+                thCloseText.text = parent.currentWeek.thursday.closeTime.ToString();
             }
             else
                 thursday.SetActive(false);
-            if (week.friday.activeDay)
+            if (parent.currentWeek.friday.activeDay)
             {
-                frOpenText.text = week.friday.openTime.ToString();
-                frCloseText.text = week.friday.closeTime.ToString();
+                frOpenText.text = parent.currentWeek.friday.openTime.ToString();
+                frCloseText.text = parent.currentWeek.friday.closeTime.ToString();
             }
             else
                 friday.SetActive(false);
-            if (week.saturday.activeDay)
+            if (parent.currentWeek.saturday.activeDay)
             {
-                saOpenText.text = week.saturday.openTime.ToString();
-                saCloseText.text = week.saturday.closeTime.ToString();
+                saOpenText.text = parent.currentWeek.saturday.openTime.ToString();
+                saCloseText.text = parent.currentWeek.saturday.closeTime.ToString();
             }
             else
                 saturday.SetActive(false);
