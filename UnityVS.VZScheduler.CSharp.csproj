@@ -98,6 +98,7 @@
     <Compile Include="Assets\WindowScripts\WeeklyConfig.cs" />
     <Compile Include="Assets\WindowScripts\Window.cs" />
     <Compile Include="Assets\WindowScripts\WindowElements\HourColumn.cs" />
+    <Compile Include="Assets\WindowScripts\WindowElements\WeekBar.cs" />
     <Compile Include="Assets\WindowScripts\WindowInstantiator.cs" />
     <Compile Include="Assets\WindowScripts\WindowManagement.cs" />
   </ItemGroup>

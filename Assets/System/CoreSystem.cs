@@ -43,7 +43,7 @@ namespace CoreSys
             coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
         }
 
-        public Week FindWeek(DateTime weekStartDate)
+        public static Week FindWeek(DateTime weekStartDate)
         {
             if(weekList.ContainsKey(weekStartDate))
                 return weekList[weekStartDate];
@@ -54,6 +54,8 @@ namespace CoreSys
         /// <summary>
         /// Likely wont use this
         /// </summary>
+        ///
+        /*
         private static void SystemInitialization()
         {
             //use this to find the first day of the week of the year
@@ -85,7 +87,7 @@ namespace CoreSys
             }
 
             GenerationDate = DateTime.Now.ToString();
-        }
+        }*/
 
         public static int GenerateWeekID()
         {

@@ -9,8 +9,9 @@ namespace CoreSys
 {
     public class Week
     {
-        public int WeekID;
-        public int JulianStartDay;
+        public int weekID;
+        public int julianStartDay;
+        public DateTime startDate;
         public int earliestStart, latestEnd;
         public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily)
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
@@ -24,10 +25,26 @@ namespace CoreSys
         /// </summary>
         public Week() { }
 
-        public Week(int startDate)
+        /// <summary>
+        /// Depreciated Constructor type
+        /// </summary>
+        /// <param name="startDay"></param>
+        public Week(int startDay)
         {
-            JulianStartDay = startDate;
-            WeekID = CoreSystem.GenerateWeekID();
+            julianStartDay = startDay;
+            weekID = CoreSystem.GenerateWeekID();
+        }
+
+        /// <summary>
+        /// Week is generated with a DateTime start date
+        /// </summary>
+        /// <param name="startDay"></param>
+        /// TODO // Add check to make sure the start date is a sunday
+        public Week(DateTime startDay)
+        {
+            startDate = startDay;
+            julianStartDay = startDay.DayOfYear;
+            weekID = CoreSystem.GenerateWeekID();
         }
 
         public DailySchedule SelectDay(int i)
