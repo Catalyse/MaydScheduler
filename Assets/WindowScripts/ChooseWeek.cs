@@ -49,7 +49,7 @@ namespace CoreSys
 
         public void WeekSelected(int index)
         {
-            parent.
+            parent.WeeklyConfig(weekList);
         }
 
         //This method converts the current day of the week into a value needed to get to the start of the next week

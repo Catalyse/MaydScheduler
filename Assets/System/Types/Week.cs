@@ -17,7 +17,7 @@ namespace CoreSys
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         //Position type(refer to CoreSystem for definition)
         //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
-        public Dictionary<int, Dictionary<int, Dictionary<int, int>>> staffingNeeds = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
+        public Dictionary<int, Dictionary<int, int>> staffingNeeds = new Dictionary<int, Dictionary<int, int>>();
         // Use this for initialization
 
         /// <summary>
@@ -71,9 +71,20 @@ namespace CoreSys
             }
         }
 
-        public void FillWeekDays(Dictionary<int, DailySchedule> days)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="openNeeds"> Dictionary<Day, Need> </param>
+        /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
+        public void SetNeeds(int position, Dictionary<int, int> openNeeds, Dictionary<int, int> closeNeeds)
         {
 
+        }
+
+        public void FillWeekDays(Dictionary<int, DailySchedule> days)
+        {
+            //idk wtf this is
         }
 
         //Set the basics of the week on a day to day basis.

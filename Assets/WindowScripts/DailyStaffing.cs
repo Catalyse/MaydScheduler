@@ -19,7 +19,7 @@ namespace CoreSys
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
         public Text suText, mText, tuText, wText, thText, fText, saText;
         public PrefabList prefabs;
-        private int currentSubmit;
+        private int currentSubmit, maxSubmit;
 
         public DailyStaffing() { }
 
@@ -136,12 +136,13 @@ namespace CoreSys
 
         private void SubmitWeek()
         {
-            //CalculateHourlyNeed();
+            
         }
 
         public void SetWeeklyConfig()
-        {            
-
+        {
+            currentSubmit = 0;
+            maxSubmit = CoreSystem.positionList.Count;
 
             if (parent.currentWeek.sunday.activeDay)
             {
