@@ -19,14 +19,14 @@ namespace CoreSys.Windows
         public void StartSchedule()
         {
             chooseWeek.SetActive(true);
-            chooseWeek.GetComponent<ChooseWeek>().FindWeeks();
+            chooseWeek.GetComponent<ChooseWeek>().FindWeeks();//Find weeks to schedule
         }
 
         public void WeeklyConfig(Week week)
         {
+            chooseWeek.SetActive(false);
             currentWeek = week;
             weeklyConfig.SetActive(true);
-            chooseWeek.SetActive(false);
         }
 
         public void DailyStaffing()
@@ -37,13 +37,8 @@ namespace CoreSys.Windows
 
         public void GenerateSchedule()
         {
+            dailyStaffing.SetActive(false);
             SchedulingAlgorithm.GenerateSchedule(currentWeek);
-        }
-
-        private void SetupWeek()
-        {
-            dailyStaffing.gameObject.SetActive(true);
-            weeklyConfig.gameObject.SetActive(true);
         }
 
         public void DrawSchedule(Week schedule)

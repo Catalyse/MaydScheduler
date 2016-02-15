@@ -16,8 +16,9 @@ namespace CoreSys
         public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily)
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         //Position type(refer to CoreSystem for definition)
-        //Dictionary<(Position), Dictionary<Day, Dictionary<Hour, Need>>>
-        public Dictionary<int, Dictionary<int, int>> staffingNeeds = new Dictionary<int, Dictionary<int, int>>();
+        //Dictionary<(Position), Dictionary<Day, (need(int))>>
+        public Dictionary<int, Dictionary<int, int>> openNeeds = new Dictionary<int, Dictionary<int, int>>();
+        public Dictionary<int, Dictionary<int, int>> closeNeeds = new Dictionary<int, Dictionary<int, int>>();
         // Use this for initialization
 
         /// <summary>
@@ -79,7 +80,8 @@ namespace CoreSys
         /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
         public void SetNeeds(int position, Dictionary<int, int> openNeeds, Dictionary<int, int> closeNeeds)
         {
-
+            this.openNeeds[position] = openNeeds;
+            this.closeNeeds[position] = closeNeeds;
         }
 
         public void FillWeekDays(Dictionary<int, DailySchedule> days)

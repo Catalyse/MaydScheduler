@@ -17,8 +17,7 @@ namespace CoreSys
         public GameObject sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         public Text suOpenText, moOpenText, tuOpenText, weOpenText, thOpenText, frOpenText, saOpenText;
         public Text suCloseText, moCloseText, tuCloseText, weCloseText, thCloseText, frCloseText, saCloseText;
-        public Text suText, mText, tuText, wText, thText, fText, saText;
-        public PrefabList prefabs;
+        public Text suText, mText, tuText, wText, thText, fText, saText, position;//for errors // for current position
         private int currentSubmit, maxSubmit;
 
         public DailyStaffing() { }
@@ -136,13 +135,69 @@ namespace CoreSys
 
         private void SubmitWeek()
         {
-            
+            parent.currentWeek.SetNeeds(currentSubmit, GenOpenDict(), GenCloseDict());
+
+            if (currentSubmit < maxSubmit)
+            {
+                currentSubmit++;
+                position.text = CoreSystem.GetPositionName(currentSubmit);
+                ClearFields();
+            }
+            else//last position met 
+            {
+                parent.GenerateSchedule();
+            }
+        }
+
+        private Dictionary<int, int> GenOpenDict()
+        {
+            Dictionary<int, int> newDict = new Dictionary<int, int>();
+            newDict.Add(0, int.Parse(sundayOpen.text));
+            newDict.Add(1, int.Parse(mondayOpen.text));
+            newDict.Add(2, int.Parse(tuesdayOpen.text));
+            newDict.Add(3, int.Parse(wednesdayOpen.text));
+            newDict.Add(4, int.Parse(thursdayOpen.text));
+            newDict.Add(5, int.Parse(fridayOpen.text));
+            newDict.Add(6, int.Parse(saturdayOpen.text));
+            return newDict;
+        }
+
+        private Dictionary<int, int> GenCloseDict()
+        {
+            Dictionary<int, int> newDict = new Dictionary<int, int>();
+            newDict.Add(0, int.Parse(sundayClose.text));
+            newDict.Add(1, int.Parse(mondayClose.text));
+            newDict.Add(2, int.Parse(tuesdayClose.text));
+            newDict.Add(3, int.Parse(wednesdayClose.text));
+            newDict.Add(4, int.Parse(thursdayClose.text));
+            newDict.Add(5, int.Parse(fridayClose.text));
+            newDict.Add(6, int.Parse(saturdayClose.text));
+            return newDict;
+        }
+
+        private void ClearFields()
+        {
+            sundayOpen.text = "";
+            sundayClose.text = "";
+            mondayOpen.text = "";
+            mondayClose.text = "";
+            tuesdayOpen.text = "";
+            tuesdayClose.text = "";
+            wednesdayOpen.text = "";
+            wednesdayClose.text = "";
+            thursdayOpen.text = "";
+            thursdayClose.text = "";
+            fridayOpen.text = "";
+            fridayClose.text = "";
+            saturdayOpen.text = "";
+            saturdayClose.text = "";
         }
 
         public void SetWeeklyConfig()
         {
             currentSubmit = 0;
-            maxSubmit = CoreSystem.positionList.Count;
+            maxSubmit = CoreSystem.positionList.Count - 1;
+            position.text = CoreSystem.GetPositionName(currentSubmit);
 
             if (parent.currentWeek.sunday.activeDay)
             {
