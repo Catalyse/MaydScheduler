@@ -16,6 +16,11 @@ namespace CoreSys.Windows
 
         public ScheduleWindow() { }
 
+        public void Start()
+        {
+            StartSchedule();
+        }
+
         public void StartSchedule()
         {
             chooseWeek.SetActive(true);
@@ -33,6 +38,7 @@ namespace CoreSys.Windows
         {
             weeklyConfig.SetActive(false);
             dailyStaffing.SetActive(true);
+            dailyStaffing.GetComponent<DailyStaffing>().SetWeeklyConfig();
         }
 
         public void GenerateSchedule()

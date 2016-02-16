@@ -17,7 +17,7 @@ namespace CoreSys.Employees
         public int shiftPreference;
         public float skillLevel;
         public bool active, overtimeAllowed;
-        public Availability availability = new Availability();//Holds 7 day week and hourly availability.
+        public Availability availability { get; set; }
         //set if prior week had 3 close 2 open
         //public bool priorWeek32;//Depreciated(Or at least im not using it for now because its biast)
 

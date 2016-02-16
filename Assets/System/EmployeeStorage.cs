@@ -60,15 +60,18 @@ namespace CoreSys.Employees
             Employee next;
             do
             {
-                for (int i = 0; i < employeeList.Count - 1; i++)
+                if (employeeList.Count > 1)
                 {
-                    current = employeeList[i];
-                    next = employeeList[i + 1];
-                    if (current.empLastName.CompareTo(next.empLastName) > 0)
+                    for (int i = 0; i < employeeList.Count - 1; i++)
                     {
-                        employeeList[i] = next;
-                        employeeList[i + 1] = current;
-                        sortAgain = true;
+                        current = employeeList[i];
+                        next = employeeList[i + 1];
+                        if (current.empLastName.CompareTo(next.empLastName) > 0)
+                        {
+                            employeeList[i] = next;
+                            employeeList[i + 1] = current;
+                            sortAgain = true;
+                        }
                     }
                 }
             }

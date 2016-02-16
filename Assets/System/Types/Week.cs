@@ -34,6 +34,7 @@ namespace CoreSys
         {
             julianStartDay = startDay;
             weekID = CoreSystem.GenerateWeekID();
+            Init();
         }
 
         /// <summary>
@@ -46,6 +47,7 @@ namespace CoreSys
             startDate = startDay;
             julianStartDay = startDay.DayOfYear;
             weekID = CoreSystem.GenerateWeekID();
+            Init();
         }
 
         public DailySchedule SelectDay(int i)
@@ -101,6 +103,17 @@ namespace CoreSys
             friday.SetBaseInfo(fri, fStartHour, fEndHour);
             saturday.SetBaseInfo(sat, saStartHour, saEndHour);
             //End bool set
+        }
+
+        private void Init()
+        {
+            sunday = new DailySchedule(startDate);
+            monday = new DailySchedule(startDate.AddDays(1));
+            tuesday = new DailySchedule(startDate.AddDays(2));
+            wednesday = new DailySchedule(startDate.AddDays(3));
+            thursday = new DailySchedule(startDate.AddDays(4));
+            friday = new DailySchedule(startDate.AddDays(5));
+            saturday = new DailySchedule(startDate.AddDays(6));
         }
     }
 }

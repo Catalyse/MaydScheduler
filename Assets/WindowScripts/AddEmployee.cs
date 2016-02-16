@@ -110,7 +110,16 @@ namespace CoreSys.Employees
         private void SubmitEmployee()
         {
             Employee newEmp = new Employee();
-            //newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), solutions, fulltime, sun, mon, tue, wed, thu, fri, sat);
+            int position, targetHours;
+            if(solutions) //TODO this window needs to be fixed and show available positions with a dropdown
+                position = 0;
+            else
+                position = 1;
+            if (fulltime)
+                targetHours = 40;
+            else
+                targetHours = 25;
+            newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), position, targetHours, sun, mon, tue, wed, thu, fri, sat);
             ClearAllFields();
             empManager.AddEmployee(newEmp);
         }

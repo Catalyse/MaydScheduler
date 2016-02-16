@@ -18,10 +18,5 @@ namespace CoreSys.Windows
             this.parent = parent;
             weekBarText.text = barText;
         }
-
-        public void BarClicked()
-        {
-            parent.WeekSelected(weekIndex);
-        }
     }
 }

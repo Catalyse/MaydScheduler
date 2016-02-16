@@ -7,7 +7,13 @@ namespace CoreSys
 {
     public class Availability
     {
-        public Day sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        public Day sunday { get; set; } 
+        public Day monday { get; set; }
+        public Day tuesday { get; set; }
+        public Day wednesday { get; set; }
+        public Day thursday{ get; set; }
+        public Day friday { get; set; }
+        public Day saturday { get; set; }
 
         public Availability() { }
         public Availability(Availability copy)

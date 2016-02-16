@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,10 +11,12 @@ namespace CoreSys
     {
         public ScheduleWindow parent;
         public GameObject weekBarParent;
+        public ToggleGroup toggleGroup;
         public PrefabList prefabs;
         private int weekDistance = 4;//This is how many weeks forward it will check/generate
         public DateTime date;
         public List<Week> weekList = new List<Week>();
+        public List<Toggle> toggleList = new List<Toggle>();
 
         /// <summary>
         /// This method will using the current date and find all weeks moving forward within a limited timeframe.
@@ -24,7 +27,7 @@ namespace CoreSys
             for (int i = 0; i < weekDistance; i++)
             {
                 int daysToFirstWeek = DayOfWeekValue(date.DayOfWeek);
-                date.AddDays(daysToFirstWeek);
+                date = date.AddDays(daysToFirstWeek);
                 Week tempWeek = CoreSystem.FindWeek(date);
                 if (tempWeek == null)//Week has not been created, generate
                 {
@@ -42,12 +45,27 @@ namespace CoreSys
             {
                 GameObject temp = WindowInstantiator.SpawnWindow(prefabs.prefabList[0], weekBarParent);
                 WeekBar tempWeekBar = temp.GetComponent<WeekBar>();
+                Toggle tempToggle = temp.GetComponent<Toggle>();
+                tempToggle.group = toggleGroup;
+                toggleList.Add(tempToggle);
                 string weekText = ("Week of " + weekList[i].startDate.ToShortDateString());
                 tempWeekBar.SetBar(this, i, weekText);
             }
         }
 
-        public void WeekSelected(int index)
+        public void Submit()
+        {
+            for (int i = 0; i < toggleList.Count; i++)
+            {
+                if (toggleList[i].isOn)
+                {
+                    WeekSelected(i);
+                    return;
+                }
+            }
+        }
+
+        private void WeekSelected(int index)
         {
             parent.WeeklyConfig(weekList[index]);
         }
@@ -58,7 +76,7 @@ namespace CoreSys
             switch (day)
             {
                 case DayOfWeek.Sunday:
-                    return 0;
+                    return 7;
                 case DayOfWeek.Monday:
                     return 6;
                 case DayOfWeek.Tuesday:
