@@ -62,6 +62,7 @@ namespace CoreSys.Employees
             {
                 if (employeeList.Count > 1)
                 {
+                    sortAgain = false;
                     for (int i = 0; i < employeeList.Count - 1; i++)
                     {
                         current = employeeList[i];

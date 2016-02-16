@@ -21,7 +21,10 @@ namespace CoreSys.Employees
         //set if prior week had 3 close 2 open
         //public bool priorWeek32;//Depreciated(Or at least im not using it for now because its biast)
 
-        public Employee() { }//Default for serialization
+        public Employee() 
+        {
+            availability = new Availability();
+        }//Default for serialization
 
         public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {

@@ -24,7 +24,7 @@ namespace CoreSys.Employees
         public void EmployeeBarSet(Employee emp)
         {
             employee = emp;
-            empName = emp.empFirstName + emp.empLastName;
+            empName = emp.empLastName + ", " + emp.empFirstName;
             id = emp.empID;
             title = CoreSystem.GetPositionName(emp.position);
             if (emp.active)
