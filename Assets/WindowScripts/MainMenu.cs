@@ -11,11 +11,19 @@ namespace CoreSys.Windows
         /// List:
         /// Index   || Name                   || Category
         /// 0       || DailyHourlyStaffing    || Schedule Creation
-        /// 1.
+        /// 1
         /// 2       || EmpMGMTWindow          || Employee Management
         /// </summary>
         public PrefabList prefabs;
         public GameObject exitPrompt;
+
+        public void Start()
+        {
+            if (CoreSystem.coreSaveLoaded == false)
+            {
+                WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);
+            }
+        }
 
         public void NewWeek()
         {

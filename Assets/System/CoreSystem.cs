@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Errors;
+using CoreSys.Windows;
 
 namespace CoreSys
 {
@@ -21,12 +22,14 @@ namespace CoreSys
     public static class CoreSystem
     {
         private static CoreSaveType coreSave;
-        public static bool systemInitialized; 
-        public static int currentWeekID;
-        public static int defaultShift = 8, minShift = 4;//Need to make config window
+        public static bool coreSaveLoaded = false;
+        //public static bool systemInitialized; 
+        //public static int currentWeekID;
+        public static int defaultShift, minShift, maxShift;//Need to make config window
+        public static int defaultOpenAvail, defaultCloseAvail;
         public static float skillLevelCap;
         public static Dictionary<int, string> positionList = new Dictionary<int, string>();
-        public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
+        //public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
         //public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
         public static Dictionary<DateTime, Week> weekList = new Dictionary<DateTime, Week>();//uses a datetime to define a week, beginning with Sunday the start date
         public static List<string> savedFileList = new List<string>();
@@ -39,8 +42,16 @@ namespace CoreSys
 
         public static void LoadCoreSave()
         {
-            coreSave = new CoreSaveType();
-            coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
+            if (CheckIfFileExists("CoreSaveFile"))
+            {
+                coreSave = new CoreSaveType();
+                coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
+                coreSaveLoaded = true;
+            }
+            else
+            {
+                coreSaveLoaded = false;
+            }
         }
 
         public static Week FindWeek(DateTime weekStartDate)
@@ -49,51 +60,6 @@ namespace CoreSys
                 return weekList[weekStartDate];
             else
                 return null;
-        }
-
-        /// <summary>
-        /// Likely wont use this
-        /// </summary>
-        ///
-        /*
-        private static void SystemInitialization()
-        {
-            //use this to find the first day of the week of the year
-            int yearLength = 365;
-            defaultShift = 8;
-            DateTime dt = new DateTime(DateTime.Now.Year, 1, 1);
-            DayOfWeek yearStart = dt.DayOfWeek;
-            int startDay = (int)yearStart;
-            if (DateTime.IsLeapYear(DateTime.Now.Year))
-                yearLength = 366;
-            for (int i = 1; i < yearLength; i++)
-            {
-                //                          TODO FIX THIS SHIT (Cause hardcoding shit is bad mkay)
-                DateTime date = new DateTime(DateTime.Now.Year, 1, 1).AddDays(i - 1);
-                DailySchedule newDay = new DailySchedule(date);
-                dayList.Add(i, newDay);
-            }
-
-            int startDayOfWeek = (int)dt.DayOfWeek;
-            int firstWeekDate = 7 - startDayOfWeek;
-            int j = firstWeekDate;
-            int k = 0;//Keep track of which week we are in (from 0 to 51)
-
-            for (; j < yearLength; j += 7)
-            {
-                Week newWeek = new Week(j);
-                weekList.Add(k, newWeek);
-                k++;
-            }
-
-            GenerationDate = DateTime.Now.ToString();
-        }*/
-
-        public static int GenerateWeekID()
-        {
-            int returnID = currentWeekID;
-            currentWeekID++;
-            return returnID;
         }
 
         public static string GetPositionName(int type)
@@ -126,6 +92,17 @@ namespace CoreSys
                 return true;
             else
                 return false;
+        }
+
+        public static int ConvertToMilitaryTime(int time)
+        {
+            if (time <= 12)
+            {
+                time += 12;
+                return time;
+            }
+            else
+                return time;
         }
 
         //FILE SERIALIZATION ========================================================================================

@@ -26,14 +26,15 @@ namespace CoreSys.Employees
             availability = new Availability();
         }//Default for serialization
 
-        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
+        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, int skill, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat)
         {
+            availability = new Availability();
             active = true;
             overtimeAllowed = false;
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
-            //priorWeek32 = CoreSystem.RandomBool();//Depreciated
+            skillLevel = skill;
             position = pos;
             hourTarget = targetHours;
             availability.sunday = new Day(sun);
@@ -46,14 +47,15 @@ namespace CoreSys.Employees
             shiftPreference = 8;
         }
         
-        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat, int shiftPref)
+        public void SetEmployee(string lastName, string firstName, int id, int pos, int targetHours, int skill, bool sun, bool mon, bool tue, bool wed, bool thu, bool fri, bool sat, int shiftPref)
         {
+            availability = new Availability();
             active = true;
             overtimeAllowed = false;
             empLastName = lastName;
             empFirstName = firstName;
             empID = id;
-            //priorWeek32 = CoreSystem.RandomBool();//Depreciated
+            skillLevel = skill;
             position = pos;
             hourTarget = targetHours;
             availability.sunday = new Day(sun);

@@ -7,11 +7,10 @@ namespace CoreSys.Employees
 {
     public class EmployeeBar : MonoBehaviour
     {
-        public Text BarText;
+        public Text name, title, id, status;
         public Employee employee;
-        private string empName, title, statustext;
-        private int id, status;
         public Toggle barToggle;
+        private int tempStatus;
 
         public EmployeeBar() { }
         /// <summary>
@@ -24,30 +23,29 @@ namespace CoreSys.Employees
         public void EmployeeBarSet(Employee emp)
         {
             employee = emp;
-            empName = emp.empLastName + ", " + emp.empFirstName;
-            id = emp.empID;
-            title = CoreSystem.GetPositionName(emp.position);
+            name.text = emp.empLastName + ", " + emp.empFirstName;
+            id.text = emp.empID.ToString();
+            title.text = CoreSystem.GetPositionName(emp.position);
             if (emp.active)
             {
                 if (emp.hourTarget >= 40)
-                    status = 2;
+                    tempStatus = 2;
                 else
-                    status = 1;
+                    tempStatus = 1;
             }
             else
-                status = 0;
+                tempStatus = 0;
             SetBarText();
         }
 
         private void SetBarText()
         {
-            if (status == 0)
-                statustext = "Inactive";
-            else if (status == 1)
-                statustext = "Part Time";
-            else if (status == 2)
-                statustext = "Full Time";
-            BarText.text = empName + " || " + title + " || " + id + " || " + statustext;
+            if (tempStatus == 0)
+                status.text = "Inactive";
+            else if (tempStatus == 1)
+                status.text = "Part Time";
+            else if (tempStatus == 2)
+                status.text = "Full Time";
         }
         private void SetBarColor()
         {

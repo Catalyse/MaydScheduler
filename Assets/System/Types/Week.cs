@@ -9,7 +9,6 @@ namespace CoreSys
 {
     public class Week
     {
-        public int weekID;
         public int julianStartDay;
         public DateTime startDate;
         public int earliestStart, latestEnd;
@@ -33,7 +32,6 @@ namespace CoreSys
         public Week(int startDay)
         {
             julianStartDay = startDay;
-            weekID = CoreSystem.GenerateWeekID();
             Init();
         }
 
@@ -46,7 +44,6 @@ namespace CoreSys
         {
             startDate = startDay;
             julianStartDay = startDay.DayOfYear;
-            weekID = CoreSystem.GenerateWeekID();
             Init();
         }
 
