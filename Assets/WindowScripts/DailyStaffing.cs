@@ -149,9 +149,9 @@ namespace CoreSys
             }
         }
 
-        private Dictionary<int, int> GenOpenDict()
+        private SerializableDictionary<int, int> GenOpenDict()
         {
-            Dictionary<int, int> newDict = new Dictionary<int, int>();
+            SerializableDictionary<int, int> newDict = new SerializableDictionary<int, int>();
             newDict.Add(0, int.Parse(sundayOpen.text));
             newDict.Add(1, int.Parse(mondayOpen.text));
             newDict.Add(2, int.Parse(tuesdayOpen.text));
@@ -162,9 +162,9 @@ namespace CoreSys
             return newDict;
         }
 
-        private Dictionary<int, int> GenCloseDict()
+        private SerializableDictionary<int, int> GenCloseDict()
         {
-            Dictionary<int, int> newDict = new Dictionary<int, int>();
+            SerializableDictionary<int, int> newDict = new SerializableDictionary<int, int>();
             newDict.Add(0, int.Parse(sundayClose.text));
             newDict.Add(1, int.Parse(mondayClose.text));
             newDict.Add(2, int.Parse(tuesdayClose.text));

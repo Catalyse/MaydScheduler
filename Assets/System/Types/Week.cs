@@ -16,8 +16,8 @@ namespace CoreSys
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
         //Position type(refer to CoreSystem for definition)
         //Dictionary<(Position), Dictionary<Day, (need(int))>>
-        public Dictionary<int, Dictionary<int, int>> openNeeds = new Dictionary<int, Dictionary<int, int>>();
-        public Dictionary<int, Dictionary<int, int>> closeNeeds = new Dictionary<int, Dictionary<int, int>>();
+        public SerializableDictionary<int, SerializableDictionary<int, int>> openNeeds = new SerializableDictionary<int, SerializableDictionary<int, int>>();
+        public SerializableDictionary<int, SerializableDictionary<int, int>> closeNeeds = new SerializableDictionary<int, SerializableDictionary<int, int>>();
         // Use this for initialization
 
         /// <summary>
@@ -51,19 +51,19 @@ namespace CoreSys
         {
             switch (i)
             {
-                case 1:
+                case 0:
                     return sunday;
-                case 2:
+                case 1:
                     return monday;
-                case 3:
+                case 2:
                     return tuesday;
-                case 4:
+                case 3:
                     return wednesday;
-                case 5:
+                case 4:
                     return thursday;
-                case 6:
+                case 5:
                     return friday;
-                case 7:
+                case 6:
                     return saturday;
                 default:
                     Debug.Log("Default case chosen! || Week.cs || SelectDay");
@@ -77,7 +77,7 @@ namespace CoreSys
         /// <param name="position"></param>
         /// <param name="openNeeds"> Dictionary<Day, Need> </param>
         /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
-        public void SetNeeds(int position, Dictionary<int, int> openNeeds, Dictionary<int, int> closeNeeds)
+        public void SetNeeds(int position, SerializableDictionary<int, int> openNeeds, SerializableDictionary<int, int> closeNeeds)
         {
             this.openNeeds[position] = openNeeds;
             this.closeNeeds[position] = closeNeeds;

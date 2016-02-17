@@ -9,8 +9,9 @@ namespace CoreSys.Windows
     public class SystemConfig : Window
     {
         public GameObject addEmpPos;
+        public Text firstRun;
         public InputField shiftLength, minShift, maxShift, maxSkill, defaultOpen, defaultClose;
-        public Dictionary<int, string> positionList = new Dictionary<int, string>();
+        public SerializableDictionary<int, string> positionList = new SerializableDictionary<int, string>();
 
         public void Start()
         {
@@ -24,6 +25,25 @@ namespace CoreSys.Windows
                 defaultClose.text = CoreSystem.defaultCloseAvail.ToString();
                 positionList = CoreSystem.positionList;
             }
+            else
+            {
+                firstRun.enabled = true;
+            }
+        }
+
+        private void ErrorTextFade()
+        {
+            //TODO this
+        }
+
+        public void ValidateSettings()
+        {
+            //TODO this
+        }
+
+        public void EnableAddPosition()
+        {
+            addEmpPos.SetActive(true);
         }
 
         public void SubmitSettings()
@@ -35,6 +55,7 @@ namespace CoreSys.Windows
             CoreSystem.defaultOpenAvail = int.Parse(defaultOpen.text);
             CoreSystem.defaultCloseAvail = int.Parse(defaultClose.text);
             CoreSystem.positionList = positionList;
+            CoreSystem.CoreSettingsChanged();
             Destroy(this.gameObject);
         }
     }

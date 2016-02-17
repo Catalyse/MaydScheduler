@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace CoreSys
 {
     public class CoreSaveType
     {
-        public bool systemInitialized;
-        public int currentWeekID;
-        public int defaultShift;
-        public Dictionary<int, string> positionList = new Dictionary<int, string>();
-        public Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
-        public Dictionary<int, Week> weekList = new Dictionary<int, Week>();
+        public int defaultShift, minShift, maxShift;//Need to make config window
+        public int defaultOpenAvail, defaultCloseAvail;
+        public float skillLevelCap;
+        public SerializableDictionary<int, string> positionList = new SerializableDictionary<int, string>();
+        public SerializableDictionary<DateTime, Week> weekList = new SerializableDictionary<DateTime, Week>();
         public List<string> savedFileList = new List<string>();
         public string GenerationDate;
+
+        public CoreSaveType() { }
     }
 }

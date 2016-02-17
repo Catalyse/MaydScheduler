@@ -16,10 +16,18 @@ namespace CoreSys
         {
             GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
             CheckTempDaysOff();
+            employeeDictionary.Add(0, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(1, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(2, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(3, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(4, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(5, new List<EmployeeScheduleWrapper>());
+            employeeDictionary.Add(6, new List<EmployeeScheduleWrapper>());
         }
 
         public static Week GenerateSchedule(Week week)
         {
+            GenerateScheduleSetup(week, EmployeeStorage.employeeList);
             for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
             {
                 for (int d = 0; d < 7; d++)
@@ -35,6 +43,7 @@ namespace CoreSys
                     //Open loop
                     for (int i = 0; i < priorityList.Count; i++)
                     {
+                        pickList.Add(i, new List<int>());
                         if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
@@ -120,7 +129,7 @@ namespace CoreSys
         private static int GenerateRandomNumber(List<int> pickList, int max)
         {
             int temp = 0;
-            if(pickList.Count >= max)//This is a partial fix.  This will check to see if the max is less than the number of picks already made theoretically skipping 
+            if(pickList.Count < max)//This is a partial fix.  This will check to see if the max is less than the number of picks already made theoretically skipping 
             {
                 while(true)//yes i know infinite stfu //TODO FIX THIS
                 {
@@ -215,9 +224,10 @@ namespace CoreSys
             //All categories are based on default shift
             for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
             {
+                returnDictionary.Add(i, new List<EmployeeScheduleWrapper>());
                 for (int j = 0; j < masterList.Count; j++)
                 {
-                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours > (CoreSystem.defaultShift * i))
+                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours >= (CoreSystem.defaultShift * i))
                     {
                         returnDictionary[i].Add(masterList[j]);
                     }

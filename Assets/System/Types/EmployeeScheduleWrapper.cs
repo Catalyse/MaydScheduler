@@ -11,9 +11,9 @@ namespace CoreSys
         public int maxHours;
         public int scheduledHours;
         //The availability is copied onto this so that it can be modified without effecting the set availability in the employee type
-        public Availability availability;
-        public bool availabilityModified;
-        public List<Shift> shiftList;
+        public Availability availability = new Availability();
+        public bool availabilityModified = false;
+        public List<Shift> shiftList = new List<Shift>();
 
         public EmployeeScheduleWrapper()
         {

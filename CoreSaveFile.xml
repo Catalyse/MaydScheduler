@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<CoreSaveType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <defaultShift>8</defaultShift>
+  <minShift>4</minShift>
+  <maxShift>10</maxShift>
+  <defaultOpenAvail>8</defaultOpenAvail>
+  <defaultCloseAvail>22</defaultCloseAvail>
+  <skillLevelCap>10</skillLevelCap>
+  <positionList>
+    <item>
+      <key>
+        <int>0</int>
+      </key>
+      <value>
+        <string>Solutions Specialist</string>
+      </value>
+    </item>
+    <item>
+      <key>
+        <int>1</int>
+      </key>
+      <value>
+        <string>Experience Specialist</string>
+      </value>
+    </item>
+  </positionList>
+  <weekList>
+    <item>
+      <key>
+        <dateTime>2016-02-21T13:21:28.4124623-07:00</dateTime>
+      </key>
+      <value>
+        <Week>
+          <julianStartDay>52</julianStartDay>
+          <startDate>2016-02-21T13:21:28.4124623-07:00</startDate>
+          <earliestStart>0</earliestStart>
+          <latestEnd>0</latestEnd>
+          <sunday>
+            <date>2016-02-21T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Sunday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </sunday>
+          <monday>
+            <date>2016-02-22T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Monday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </monday>
+          <tuesday>
+            <date>2016-02-23T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Tuesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </tuesday>
+          <wednesday>
+            <date>2016-02-24T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Wednesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </wednesday>
+          <thursday>
+            <date>2016-02-25T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Thursday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </thursday>
+          <friday>
+            <date>2016-02-26T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Friday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </friday>
+          <saturday>
+            <date>2016-02-27T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Saturday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </saturday>
+          <openNeeds />
+          <closeNeeds />
+        </Week>
+      </value>
+    </item>
+    <item>
+      <key>
+        <dateTime>2016-02-28T13:21:28.4124623-07:00</dateTime>
+      </key>
+      <value>
+        <Week>
+          <julianStartDay>59</julianStartDay>
+          <startDate>2016-02-28T13:21:28.4124623-07:00</startDate>
+          <earliestStart>0</earliestStart>
+          <latestEnd>0</latestEnd>
+          <sunday>
+            <date>2016-02-28T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Sunday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </sunday>
+          <monday>
+            <date>2016-02-29T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Monday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </monday>
+          <tuesday>
+            <date>2016-03-01T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Tuesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </tuesday>
+          <wednesday>
+            <date>2016-03-02T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Wednesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </wednesday>
+          <thursday>
+            <date>2016-03-03T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Thursday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </thursday>
+          <friday>
+            <date>2016-03-04T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Friday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </friday>
+          <saturday>
+            <date>2016-03-05T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Saturday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </saturday>
+          <openNeeds />
+          <closeNeeds />
+        </Week>
+      </value>
+    </item>
+    <item>
+      <key>
+        <dateTime>2016-03-06T13:21:28.4124623-07:00</dateTime>
+      </key>
+      <value>
+        <Week>
+          <julianStartDay>66</julianStartDay>
+          <startDate>2016-03-06T13:21:28.4124623-07:00</startDate>
+          <earliestStart>0</earliestStart>
+          <latestEnd>0</latestEnd>
+          <sunday>
+            <date>2016-03-06T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Sunday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </sunday>
+          <monday>
+            <date>2016-03-07T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Monday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </monday>
+          <tuesday>
+            <date>2016-03-08T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Tuesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </tuesday>
+          <wednesday>
+            <date>2016-03-09T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Wednesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </wednesday>
+          <thursday>
+            <date>2016-03-10T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Thursday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </thursday>
+          <friday>
+            <date>2016-03-11T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Friday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </friday>
+          <saturday>
+            <date>2016-03-12T13:21:28.4124623-07:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Saturday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </saturday>
+          <openNeeds />
+          <closeNeeds />
+        </Week>
+      </value>
+    </item>
+    <item>
+      <key>
+        <dateTime>2016-03-13T13:21:28.4124623-06:00</dateTime>
+      </key>
+      <value>
+        <Week>
+          <julianStartDay>73</julianStartDay>
+          <startDate>2016-03-13T13:21:28.4124623-06:00</startDate>
+          <earliestStart>0</earliestStart>
+          <latestEnd>0</latestEnd>
+          <sunday>
+            <date>2016-03-13T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Sunday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </sunday>
+          <monday>
+            <date>2016-03-14T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Monday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </monday>
+          <tuesday>
+            <date>2016-03-15T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Tuesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </tuesday>
+          <wednesday>
+            <date>2016-03-16T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Wednesday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </wednesday>
+          <thursday>
+            <date>2016-03-17T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Thursday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </thursday>
+          <friday>
+            <date>2016-03-18T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Friday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </friday>
+          <saturday>
+            <date>2016-03-19T13:21:28.4124623-06:00</date>
+            <activeDay>false</activeDay>
+            <openTime>0</openTime>
+            <closeTime>0</closeTime>
+            <dayOfWeek>Saturday</dayOfWeek>
+            <employeeList />
+            <shiftDictionary />
+          </saturday>
+          <openNeeds />
+          <closeNeeds />
+        </Week>
+      </value>
+    </item>
+  </weekList>
+  <savedFileList />
+  <GenerationDate>2/17/2016 1:21:55 PM</GenerationDate>
+</CoreSaveType>

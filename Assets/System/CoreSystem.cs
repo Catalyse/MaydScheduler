@@ -28,10 +28,10 @@ namespace CoreSys
         public static int defaultShift, minShift, maxShift;//Need to make config window
         public static int defaultOpenAvail, defaultCloseAvail;
         public static float skillLevelCap;
-        public static Dictionary<int, string> positionList = new Dictionary<int, string>();
+        public static SerializableDictionary<int, string> positionList = new SerializableDictionary<int, string>();
         //public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
         //public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
-        public static Dictionary<DateTime, Week> weekList = new Dictionary<DateTime, Week>();//uses a datetime to define a week, beginning with Sunday the start date
+        public static SerializableDictionary<DateTime, Week> weekList = new SerializableDictionary<DateTime, Week>();
         public static List<string> savedFileList = new List<string>();
         public static string GenerationDate;
 
@@ -40,18 +40,50 @@ namespace CoreSys
             Debug.Log("Debug Stop!");//Throw debug marker here
         }
 
+        /// <summary>
+        /// This method is used to load default system settings from file
+        /// </summary>
         public static void LoadCoreSave()
         {
             if (CheckIfFileExists("CoreSaveFile"))
             {
                 coreSave = new CoreSaveType();
                 coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
+                defaultShift = coreSave.defaultShift;
+                defaultOpenAvail = coreSave.defaultOpenAvail;
+                defaultCloseAvail = coreSave.defaultCloseAvail;
+                minShift = coreSave.minShift;
+                maxShift = coreSave.maxShift;
+                skillLevelCap = coreSave.skillLevelCap;
+                positionList = coreSave.positionList;
+                weekList = coreSave.weekList;
+                savedFileList = coreSave.savedFileList;
+                GenerationDate = DateTime.Now.ToString();
                 coreSaveLoaded = true;
+                Debug.Log("CoreSave File Loaded!");
             }
             else
             {
                 coreSaveLoaded = false;
+                Debug.Log("CoreSave File not found!");
             }
+        }
+
+        public static void CoreSettingsChanged()
+        {
+            coreSave = new CoreSaveType();
+            coreSave.defaultShift = defaultShift;
+            coreSave.defaultOpenAvail = defaultOpenAvail;
+            coreSave.defaultCloseAvail = defaultCloseAvail;
+            coreSave.minShift = minShift;
+            coreSave.maxShift = maxShift;
+            coreSave.skillLevelCap = skillLevelCap;
+            coreSave.positionList = positionList;
+            coreSave.weekList = weekList;
+            coreSave.savedFileList = savedFileList;
+            coreSave.GenerationDate = DateTime.Now.ToString();
+            SerializeFile<CoreSaveType>(coreSave, "CoreSaveFile");
+            Debug.Log("CoreSave File Modified! CoreSave File Saved!");
         }
 
         public static Week FindWeek(DateTime weekStartDate)
@@ -108,14 +140,22 @@ namespace CoreSys
         //FILE SERIALIZATION ========================================================================================
         public static bool CheckIfFileExists(string fileName)
         {
-            if(savedFileList.Contains(fileName))
+            fileName = fileName + ".xml";
+            try
+            {
+                StreamReader reader = new StreamReader(fileName);
+                reader.Close();
                 return true;
-            else
+            }
+            catch//filenotfound
+            {
                 return false;
+            }
         }
 
         public static void SerializeFile<T>(T objectToSerialize, string fileName)
         {
+            fileName = fileName + ".xml";
             try
             {
                 XmlDocument xmlDocument = new XmlDocument();
