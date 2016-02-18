@@ -49,7 +49,10 @@ namespace CoreSys
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
                                 pickList[i] = GenerateShiftOpen(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                day.openScheduled[pos]++;
+                                if (day.openScheduled.ContainsKey(pos))
+                                    day.openScheduled[pos]++;
+                                else
+                                    day.openScheduled.Add(pos, 1);//Create dictionary entry and add first value
                                 if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
                             }
@@ -66,7 +69,10 @@ namespace CoreSys
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
                                 pickList[i] = GenerateShiftClose(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                day.closeScheduled[pos]++;
+                                if (day.closeScheduled.ContainsKey(pos))
+                                    day.closeScheduled[pos]++;
+                                else
+                                    day.closeScheduled.Add(pos, 1);
                                 if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
                             }

@@ -81,6 +81,13 @@ namespace CoreSys
         {
             this.openNeeds[position] = openNeeds;
             this.closeNeeds[position] = closeNeeds;
+            sunday.openShifts[position] = openNeeds[0];
+            monday.openShifts[position] = openNeeds[1];
+            tuesday.openShifts[position] = openNeeds[2];
+            wednesday.openShifts[position] = openNeeds[3];
+            thursday.openShifts[position] = openNeeds[4];
+            friday.openShifts[position] = openNeeds[5];
+            saturday.openShifts[position] = openNeeds[6];
         }
 
         public void FillWeekDays(Dictionary<int, DailySchedule> days)
