@@ -138,14 +138,14 @@ namespace CoreSys
             if (currentSubmit < maxSubmit)
             {
                 parent.currentWeek.SetNeeds(currentSubmit, GenOpenDict(), GenCloseDict());
-                position.text = CoreSystem.GetPositionName(currentSubmit);
-                ClearFields();
             }
             if (currentSubmit == maxSubmit - 1)//last position met 
             {
                 parent.GenerateSchedule();
             }
             currentSubmit++;
+            position.text = CoreSystem.GetPositionName(currentSubmit);
+            ClearFields();
         }
 
         private SerializableDictionary<int, int> GenOpenDict()

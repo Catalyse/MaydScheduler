@@ -342,8 +342,8 @@
     <overtimeAllowed>false</overtimeAllowed>
     <availability>
       <sunday>
-        <available>true</available>
-        <openAvail>true</openAvail>
+        <available>false</available>
+        <openAvail>false</openAvail>
         <startTime>800</startTime>
         <endTime>2200</endTime>
       </sunday>
@@ -574,8 +574,8 @@
         <endTime>2200</endTime>
       </monday>
       <tuesday>
-        <available>true</available>
-        <openAvail>true</openAvail>
+        <available>false</available>
+        <openAvail>false</openAvail>
         <startTime>800</startTime>
         <endTime>2200</endTime>
       </tuesday>
@@ -586,8 +586,8 @@
         <endTime>2200</endTime>
       </wednesday>
       <thursday>
-        <available>true</available>
-        <openAvail>true</openAvail>
+        <available>false</available>
+        <openAvail>false</openAvail>
         <startTime>800</startTime>
         <endTime>2200</endTime>
       </thursday>
@@ -916,14 +916,14 @@
         <endTime>2200</endTime>
       </wednesday>
       <thursday>
-        <available>true</available>
-        <openAvail>true</openAvail>
+        <available>false</available>
+        <openAvail>false</openAvail>
         <startTime>800</startTime>
         <endTime>2200</endTime>
       </thursday>
       <friday>
-        <available>true</available>
-        <openAvail>true</openAvail>
+        <available>false</available>
+        <openAvail>false</openAvail>
         <startTime>800</startTime>
         <endTime>2200</endTime>
       </friday>

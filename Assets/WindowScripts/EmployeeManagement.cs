@@ -36,6 +36,11 @@ namespace CoreSys.Employees
             addEmpObject.GetComponent<AddEmployee>().ConfigDropdown();
         }
 
+        public void DisableEmpWindow()
+        {
+            addEmpObject.SetActive(false);
+        }
+
         public void AddEmployee(Employee emp)
         {
             EmployeeStorage.AddEmployee(emp);
@@ -72,6 +77,7 @@ namespace CoreSys.Employees
         public void ClearButton()
         {
             EmployeeStorage.ClearList();
+            ClearBars();
         }
 
         private void ClearBars()

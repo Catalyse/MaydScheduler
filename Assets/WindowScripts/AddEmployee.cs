@@ -131,11 +131,11 @@ namespace CoreSys.Employees
         {
             Employee newEmp = new Employee();
             int targetHours;
-            if (fulltime)
+            if (fulltime.isOn)
                 targetHours = 40;
             else
                 targetHours = 25;
-            newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), dropdown.value, targetHours, int.Parse(skill.text), sun, mon, tue, wed, thu, fri, sat);
+            newEmp.SetEmployee(empLastName.text, empFirstName.text, int.Parse(empid.text), dropdown.value, targetHours, int.Parse(skill.text), sun.isOn, mon.isOn, tue.isOn, wed.isOn, thu.isOn, fri.isOn, sat.isOn);
             ClearAllFields();
             empManager.AddEmployee(newEmp);
         }
