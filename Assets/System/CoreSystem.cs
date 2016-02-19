@@ -88,8 +88,8 @@ namespace CoreSys
 
         public static Week FindWeek(DateTime weekStartDate)
         {
-            if(weekList.ContainsKey(weekStartDate))
-                return weekList[weekStartDate];
+            if(weekList.ContainsKey(weekStartDate.Date))
+                return weekList[weekStartDate.Date];
             else
                 return null;
         }

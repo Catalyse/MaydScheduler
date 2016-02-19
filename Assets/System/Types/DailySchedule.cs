@@ -11,10 +11,10 @@ namespace CoreSys
         public bool activeDay;
         public int openTime, closeTime;
         public DayOfWeek dayOfWeek;
-        public SerializableDictionary<int, int> openShifts = new SerializableDictionary<int,int>();
-        public SerializableDictionary<int, int> closeShifts = new SerializableDictionary<int,int>();
-        public SerializableDictionary<int, int> openScheduled = new SerializableDictionary<int, int>();
-        public SerializableDictionary<int, int> closeScheduled = new SerializableDictionary<int, int>();
+        public SerializableDictionary<int, int> openNeededShifts = new SerializableDictionary<int,int>();
+        public SerializableDictionary<int, int> closeNeededShifts = new SerializableDictionary<int,int>();
+        public SerializableDictionary<int, int> openScheduledShifts = new SerializableDictionary<int, int>();
+        public SerializableDictionary<int, int> closeScheduledShifts = new SerializableDictionary<int, int>();
         //Dictionary<(position), List<(Employees)>>
         public SerializableDictionary<int, List<EmployeeScheduleWrapper>> employeeList = new SerializableDictionary<int, List<EmployeeScheduleWrapper>>();
         //Dictionary<(Hour), List<(scheduled shifts)>>

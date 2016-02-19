@@ -42,7 +42,7 @@ namespace CoreSys
         /// TODO // Add check to make sure the start date is a sunday
         public Week(DateTime startDay)
         {
-            startDate = startDay;
+            startDate = startDay.Date;
             julianStartDay = startDay.DayOfYear;
             Init();
         }
@@ -79,20 +79,20 @@ namespace CoreSys
         /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
         public void SetNeeds(int position, SerializableDictionary<int, int> openNeeds, SerializableDictionary<int, int> closeNeeds)
         {
-            sunday.openShifts.Add(position, openNeeds[0]);
-            monday.openShifts.Add(position, openNeeds[1]);
-            tuesday.openShifts.Add(position, openNeeds[2]);
-            wednesday.openShifts.Add(position, openNeeds[3]);
-            thursday.openShifts.Add(position, openNeeds[4]);
-            friday.openShifts.Add(position, openNeeds[5]);
-            saturday.openShifts.Add(position, openNeeds[6]);
-            sunday.closeShifts.Add(position, closeNeeds[0]);
-            monday.closeShifts.Add(position, closeNeeds[1]);
-            tuesday.closeShifts.Add(position, closeNeeds[2]);
-            wednesday.closeShifts.Add(position, closeNeeds[3]);
-            thursday.closeShifts.Add(position, closeNeeds[4]);
-            friday.closeShifts.Add(position, closeNeeds[5]);
-            saturday.closeShifts.Add(position, closeNeeds[6]);
+            sunday.openNeededShifts.Add(position, openNeeds[0]);
+            monday.openNeededShifts.Add(position, openNeeds[1]);
+            tuesday.openNeededShifts.Add(position, openNeeds[2]);
+            wednesday.openNeededShifts.Add(position, openNeeds[3]);
+            thursday.openNeededShifts.Add(position, openNeeds[4]);
+            friday.openNeededShifts.Add(position, openNeeds[5]);
+            saturday.openNeededShifts.Add(position, openNeeds[6]);
+            sunday.closeNeededShifts.Add(position, closeNeeds[0]);
+            monday.closeNeededShifts.Add(position, closeNeeds[1]);
+            tuesday.closeNeededShifts.Add(position, closeNeeds[2]);
+            wednesday.closeNeededShifts.Add(position, closeNeeds[3]);
+            thursday.closeNeededShifts.Add(position, closeNeeds[4]);
+            friday.closeNeededShifts.Add(position, closeNeeds[5]);
+            saturday.closeNeededShifts.Add(position, closeNeeds[6]);
         }
 
         public void FillWeekDays(Dictionary<int, DailySchedule> days)

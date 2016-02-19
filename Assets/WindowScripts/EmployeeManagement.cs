@@ -33,6 +33,7 @@ namespace CoreSys.Employees
         public void AddEmployeeWindow()
         {
             addEmpObject.SetActive(true);
+            addEmpObject.GetComponent<AddEmployee>().ConfigDropdown();
         }
 
         public void AddEmployee(Employee emp)

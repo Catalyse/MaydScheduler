@@ -23,7 +23,7 @@ namespace CoreSys
         /// </summary>
         public void FindWeeks()
         {
-            date = DateTime.Now;
+            date = DateTime.Now.Date;
             for (int i = 0; i < weekDistance; i++)
             {
                 int daysToFirstWeek = DayOfWeekValue(date.DayOfWeek);

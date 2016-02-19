@@ -43,45 +43,48 @@ namespace CoreSys
                     //Open loop
                     for (int i = 0; i < priorityList.Count; i++)
                     {
-                        pickList.Add(i, new List<int>());
+                        if(!pickList.ContainsKey(i))
+                            pickList.Add(i, new List<int>());
                         if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
                                 pickList[i] = GenerateShiftOpen(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                if (day.openScheduled.ContainsKey(pos))
-                                    day.openScheduled[pos]++;
+                                if (day.openScheduledShifts.ContainsKey(pos))
+                                    day.openScheduledShifts[pos]++;
                                 else
-                                    day.openScheduled.Add(pos, 1);//Create dictionary entry and add first value
-                                if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                                    day.openScheduledShifts.Add(pos, 1);//Create dictionary entry and add first value
+                                if(day.openNeededShifts[pos] <= day.openScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
                             }
                         }
-                        if (!day.openScheduled.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
-                            break;
-                        if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                        if (!day.openScheduledShifts.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
+                            day.openScheduledShifts.Add(pos, 0);
+                        if(day.openNeededShifts[pos] <= day.openScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
                             break;
                     }
                     
                     //Close loop
                     for (int i = 0; i < priorityList.Count; i++)
                     {
+                        if (!pickList.ContainsKey(i))
+                            pickList.Add(i, new List<int>());
                         if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
                         {
                             for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
                             {
                                 pickList[i] = GenerateShiftClose(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                if (day.closeScheduled.ContainsKey(pos))
-                                    day.closeScheduled[pos]++;
+                                if (day.closeScheduledShifts.ContainsKey(pos))
+                                    day.closeScheduledShifts[pos]++;
                                 else
-                                    day.closeScheduled.Add(pos, 1);
-                                if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                                    day.closeScheduledShifts.Add(pos, 1);
+                                if(day.closeNeededShifts[pos] <= day.closeScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
                                     break;
                             }
                         }
-                        if (!day.closeScheduled.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
-                            break;
-                        if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
+                        if (!day.closeScheduledShifts.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
+                            day.closeScheduledShifts.Add(pos, 0);
+                        if(day.closeNeededShifts[pos] <= day.closeScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
                             break;
                     }
                 }
@@ -99,6 +102,7 @@ namespace CoreSys
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
+            sortList[pick].scheduledHours += shiftLength;
             if(day.shiftDictionary.ContainsKey(sortList[pick]))
             {
                 day.shiftDictionary[sortList[pick]].Add(newShift);
@@ -121,6 +125,7 @@ namespace CoreSys
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
+            sortList[pick].scheduledHours += shiftLength;
             if (day.shiftDictionary.ContainsKey(sortList[pick]))
             {
                 day.shiftDictionary[sortList[pick]].Add(newShift);
@@ -184,18 +189,6 @@ namespace CoreSys
                     employeeList.Add(newWrapper);
                 }
             }
-            //Post wrapper generation sort into dictionary of positions.
-            /*
-            for (int j = 0; j < CoreSystem.positionList.Count; j++)
-            {
-                for (int i = 0; i < employeeList.Count; i++)
-                {
-                    if (employeeList[i].employee.position == j)
-                    {
-                        employeeDictionary[j].Add(employeeList[i]);
-                    }
-                }
-            }*///This is not needed as the availability list of the main loop will organize this//I think
         }
 
         /// <summary>
