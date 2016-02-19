@@ -44,16 +44,20 @@ namespace CoreSys.Windows
         public void GenerateSchedule()
         {
             dailyStaffing.SetActive(false);
-            SchedulingAlgorithm.GenerateSchedule(currentWeek);
+            currentWeek = SchedulingAlgorithm.GenerateSchedule(currentWeek);
+            DrawSchedule();
+            CoreSystem.weekList[currentWeek.startDate] = currentWeek;
+            CoreSystem.CoreSettingsChanged();
         }
 
-        public void DrawSchedule(Week schedule)
+        public void DrawSchedule()
         {
-            for (int i = 0; i < schedule.empList.Count; i++)
+            title.text = "Schedule For the Week of " + currentWeek.startDate.ToShortDateString();
+            for (int i = 0; i < currentWeek.empList.Count; i++)
             {
                 GameObject newWindow = WindowInstantiator.SpawnWindow(prefabs.prefabList[0], grid);
                 EmployeeScheduleBar bar = newWindow.GetComponent<EmployeeScheduleBar>();
-                bar.SetBar(schedule.empList[i]);
+                bar.SetBar(currentWeek.empList[i]);
             }
         }
     }

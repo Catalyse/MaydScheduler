@@ -135,18 +135,17 @@ namespace CoreSys
 
         private void SubmitWeek()
         {
-            parent.currentWeek.SetNeeds(currentSubmit, GenOpenDict(), GenCloseDict());
-
             if (currentSubmit < maxSubmit)
             {
-                currentSubmit++;
+                parent.currentWeek.SetNeeds(currentSubmit, GenOpenDict(), GenCloseDict());
                 position.text = CoreSystem.GetPositionName(currentSubmit);
                 ClearFields();
             }
-            else//last position met 
+            if (currentSubmit == maxSubmit - 1)//last position met 
             {
                 parent.GenerateSchedule();
             }
+            currentSubmit++;
         }
 
         private SerializableDictionary<int, int> GenOpenDict()
@@ -196,7 +195,7 @@ namespace CoreSys
         public void SetWeeklyConfig()
         {
             currentSubmit = 0;
-            maxSubmit = CoreSystem.positionList.Count - 1;
+            maxSubmit = CoreSystem.positionList.Count;
             position.text = CoreSystem.GetPositionName(currentSubmit);
 
             if (parent.currentWeek.sunday.activeDay)

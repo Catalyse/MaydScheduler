@@ -15,10 +15,7 @@ namespace CoreSys
         public bool availabilityModified = false;
         public List<Shift> shiftList = new List<Shift>();
 
-        public EmployeeScheduleWrapper()
-        {
-            Debug.Log("EmployeeScheduleWrapper created with no employee assigned! EmployeeScheduleWrapper.cs || Default CTOR");
-        }
+        public EmployeeScheduleWrapper() { }
 
         public EmployeeScheduleWrapper(Employee emp)
         {

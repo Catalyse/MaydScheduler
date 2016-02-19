@@ -9,16 +9,16 @@ namespace CoreSys
     {
         public Employee employee;
         public int startShift, endShift;
-        public DateTime date;
+        public DayOfWeek date;
         
         public Shift() { }
         
-        public Shift(Employee emp, int start, int end, DateTime d)//may need to float these or something to handle non hourly incremental shifts 
+        public Shift(Employee emp, int start, int end, DayOfWeek d)//may need to float these or something to handle non hourly incremental shifts 
         {
             employee = emp;
             startShift = start;
             endShift = end;
-            DateTime date = d;
+            date = d;
         }
     }
 }

@@ -57,6 +57,8 @@ namespace CoreSys
                                     break;
                             }
                         }
+                        if (!day.openScheduled.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
+                            break;
                         if(day.openShifts[pos] <= day.openScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                             break;
                     }
@@ -77,11 +79,14 @@ namespace CoreSys
                                     break;
                             }
                         }
+                        if (!day.closeScheduled.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
+                            break;
                         if(day.closeShifts[pos] <= day.closeScheduled[pos])//Though hopefully its never greater than, if it is ive failed.
                             break;
                     }
                 }
             }
+            week.empList = employeeList;
             return week;
         }
 
@@ -92,7 +97,7 @@ namespace CoreSys
             pickList.Add(pick);
             if(sortList[pick].employee.shiftPreference != shiftLength)
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
-            Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date);//Need to make this adaptive to shift
+            Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
             if(day.shiftDictionary.ContainsKey(sortList[pick]))
             {
@@ -114,7 +119,7 @@ namespace CoreSys
             pickList.Add(pick);
             if (sortList[pick].employee.shiftPreference != shiftLength)
                 shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
-            Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date);//Need to make this adaptive to shift
+            Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
             if (day.shiftDictionary.ContainsKey(sortList[pick]))
             {

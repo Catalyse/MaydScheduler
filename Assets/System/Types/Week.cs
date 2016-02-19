@@ -79,15 +79,20 @@ namespace CoreSys
         /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
         public void SetNeeds(int position, SerializableDictionary<int, int> openNeeds, SerializableDictionary<int, int> closeNeeds)
         {
-            this.openNeeds[position] = openNeeds;
-            this.closeNeeds[position] = closeNeeds;
-            sunday.openShifts[position] = openNeeds[0];
-            monday.openShifts[position] = openNeeds[1];
-            tuesday.openShifts[position] = openNeeds[2];
-            wednesday.openShifts[position] = openNeeds[3];
-            thursday.openShifts[position] = openNeeds[4];
-            friday.openShifts[position] = openNeeds[5];
-            saturday.openShifts[position] = openNeeds[6];
+            sunday.openShifts.Add(position, openNeeds[0]);
+            monday.openShifts.Add(position, openNeeds[1]);
+            tuesday.openShifts.Add(position, openNeeds[2]);
+            wednesday.openShifts.Add(position, openNeeds[3]);
+            thursday.openShifts.Add(position, openNeeds[4]);
+            friday.openShifts.Add(position, openNeeds[5]);
+            saturday.openShifts.Add(position, openNeeds[6]);
+            sunday.closeShifts.Add(position, closeNeeds[0]);
+            monday.closeShifts.Add(position, closeNeeds[1]);
+            tuesday.closeShifts.Add(position, closeNeeds[2]);
+            wednesday.closeShifts.Add(position, closeNeeds[3]);
+            thursday.closeShifts.Add(position, closeNeeds[4]);
+            friday.closeShifts.Add(position, closeNeeds[5]);
+            saturday.closeShifts.Add(position, closeNeeds[6]);
         }
 
         public void FillWeekDays(Dictionary<int, DailySchedule> days)
