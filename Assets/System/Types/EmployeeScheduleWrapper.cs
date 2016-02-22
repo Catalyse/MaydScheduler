@@ -7,7 +7,8 @@ namespace CoreSys
 {
     public class EmployeeScheduleWrapper
     {
-        public Employee employee;
+        public int employee;
+        public int position;
         public int maxHours;
         public int scheduledHours;
         //The availability is copied onto this so that it can be modified without effecting the set availability in the employee type
@@ -19,14 +20,15 @@ namespace CoreSys
 
         public EmployeeScheduleWrapper(Employee emp)
         {
-            employee = emp;
+            employee = emp.empID;
+            position = emp.position;
             maxHours = emp.hourTarget;
             scheduledHours = 0;
-            availability = emp.availability;
+            //availability = emp.availability;//Dont init this unless its changed and needs to be saved
             availabilityModified = false;
         }
 
-        public void SetTempAvailability(Availability avail)
+        public void SetTempAvailability(Availability avail)//TODO add check for when avail last changed to warn user if availability is no longer useful
         {
             availability = avail;
             availabilityModified = true;
@@ -35,8 +37,8 @@ namespace CoreSys
         public void PermanentAvailabilityChange(Availability avail)
         {
             availability = avail;
-            availabilityModified = true;
-            employee.availability = avail;
+            availabilityModified = false;//since were using the permanent change
+            EmployeeStorage.GetEmployee(employee).availability = avail;
         }
 
         public bool GetAvailability(int day)

@@ -14,11 +14,6 @@ namespace CoreSys
         public int earliestStart, latestEnd;
         public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily)
         public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
-        //Position type(refer to CoreSystem for definition)
-        //Dictionary<(Position), Dictionary<Day, (need(int))>>
-        public SerializableDictionary<int, SerializableDictionary<int, int>> openNeeds = new SerializableDictionary<int, SerializableDictionary<int, int>>();
-        public SerializableDictionary<int, SerializableDictionary<int, int>> closeNeeds = new SerializableDictionary<int, SerializableDictionary<int, int>>();
-        // Use this for initialization
 
         /// <summary>
         /// Week should not be initialized with the default constructor || This exists for serialization

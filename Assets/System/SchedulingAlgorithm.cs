@@ -98,8 +98,8 @@ namespace CoreSys
             int pick = GenerateRandomNumber(pickList, sortList.Count);
             int shiftLength = CoreSystem.defaultShift;
             pickList.Add(pick);
-            if(sortList[pick].employee.shiftPreference != shiftLength)
-                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+            if (EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference != shiftLength)
+                shiftLength = EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
             sortList[pick].scheduledHours += shiftLength;
@@ -121,8 +121,8 @@ namespace CoreSys
             int pick = GenerateRandomNumber(pickList, sortList.Count);
             int shiftLength = CoreSystem.defaultShift;
             pickList.Add(pick);
-            if (sortList[pick].employee.shiftPreference != shiftLength)
-                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+            if (EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference != shiftLength)
+                shiftLength = EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);//Need to make this adaptive to shift
             sortList[pick].shiftList.Add(newShift);
             sortList[pick].scheduledHours += shiftLength;
@@ -169,7 +169,7 @@ namespace CoreSys
             float average = 0.0f;
             for (int i = 0; i < empList.Count; i++)
             {
-                average += empList[i].employee.skillLevel;
+                average += EmployeeStorage.GetEmployee(empList[i].employee).skillLevel;
             }
             average = average / empList.Count;
             return average;
