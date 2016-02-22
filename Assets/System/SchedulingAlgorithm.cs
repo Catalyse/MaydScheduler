@@ -201,7 +201,7 @@ namespace CoreSys
             for (int j = 0; j < employeeList.Count; j++)
             {
                 //Check to make sure they can 1. work that day and 2. have hours left to be scheduled
-                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].employee.position == pos)
+                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].position == pos)
                 {
                     returnList.Add(employeeList[j]);
                     employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful

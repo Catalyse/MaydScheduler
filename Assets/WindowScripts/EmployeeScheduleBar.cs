@@ -17,8 +17,8 @@ namespace CoreSys.Windows
 
         public void SetBar(EmployeeScheduleWrapper emp)
         {
-            empName.text = emp.employee.empLastName + ", " + emp.employee.empFirstName;
-            empPos.text = CoreSystem.GetPositionName(emp.employee.position);
+            empName.text = EmployeeStorage.GetEmployee(emp.employee).empLastName + ", " + EmployeeStorage.GetEmployee(emp.employee).empFirstName;
+            empPos.text = CoreSystem.GetPositionName(emp.position);
             for (int i = 0; i < emp.shiftList.Count; i++)
             {
                 switch (emp.shiftList[i].date)
