@@ -7,7 +7,7 @@ namespace CoreSys.Employees
 {
     public class EmployeeBar : MonoBehaviour
     {
-        public Text name, title, id, status;
+        public Text eName, title, id, status;
         public Employee employee;
         public Toggle barToggle;
         private int tempStatus;
@@ -23,7 +23,7 @@ namespace CoreSys.Employees
         public void EmployeeBarSet(Employee emp)
         {
             employee = emp;
-            name.text = emp.empLastName + ", " + emp.empFirstName;
+            eName.text = emp.empLastName + ", " + emp.empFirstName;
             id.text = emp.empID.ToString();
             title.text = CoreSystem.GetPositionName(emp.position);
             if (emp.active)

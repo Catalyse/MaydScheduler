@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Employees;
@@ -35,7 +36,7 @@ namespace CoreSys
                     DailySchedule day = week.SelectDay(d);//make this pick days based on the priority
                     List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d, pos);
                     Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
-                    List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
+                    //List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
                     float avgSkill = CalcAvgSkill(empList);
                     
                     Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
@@ -240,6 +241,8 @@ namespace CoreSys
             return returnDictionary;
         }
 
+        //This is extra, unneccesary work
+        /*
         private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DailySchedule day)
         {
             List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
@@ -312,8 +315,10 @@ namespace CoreSys
                     Debug.Log("This error is literally impossible to get to, BUT THAT BEING SAID || ERROR || SchedulingAlgorithm.cs || GenerateRestrictionList || Default case chosen");
                     return null;//Totally fucked up return but again, should be impossible to hit this error.
             }
-        }
+        }*/
 
+        //This is not used
+        /*
         private static void GenerateDay(DailySchedule day, List<EmployeeScheduleWrapper> empList)
         {
             List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();//Holds a list of people who do not have open availability this day, but are able to work.
@@ -322,7 +327,7 @@ namespace CoreSys
 
             restrictionList = GenerateRestrictionList(empList, day);
             tierList = GenerateSortList(empList);
-        }
+        }*/
 
         private static RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
         {
