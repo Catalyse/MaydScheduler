@@ -45,10 +45,10 @@ namespace CoreSys
         /// </summary>
         public static void LoadCoreSave()
         {
-            if (CheckIfFileExists("CoreSaveFile"))
+            if (FileManager.CheckIfFileExists("CoreSaveFile"))
             {
                 coreSave = new CoreSaveType();
-                coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
+                coreSave = FileManager.DeserializeFile<CoreSaveType>("CoreSaveFile");
                 defaultShift = coreSave.defaultShift;
                 defaultOpenAvail = coreSave.defaultOpenAvail;
                 defaultCloseAvail = coreSave.defaultCloseAvail;
@@ -82,7 +82,7 @@ namespace CoreSys
             coreSave.weekList = weekList;
             coreSave.savedFileList = savedFileList;
             coreSave.GenerationDate = DateTime.Now.ToString();
-            SerializeFile<CoreSaveType>(coreSave, "CoreSaveFile");
+            FileManager.SerializeFile<CoreSaveType>(coreSave, "CoreSaveFile");
             Debug.Log("CoreSave File Modified! CoreSave File Saved!");
         }
 
@@ -136,72 +136,5 @@ namespace CoreSys
             else
                 return time;
         }
-
-        //FILE SERIALIZATION ========================================================================================
-        public static bool CheckIfFileExists(string fileName)
-        {
-            fileName = fileName + ".xml";
-            try
-            {
-                StreamReader reader = new StreamReader(fileName);
-                reader.Close();
-                return true;
-            }
-            catch//filenotfound
-            {
-                return false;
-            }
-        }
-
-        public static void SerializeFile<T>(T objectToSerialize, string fileName)
-        {
-            fileName = fileName + ".xml";
-            try
-            {
-                XmlDocument xmlDocument = new XmlDocument();
-                XmlSerializer serializer = new XmlSerializer(objectToSerialize.GetType());
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    serializer.Serialize(stream, objectToSerialize);
-                    stream.Position = 0;
-                    xmlDocument.Load(stream);
-                    xmlDocument.Save(fileName);
-                    stream.Close();
-                }
-                if (fileName != "CoreSaveFile")
-                    savedFileList.Add(fileName);
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("Serialization Error || CoreSystem || SerializeFile<T>");
-                Debug.Log(ex.Message);
-                Debug.Log(ex.InnerException);
-            }
-        }
-
-        public static T DeserializeFile<T> (string fileName)
-        {
-            string file = fileName + ".xml";
-            T returnObject;
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-                StreamReader reader = new StreamReader(file);
-                if (reader == null)
-                    throw new EmpListNotFoundErr();
-                returnObject = (T)serializer.Deserialize(reader);
-                reader.Close();
-
-                return returnObject;
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("FileNotFound Exception!");
-                Debug.Log(ex.Message);
-                return default(T);
-            }
-        }
-        //FILE SERIALIZATION ========================================================================================
     }
 }

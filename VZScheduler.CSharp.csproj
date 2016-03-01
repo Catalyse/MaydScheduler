@@ -83,6 +83,7 @@
     <Compile Include="Assets\System\CoreSystem.cs" />
     <Compile Include="Assets\System\EmpListSerializer.cs" />
     <Compile Include="Assets\System\EmployeeStorage.cs" />
+    <Compile Include="Assets\System\FileManager.cs" />
     <Compile Include="Assets\System\SchedulingAlgorithm.cs" />
     <Compile Include="Assets\System\SubSystem\CurrentTime.cs" />
     <Compile Include="Assets\System\SubSystem\StartSplash.cs" />

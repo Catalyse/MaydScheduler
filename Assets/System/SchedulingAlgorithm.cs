@@ -17,13 +17,15 @@ namespace CoreSys
         {
             GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
             CheckTempDaysOff();
-            employeeDictionary.Add(0, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(1, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(2, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(3, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(4, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(5, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(6, new List<EmployeeScheduleWrapper>());
+            GeneratePositionLists();
+        }
+
+        private static void GeneratePositionLists()
+        {
+            for (int i = 0; i < CoreSystem.positionList.Count; i++)
+            {
+                employeeDictionary.Add(i, new List<EmployeeScheduleWrapper>());
+            }
         }
 
         public static Week GenerateSchedule(Week week)
@@ -91,6 +93,12 @@ namespace CoreSys
                 }
             }
             week.empList = employeeList;
+            return week;
+        }
+
+        private static Week FillEmployeeScheduleNeeds(Week week)
+        {
+
             return week;
         }
 

@@ -67,7 +67,6 @@
      <Compile Include="Assets\WindowScripts\AddEmployee.cs" />
      <Compile Include="Assets\WindowScripts\AddPosition.cs" />
      <Compile Include="Assets\WindowScripts\ChooseWeek.cs" />
-     <Compile Include="Assets\WindowScripts\DailyHourlyStaff.cs" />
      <Compile Include="Assets\WindowScripts\DailyStaffing.cs" />
      <Compile Include="Assets\WindowScripts\EmpSelectionWindow.cs" />
      <Compile Include="Assets\WindowScripts\EmployeeBar.cs" />
@@ -80,7 +79,6 @@
      <Compile Include="Assets\WindowScripts\SystemConfig.cs" />
      <Compile Include="Assets\WindowScripts\WeeklyConfig.cs" />
      <Compile Include="Assets\WindowScripts\Window.cs" />
-     <Compile Include="Assets\WindowScripts\WindowElements\HourColumn.cs" />
      <Compile Include="Assets\WindowScripts\WindowElements\WeekBar.cs" />
      <Compile Include="Assets\WindowScripts\WindowInstantiator.cs" />
      <Compile Include="Assets\WindowScripts\WindowManagement.cs" />
