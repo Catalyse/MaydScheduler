@@ -10,6 +10,7 @@ namespace CoreSys
         public int employee;
         public int position;
         public int maxHours;
+        public int skill;//This is to minimize callbacks to the main emp later
         public int scheduledHours;
         //The availability is copied onto this so that it can be modified without effecting the set availability in the employee type
         public Availability availability = new Availability();
@@ -22,6 +23,7 @@ namespace CoreSys
         {
             employee = emp.empID;
             position = emp.position;
+            skill = emp.skill;
             maxHours = emp.hourTarget;
             scheduledHours = 0;
             //availability = emp.availability;//Dont init this unless its changed and needs to be saved
