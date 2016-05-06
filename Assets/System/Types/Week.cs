@@ -74,20 +74,20 @@ namespace CoreSys
         /// <param name="closeNeeds"> Dictionary<Day, Need> </param>
         public void SetNeeds(int position, SerializableDictionary<int, int> openNeeds, SerializableDictionary<int, int> closeNeeds)
         {
-            sunday.openNeededShifts.Add(position, openNeeds[0]);
-            monday.openNeededShifts.Add(position, openNeeds[1]);
-            tuesday.openNeededShifts.Add(position, openNeeds[2]);
-            wednesday.openNeededShifts.Add(position, openNeeds[3]);
-            thursday.openNeededShifts.Add(position, openNeeds[4]);
-            friday.openNeededShifts.Add(position, openNeeds[5]);
-            saturday.openNeededShifts.Add(position, openNeeds[6]);
-            sunday.closeNeededShifts.Add(position, closeNeeds[0]);
-            monday.closeNeededShifts.Add(position, closeNeeds[1]);
-            tuesday.closeNeededShifts.Add(position, closeNeeds[2]);
-            wednesday.closeNeededShifts.Add(position, closeNeeds[3]);
-            thursday.closeNeededShifts.Add(position, closeNeeds[4]);
-            friday.closeNeededShifts.Add(position, closeNeeds[5]);
-            saturday.closeNeededShifts.Add(position, closeNeeds[6]);
+            sunday.SetOpenNeeded(position, openNeeds[0]);
+            monday.SetOpenNeeded(position, openNeeds[1]);
+            tuesday.SetOpenNeeded(position, openNeeds[2]);
+            wednesday.SetOpenNeeded(position, openNeeds[3]);
+            thursday.SetOpenNeeded(position, openNeeds[4]);
+            friday.SetOpenNeeded(position, openNeeds[5]);
+            saturday.SetOpenNeeded(position, openNeeds[6]);
+            sunday.SetCloseNeeded(position, closeNeeds[0]);
+            monday.SetCloseNeeded(position, closeNeeds[1]);
+            tuesday.SetCloseNeeded(position, closeNeeds[2]);
+            wednesday.SetCloseNeeded(position, closeNeeds[3]);
+            thursday.SetCloseNeeded(position, closeNeeds[4]);
+            friday.SetCloseNeeded(position, closeNeeds[5]);
+            saturday.SetCloseNeeded(position, closeNeeds[6]);
         }
 
         public void FillWeekDays(Dictionary<int, DailySchedule> days)

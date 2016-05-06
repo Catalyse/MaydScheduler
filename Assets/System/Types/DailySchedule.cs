@@ -43,5 +43,35 @@ namespace CoreSys
             openTime = open;
             closeTime = close;
         }
+
+        public void SetOpenNeeded(int key, int value)
+        {
+            try
+            {
+                Debug.Log("SetOpenNeeded Called for " + dayOfWeek.ToString() + " Position: " + key);
+                openNeededShifts.Add(key, value);
+            }
+            catch
+            {
+                Debug.Log(key + " already existed in OpenNeeded dictionary");
+                openNeededShifts.Remove(key);
+                openNeededShifts.Add(key, value);
+            }
+        }
+
+        public void SetCloseNeeded(int key, int value)
+        {
+            try
+            {
+                Debug.Log("SetCloseNeeded Called for " + dayOfWeek.ToString() + " Position: " + key);
+                closeNeededShifts.Add(key, value);
+            }
+            catch
+            {
+                Debug.Log(key + " already existed in CloseNeeded dictionary");
+                closeNeededShifts.Remove(key);
+                closeNeededShifts.Add(key, value);
+            }
+        }
     }
 }

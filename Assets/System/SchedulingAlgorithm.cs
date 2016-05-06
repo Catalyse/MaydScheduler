@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,18 +6,20 @@ using CoreSys.Employees;
 
 namespace CoreSys
 {
+    /// <summary>
+    /// This is the primary algorithm for generating the schedule.  As it stands currently the algorithm takes a few seconds real time to process, 
+    /// so the entirety of the method will be threaded to prevent main thread hangs
+    /// </summary>
     public static class SchedulingAlgorithm
     {
-        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
-        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this as a list of all employees of a given position
+        //Begin vars  for storage of main thread info
+        private static Week week;
+        //This is the list pulled from the storage.
+        private static List<Employee> mainEmployeeList;
+        //This is for storing the employees in a wrapper to store more information without modifying the original employee data.
+        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
         private static Dictionary<int, DailySchedule> currentSchedule = new Dictionary<int, DailySchedule>();
-
-        public static void GenerateScheduleSetup(Week week, List<Employee> empList)
-        {
-            GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
-            CheckTempDaysOff();
-            GeneratePositionLists();
-        }
 
         private static void GeneratePositionLists()
         {
@@ -28,9 +29,18 @@ namespace CoreSys
             }
         }
 
-        public static Week GenerateSchedule(Week week)
+        public static void StartScheduleGen()
         {
-            GenerateScheduleSetup(week, EmployeeStorage.employeeList);
+            week = CoreSystem.week;
+            mainEmployeeList = EmployeeStorage.employeeList;
+            GenerateWrapperList(mainEmployeeList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
+            CheckTempDaysOff();
+            GeneratePositionLists();
+            GenerateSchedule();
+        }
+
+        private static void GenerateSchedule()
+        {
             for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
             {
                 for (int d = 0; d < 7; d++)
@@ -93,7 +103,8 @@ namespace CoreSys
                 }
             }
             week.empList = employeeList;
-            return week;
+            //Need to return to CoreSys to interface since this will be threaded
+            CoreSystem.GenerationComplete(week);
         }
 
         private static Week FillEmployeeScheduleNeeds(Week week)
@@ -213,7 +224,7 @@ namespace CoreSys
                 if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].position == pos)
                 {
                     returnList.Add(employeeList[j]);
-                    employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
+                    //employeeDictionary[day].Add(employeeList[j]);//This is redundant
                 }
             }
             return returnList;
@@ -248,94 +259,6 @@ namespace CoreSys
             }
             return returnDictionary;
         }
-
-        //This is extra, unneccesary work
-        /*
-        private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DailySchedule day)
-        {
-            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
-            switch (day.dayOfWeek)
-            {
-                case DayOfWeek.Sunday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.sunday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Monday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.monday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Tuesday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.tuesday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Wednesday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.wednesday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Thursday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.thursday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Friday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.friday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Saturday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.saturday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                default:
-                    Debug.Log("This error is literally impossible to get to, BUT THAT BEING SAID || ERROR || SchedulingAlgorithm.cs || GenerateRestrictionList || Default case chosen");
-                    return null;//Totally fucked up return but again, should be impossible to hit this error.
-            }
-        }*/
-
-        //This is not used
-        /*
-        private static void GenerateDay(DailySchedule day, List<EmployeeScheduleWrapper> empList)
-        {
-            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();//Holds a list of people who do not have open availability this day, but are able to work.
-            //Dictionary of the scheduling tiers.  Tier 0: no shifts || Tier 1: Up to one shift of default length || Tier 2: up to 2 || Tier 3: up to 3 || Tier 4: up to 4
-            Dictionary<int, List<EmployeeScheduleWrapper>> tierList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
-
-            restrictionList = GenerateRestrictionList(empList, day);
-            tierList = GenerateSortList(empList);
-        }*/
 
         private static RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
         {
@@ -413,43 +336,5 @@ namespace CoreSys
         {
             //Call Window for temp days off
         }
-
-        /* //This is being replaced with the total hours for the week
-        private static List<int> calcScheduleOrder(Week week, int type)
-        {
-            List<int> retList = new List<int>();
-            if (type == 0)
-            {//SS position type
-                for (int i = 0; i < 7; i++)
-                {
-                    retList.Add(week.sDailyTotalNeeds[i]);
-                }
-                bool sortAgain = false;
-                int current;
-                int next;
-                do
-                {
-                    for (int i = 0; i < 6; i++)
-                    {
-                        current = retList[i];
-                        next = retList[i + 1];
-                        if (current < next)
-                        {
-                            retList[i] = next;
-                            retList[i + 1] = current;
-                            sortAgain = true;
-                        }
-                    }
-                } while (sortAgain);
-            }
-            else
-            {//For experience position type // TODO make this generic
-                for (int i = 0; i < 7; i++)
-                {
-                    retList.Add(week.eDailyTotalNeeds[i]);
-                }
-            }
-            return retList;
-        }*/
     }
 }

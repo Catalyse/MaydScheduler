@@ -9,7 +9,7 @@ namespace CoreSys
     /// <summary>
     /// Daily Staffing requirements window script.
     /// </summary>
-    public class DailyStaffing : Window
+    public class DailyStaffing : MonoBehaviour
     {
         public ScheduleWindow parent;
         public InputField sundayOpen, mondayOpen, tuesdayOpen, wednesdayOpen, thursdayOpen, fridayOpen, saturdayOpen;

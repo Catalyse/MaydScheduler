@@ -41,8 +41,8 @@ namespace CoreSys
 
         public void WindowDeactivated(Window window)
         {
-            if(activeWindowList.Remove(window))
-                activeWindows--;
+            activeWindowList.Remove(window);
+            activeWindows--;
             CheckForEmptyScreen();
         }
 

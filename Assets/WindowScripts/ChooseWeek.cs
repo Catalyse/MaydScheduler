@@ -7,7 +7,7 @@ using CoreSys.Windows;
 
 namespace CoreSys
 {
-    public class ChooseWeek : Window
+    public class ChooseWeek : MonoBehaviour
     {
         public ScheduleWindow parent;
         public GameObject weekBarParent;
@@ -35,8 +35,9 @@ namespace CoreSys
                     CoreSystem.weekList.Add(date, tempWeek);
                     weekList.Add(tempWeek);
                 }
-                else//Week has been generated
+                else//Week has been generated, and we will replace it if chosen
                 {
+                    tempWeek = new Week(date);
                     weekList.Add(tempWeek);
                 }
             }

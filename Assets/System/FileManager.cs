@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Errors;
 using CoreSys.Windows;
+using System.Threading;
 
 namespace CoreSys
 {
@@ -66,6 +67,42 @@ namespace CoreSys
                 if (reader == null)
                     throw new EmpListNotFoundErr();
                 returnObject = (T)serializer.Deserialize(reader);
+                reader.Close();
+
+                return returnObject;
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("FileNotFound Exception!");
+                Debug.Log(ex.Message);
+                return default(T);
+            }
+        }
+
+        /// <summary>
+        /// This is specifically meant for the CoreSave since the file can be quite large
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static void DeserializeLargeFile(string fileName)
+        {
+            Thread scheduleProcess = new Thread(new ThreadStart(SchedulingAlgorithm.StartScheduleGen));
+            scheduleProcess.Start();
+        }
+
+        private void ThreadedDeserialize(string fileName)
+        {
+            string file = fileName + ".xml";
+            CoreSaveType returnObject;
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(CoreSaveType));
+
+                StreamReader reader = new StreamReader(file);
+                if (reader == null)
+                    throw new EmpListNotFoundErr();
+                returnObject = (CoreSaveType)serializer.Deserialize(reader);
                 reader.Close();
 
                 return returnObject;

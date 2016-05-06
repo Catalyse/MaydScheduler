@@ -13,12 +13,28 @@ namespace CoreSys.Windows
         public Week currentWeek;
         public GameObject grid, dailyStaffing, weeklyConfig, chooseWeek;
         public PrefabList prefabs;
+        private bool waiting = false;
 
         public ScheduleWindow() { }
 
         public void Start()
         {
             StartSchedule();
+        }
+
+        public void Update()
+        {
+            if (waiting == true)//Once the schedule setup is done we want to start running update to check for when generation is complete
+            {
+                if (!CoreSystem.currentlyProcessing)//Once this becomes false 
+                {
+                    currentWeek = CoreSystem.week;
+                    DrawSchedule();
+                    CoreSystem.weekList[currentWeek.startDate] = currentWeek;
+                    CoreSystem.CoreSettingsChanged();
+                    waiting = false;
+                }
+            }
         }
 
         public void StartSchedule()
@@ -44,10 +60,8 @@ namespace CoreSys.Windows
         public void GenerateSchedule()
         {
             dailyStaffing.SetActive(false);
-            currentWeek = SchedulingAlgorithm.GenerateSchedule(currentWeek);
-            DrawSchedule();
-            CoreSystem.weekList[currentWeek.startDate] = currentWeek;
-            CoreSystem.CoreSettingsChanged();
+            CoreSystem.GenerateSchedule(currentWeek);
+			waiting = true;
         }
 
         public void DrawSchedule()
