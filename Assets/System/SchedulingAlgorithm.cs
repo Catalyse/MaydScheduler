@@ -112,6 +112,16 @@ namespace CoreSys
 
             return week;
         }
+        
+        //The purpose of this is to iterate through all employees scheduled in one day and figure out the total skill, then the average.
+        private static int CalcAverageDaySkill(DailySchedule day)
+        {
+            int average = 0;
+            for(int i = 0; i < day.shiftDictionary.Count; i++)
+            {
+                day.shiftDictionary.ElementAt(
+            }
+        }
 
         private static List<int> GenerateShiftOpen(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
         {
@@ -121,18 +131,10 @@ namespace CoreSys
             if (EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference != shiftLength)
                 shiftLength = EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);//Need to make this adaptive to shift
-            sortList[pick].shiftList.Add(newShift);
-            sortList[pick].scheduledHours += shiftLength;
-            if(day.shiftDictionary.ContainsKey(sortList[pick]))
-            {
-                day.shiftDictionary[sortList[pick]].Add(newShift);
-            }
-            else 
-            {
-                List<Shift> newShiftList = new List<Shift>();
-                newShiftList.Add(newShift);
-                day.shiftDictionary.Add(sortList[pick], newShiftList);
-            }
+            sortList[pick].shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
+            sortList[pick].scheduledHours += shiftLength;//Adding to users total scheduled hours
+            //Removed the need a list of shifts on a daily basis since employees will never need more than one shift in a day.
+            day.shiftDictionary.Add(sortList[pick], newShift);
             return pickList;
         }
 
@@ -140,22 +142,14 @@ namespace CoreSys
         {
             int pick = GenerateRandomNumber(pickList, sortList.Count);
             int shiftLength = CoreSystem.defaultShift;
-            pickList.Add(pick);
+            pickList.Add(pick);//This is to prevent us from picking the same employee for the same day.
             if (EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference != shiftLength)
                 shiftLength = EmployeeStorage.GetEmployee(sortList[pick].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
             Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);//Need to make this adaptive to shift
-            sortList[pick].shiftList.Add(newShift);
-            sortList[pick].scheduledHours += shiftLength;
-            if (day.shiftDictionary.ContainsKey(sortList[pick]))
-            {
-                day.shiftDictionary[sortList[pick]].Add(newShift);
-            }
-            else
-            {
-                List<Shift> newShiftList = new List<Shift>();
-                newShiftList.Add(newShift);
-                day.shiftDictionary.Add(sortList[pick], newShiftList);
-            }
+            sortList[pick].shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
+            sortList[pick].scheduledHours += shiftLength;//Adding to users total scheduled hours
+            //Removed the need a list of shifts on a daily basis since employees will never need more than one shift in a day.
+            day.shiftDictionary.Add(sortList[pick], newShift);
             return pickList;
         }
 
