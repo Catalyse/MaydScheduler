@@ -91,7 +91,7 @@ namespace CoreSys
             scheduleProcess.Start();
         }
 
-        private void ThreadedDeserialize(string fileName)
+        private static void ThreadedDeserialize(string fileName)
         {
             string file = fileName + ".xml";
             CoreSaveType returnObject;
@@ -105,13 +105,12 @@ namespace CoreSys
                 returnObject = (CoreSaveType)serializer.Deserialize(reader);
                 reader.Close();
 
-                return returnObject;
+                CoreSystem.CoreSaveLoaded(returnObject);
             }
             catch (Exception ex)
             {
-                Debug.Log("FileNotFound Exception!");
+                Debug.Log("Deserialization Error!");
                 Debug.Log(ex.Message);
-                return default(T);
             }
         }
         //FILE SERIALIZATION ========================================================================================

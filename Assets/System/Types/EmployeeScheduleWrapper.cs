@@ -23,7 +23,7 @@ namespace CoreSys
         {
             employee = emp.empID;
             position = emp.position;
-            skill = emp.skill;
+            skill = emp.skillLevel;
             maxHours = emp.hourTarget;
             scheduledHours = 0;
             //availability = emp.availability;//Dont init this unless its changed and needs to be saved

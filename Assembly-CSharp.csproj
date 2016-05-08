@@ -57,6 +57,7 @@
      <Compile Include="Assets\System\SubSystem\StartSplash.cs" />
      <Compile Include="Assets\System\Types\Availability.cs" />
      <Compile Include="Assets\System\Types\CoreSaveType.cs" />
+     <Compile Include="Assets\System\Types\CoreSettingsType.cs" />
      <Compile Include="Assets\System\Types\DailySchedule.cs" />
      <Compile Include="Assets\System\Types\Day.cs" />
      <Compile Include="Assets\System\Types\Employee.cs" />

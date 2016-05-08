@@ -114,6 +114,7 @@ namespace CoreSys
         }
         
         //The purpose of this is to iterate through all employees scheduled in one day and figure out the total skill, then the average.
+        /*
         private static int CalcAverageDaySkill(DailySchedule day)
         {
             int average = 0;
@@ -121,7 +122,7 @@ namespace CoreSys
             {
                 day.shiftDictionary.ElementAt(
             }
-        }
+        }*/
 
         private static List<int> GenerateShiftOpen(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
         {

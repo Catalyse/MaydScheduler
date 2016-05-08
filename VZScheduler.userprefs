@@ -1,19 +1,21 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\System\SubSystem\LoadingSpin.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\System\Types\EmployeeScheduleWrapper.cs">
     <Files>
-      <File FileName="Assets\System\SubSystem\LoadingSpin.cs" Line="5" Column="1" />
       <File FileName="Assets\System\SchedulingAlgorithm.cs" Line="1" Column="1" />
+      <File FileName="Assets\System\FileManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\System\SubSystem\LoadingSpin.cs" Line="1" Column="1" />
       <File FileName="Assets\System\CoreSystem.cs" Line="1" Column="1" />
       <File FileName="Assets\WindowScripts\Window.cs" Line="1" Column="1" />
       <File FileName="Assets\WindowScripts\ScheduleWindow.cs" Line="1" Column="1" />
       <File FileName="Assets\WindowScripts\DailyStaffing.cs" Line="1" Column="1" />
+      <File FileName="Assets\System\Types\EmployeeScheduleWrapper.cs" Line="33" Column="64" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="36" column="1" />
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="101" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="37" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="102" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

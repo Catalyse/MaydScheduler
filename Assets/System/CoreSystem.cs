@@ -99,7 +99,7 @@ namespace CoreSys
             if (FileManager.CheckIfFileExists("CoreSave"))
             {
                 coreSave = new CoreSaveType();
-                coreSave = FileManager.DeserializeFile<CoreSaveType>("CoreSettings");
+                FileManager.DeserializeLargeFile("CoreSettings");
             }
             else
             {
@@ -107,6 +107,13 @@ namespace CoreSys
                 Debug.Log("Core Save File not found!");
                 coreSave.GenerationDate = DateTime.Now.ToString(); //THis sets the gen date, although if a save is never completed on a weeklist then the gen date wont be saved
             }
+        }
+
+        public static void CoreSaveLoaded(CoreSaveType save)
+        {
+            coreSave = save;
+            coreSaveLoaded = true;
+            weekList = coreSave.weekList;
         }
 
         public static void CoreSaveChanged()
