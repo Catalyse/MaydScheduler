@@ -7,6 +7,7 @@ namespace CoreSys
 {
     public class EmployeeScheduleWrapper
     {
+        public string lName, fName;
         public int employee;
         public int position;
         public int maxHours;
@@ -21,6 +22,8 @@ namespace CoreSys
 
         public EmployeeScheduleWrapper(Employee emp)
         {
+            lName = emp.empLastName;
+            fName = emp.empFirstName;
             employee = emp.empID;
             position = emp.position;
             skill = emp.skillLevel;

@@ -57,6 +57,11 @@ namespace CoreSys.Windows
             dailyStaffing.GetComponent<DailyStaffing>().SetWeeklyConfig();
         }
 
+        public void CheckForDaysOff()
+        {
+
+        }
+
         public void GenerateSchedule()
         {
             dailyStaffing.SetActive(false);

@@ -38,6 +38,18 @@ namespace CoreSys.Employees
             SetBarText();
         }
 
+        public void EmployeeBarSet(EmployeeScheduleWrapper emp)
+        {
+            eName.text = emp.lName +", " + emp.fName;
+            id.text = emp.employee.ToString();
+            title.text = CoreSystem.GetPositionName(emp.position);
+            if (emp.maxHours >= 40)
+                tempStatus = 2;
+            else
+                tempStatus = 1;
+            SetBarText();
+        }
+
         private void SetBarText()
         {
             if (tempStatus == 0)

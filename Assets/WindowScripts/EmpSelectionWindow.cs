@@ -12,7 +12,7 @@ namespace CoreSys.Windows
         public PrefabList prefabs;
         public GameObject empBarSpawnGrid;
 
-        public void GenerateEmpBars(List<Employee> empList)
+        public void GenerateEmpBars(List<EmployeeScheduleWrapper> empList)
         {
             if (currentBarList.Count > 0)
                 ClearBars();
@@ -25,6 +25,14 @@ namespace CoreSys.Windows
                     bar.EmployeeBarSet(empList[i]);
                     currentBarList.Add(bar);
                 }
+            }
+        }
+
+        public void ReturnSelectedBars()
+        {
+            for (int i = 0; i < currentBarList.Count; i++)
+            {
+                
             }
         }
 

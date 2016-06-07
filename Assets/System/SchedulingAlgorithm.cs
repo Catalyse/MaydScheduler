@@ -7,8 +7,8 @@ using CoreSys.Employees;
 namespace CoreSys
 {
     /// <summary>
-    /// This is the primary algorithm for generating the schedule.  As it stands currently the algorithm takes a few seconds real time to process, 
-    /// so the entirety of the method will be threaded to prevent main thread hangs
+    /// This is the primary algorithm for generating the schedule.  
+    /// This entire class is now set up to be run on a separate thread, no interaction with the gui can take place.
     /// </summary>
     public static class SchedulingAlgorithm
     {
@@ -32,9 +32,7 @@ namespace CoreSys
         public static void StartScheduleGen()
         {
             week = CoreSystem.week;
-            mainEmployeeList = EmployeeStorage.employeeList;
-            GenerateWrapperList(mainEmployeeList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
-            CheckTempDaysOff();
+            //XX  CheckTempDaysOff();//This needs to be done beforehand
             GeneratePositionLists();
             GenerateSchedule();
         }
@@ -114,15 +112,16 @@ namespace CoreSys
         }
         
         //The purpose of this is to iterate through all employees scheduled in one day and figure out the total skill, then the average.
-        /*
-        private static int CalcAverageDaySkill(DailySchedule day)
+        private static int CalcAverageDaySkill(List<EmployeeScheduleWrapper> dict)
         {
             int average = 0;
-            for(int i = 0; i < day.shiftDictionary.Count; i++)
+            for(int i = 0; i < dict.Count; i++)
             {
-                day.shiftDictionary.ElementAt(
+                average += dict[i].skill;
             }
-        }*/
+            average = average / dict.Count;
+            return average;
+        }
 
         private static List<int> GenerateShiftOpen(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
         {
@@ -188,22 +187,6 @@ namespace CoreSys
             }
             average = average / empList.Count;
             return average;
-        }
-
-        /// <summary>
-        /// This method accepts a list of employees, then adds all active employees to a wrapper for more information to be placed on top of them without affecting the base saved data
-        /// </summary>
-        /// <param name="empList">Unsorted list of all employees in the system</param>
-        private static void GenerateWrapperList(List<Employee> empList)
-        {
-            for (int i = 0; i < empList.Count; i++)
-            {
-                if (empList[i].active)//Check if the employee is active
-                {
-                    EmployeeScheduleWrapper newWrapper = new EmployeeScheduleWrapper(empList[i]);
-                    employeeList.Add(newWrapper);
-                }
-            }
         }
 
         /// <summary>
@@ -322,14 +305,6 @@ namespace CoreSys
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// This method will call the window manager to make a popup occur and show a list of active employee, then ask if they have any extra availability requirements.
-        /// </summary>
-        private static void CheckTempDaysOff()
-        {
-            //Call Window for temp days off
         }
     }
 }
