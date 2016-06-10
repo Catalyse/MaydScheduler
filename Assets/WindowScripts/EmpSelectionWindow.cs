@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Employees;
@@ -6,8 +8,9 @@ using CoreSys;
 
 namespace CoreSys.Windows
 {
-    public class EmpSelectionWindow : MonoBehaviour
+    public class EmpSelectionWindow : Window
     {
+        public ScheduleWindow parent;
         private List<EmployeeBar> currentBarList = new List<EmployeeBar>();
         public PrefabList prefabs;
         public GameObject empBarSpawnGrid;
@@ -30,10 +33,15 @@ namespace CoreSys.Windows
 
         public void ReturnSelectedBars()
         {
+            List<EmployeeScheduleWrapper> returnList = new List<EmployeeScheduleWrapper>();
             for (int i = 0; i < currentBarList.Count; i++)
             {
-                
+                if (currentBarList[i].barToggle.isOn)
+                {
+                    returnList.Add(currentBarList[i].employeeWrap);
+                }
             }
+            parent.StartAvailLoop(returnList);
         }
 
         private void ClearBars()

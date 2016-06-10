@@ -46,6 +46,14 @@ namespace CoreSys
             EmployeeStorage.GetEmployee(employee).availability = avail;
         }
 
+        public Availability GetEntireAvail()
+        {
+            if (availabilityModified)
+                return availability;
+            else
+                return EmployeeStorage.GetEmployee(employee).availability;
+        }
+
         public bool GetAvailability(int day)
         {
             if (availabilityModified)

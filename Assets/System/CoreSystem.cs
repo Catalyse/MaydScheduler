@@ -153,33 +153,8 @@ namespace CoreSys
             currentlyProcessing = true;
             week = w;
             //Moved this out of the actual algorithm and put it in preprocessing
-            GenerateWrapperList(EmployeeStorage.employeeList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
             Thread scheduleProcess = new Thread(new ThreadStart(SchedulingAlgorithm.StartScheduleGen));
             scheduleProcess.Start();
-        }
-
-        /// <summary>
-        /// This method accepts a list of employees, then adds all active employees to a wrapper for more information to be placed on top of them without affecting the base saved data
-        /// </summary>
-        /// <param name="empList">Unsorted list of all employees in the system</param>
-        private static void GenerateWrapperList(List<Employee> empList)
-        {
-            for (int i = 0; i < empList.Count; i++)
-            {
-                if (empList[i].active)//Check if the employee is active
-                {
-                    EmployeeScheduleWrapper newWrapper = new EmployeeScheduleWrapper(empList[i]);
-                    week.empList.Add(newWrapper);
-                }
-            }
-        }
-
-        /// <summary>
-        /// This method will call the window manager to make a popup occur and show a list of active employee, then ask if they have any extra availability requirements.
-        /// </summary>
-        private static void CheckTempDaysOff()
-        {
-            //Call Window for temp days off
         }
 
         public static void GenerationComplete(Week w)

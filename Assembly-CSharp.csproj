@@ -69,6 +69,7 @@
      <Compile Include="Assets\System\Types\Week.cs" />
      <Compile Include="Assets\WindowScripts\AddEmployee.cs" />
      <Compile Include="Assets\WindowScripts\AddPosition.cs" />
+     <Compile Include="Assets\WindowScripts\AvailabilityWindow.cs" />
      <Compile Include="Assets\WindowScripts\ChooseWeek.cs" />
      <Compile Include="Assets\WindowScripts\DailyStaffing.cs" />
      <Compile Include="Assets\WindowScripts\EmpSelectionWindow.cs" />
