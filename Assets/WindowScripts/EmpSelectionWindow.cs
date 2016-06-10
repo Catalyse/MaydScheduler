@@ -41,7 +41,14 @@ namespace CoreSys.Windows
                     returnList.Add(currentBarList[i].employeeWrap);
                 }
             }
+            ClearBars();
             parent.StartAvailLoop(returnList);
+        }
+
+        public void Cancel()
+        {
+            ClearBars();
+            parent.AvailChangeCancel();
         }
 
         private void ClearBars()

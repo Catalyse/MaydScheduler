@@ -73,6 +73,7 @@ namespace CoreSys
             {
                 coreSettingsLoaded = false;
                 Debug.Log("Core Settings File not found!");
+                coreSettings = new CoreSettingsType();
                 coreSettings.GenerationDate = DateTime.Now.ToString();//THis sets the gen date, although if a save is never completed on a weeklist then the gen date wont be saved
             }
         }
@@ -99,11 +100,13 @@ namespace CoreSys
             {
                 coreSave = new CoreSaveType();
                 FileManager.DeserializeLargeFile("CoreSettings");
+                coreSaveLoaded = true;
             }
             else
             {
                 coreSaveLoaded = false;
                 Debug.Log("Core Save File not found!");
+                coreSave = new CoreSaveType();
                 coreSave.GenerationDate = DateTime.Now.ToString(); //THis sets the gen date, although if a save is never completed on a weeklist then the gen date wont be saved
             }
         }

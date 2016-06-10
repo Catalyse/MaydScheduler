@@ -141,7 +141,7 @@ namespace CoreSys
             }
             if (currentSubmit == maxSubmit - 1)//last position met 
             {
-                parent.GenerateSchedule();
+                parent.GenerateFinalSetup();
             }
             currentSubmit++;
             position.text = CoreSystem.GetPositionName(currentSubmit);

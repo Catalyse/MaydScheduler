@@ -50,7 +50,6 @@ namespace CoreSys
         {
             try
             {
-                Debug.Log("SetOpenNeeded Called for " + dayOfWeek.ToString() + " Position: " + key);
                 openNeededShifts.Add(key, value);
             }
             catch
@@ -65,7 +64,6 @@ namespace CoreSys
         {
             try
             {
-                Debug.Log("SetCloseNeeded Called for " + dayOfWeek.ToString() + " Position: " + key);
                 closeNeededShifts.Add(key, value);
             }
             catch

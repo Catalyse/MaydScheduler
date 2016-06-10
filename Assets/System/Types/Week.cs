@@ -118,6 +118,7 @@ namespace CoreSys
             thursday = new DailySchedule(startDate.AddDays(4));
             friday = new DailySchedule(startDate.AddDays(5));
             saturday = new DailySchedule(startDate.AddDays(6));
+            empList = new List<EmployeeScheduleWrapper>();
         }
     }
 }

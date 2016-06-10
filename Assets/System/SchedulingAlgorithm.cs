@@ -32,7 +32,7 @@ namespace CoreSys
         public static void StartScheduleGen()
         {
             week = CoreSystem.week;
-            //XX  CheckTempDaysOff();//This needs to be done beforehand
+            employeeList = week.empList;
             GeneratePositionLists();
             GenerateSchedule();
         }
@@ -100,7 +100,7 @@ namespace CoreSys
                     }
                 }
             }
-            week.empList = employeeList;
+            //week.empList = employeeList;
             //Need to return to CoreSys to interface since this will be threaded
             CoreSystem.GenerationComplete(week);
         }

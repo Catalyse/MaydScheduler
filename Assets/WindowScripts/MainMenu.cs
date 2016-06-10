@@ -19,7 +19,7 @@ namespace CoreSys.Windows
 
         public void Start()
         {
-            CoreSystem.LoadCoreSave();
+            CoreSystem.LoadCoreSettings();
             if (CoreSystem.coreSettingsLoaded == false)
             {
                 WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);

@@ -64,8 +64,9 @@ namespace CoreSys.Windows
         /// This method accepts a list of employees, then adds all active employees to a wrapper for more information to be placed on top of them without affecting the base saved data
         /// </summary>
         /// <param name="empList">Unsorted list of all employees in the system</param>
-        public void GenerateWrapperList(List<Employee> empList)
+        public void GenerateWrapperList()
         {
+            List<Employee> empList = EmployeeStorage.employeeList;
             for (int i = 0; i < empList.Count; i++)
             {
                 if (empList[i].active)//Check if the employee is active
@@ -92,7 +93,7 @@ namespace CoreSys.Windows
             AvailChangeList = empList;
             currentEmp = 0;
             availWindow.SetActive(true);
-            availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].availability, AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
+            availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].GetEntireAvail(), AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
         }
 
         public void AvailLoopCallback(Availability avail)
@@ -101,22 +102,38 @@ namespace CoreSys.Windows
             currentEmp++;
             if (currentEmp >= AvailChangeList.Count)//it really shouldnt ever be higher but you know, code n shit.
                 CompleteAvailChange();
-            availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].availability, AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
+            else
+                availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].GetEntireAvail(), AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
         }
 
         private void CompleteAvailChange()
         {
+            availWindow.SetActive(false);
             for (int i = 0; i < AvailChangeList.Count; i++)
             {
                 currentWeek.empList[currentWeek.empList.IndexOf(AvailChangeList[i])] = AvailChangeList[i];//replace the employee with the one with temp avail.  Prolly a more efficient way to do this but thats for later.
             }
+            GenerateSchedule();
         }
 
-        public void GenerateSchedule()
+        public void AvailChangeCancel()
+        {
+            availWindow.SetActive(false);
+            empSelection.SetActive(false);
+            GenerateSchedule();
+        }
+
+        public void GenerateFinalSetup()
         {
             dailyStaffing.SetActive(false);
+            GenerateWrapperList();
+            CheckTempDaysOff();
+        }
+
+        private void GenerateSchedule()
+        {
+            waiting = true;
             CoreSystem.GenerateSchedule(currentWeek);
-			waiting = true;
         }
 
         public void DrawSchedule()
