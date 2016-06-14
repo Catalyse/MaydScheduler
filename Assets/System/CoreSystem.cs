@@ -24,8 +24,8 @@ namespace CoreSys
     /// </summary>
     public static class CoreSystem
     {
-        private static CoreSettingsType coreSettings;
-        private static CoreSaveType coreSave;
+        public static CoreSettingsType coreSettings;
+        public static CoreSaveType coreSave;
         public static bool coreSettingsLoaded = false;
         public static bool coreSaveLoaded = false;
         //public static bool systemInitialized; 
@@ -99,7 +99,7 @@ namespace CoreSys
             if (FileManager.CheckIfFileExists("CoreSave"))
             {
                 coreSave = new CoreSaveType();
-                FileManager.DeserializeLargeFile("CoreSettings");
+                FileManager.DeserializeCoreSave("CoreSettings");
                 coreSaveLoaded = true;
             }
             else
@@ -111,7 +111,7 @@ namespace CoreSys
             }
         }
 
-        public static void CoreSaveLoaded(CoreSaveType save)
+        public static void CoreSaveLoaded(CoreSaveType save)//This exists because the load is threaded
         {
             coreSave = save;
             coreSaveLoaded = true;
@@ -121,7 +121,8 @@ namespace CoreSys
         public static void CoreSaveChanged()
         {
             coreSave.weekList = weekList;
-
+            coreSave.LastModified = DateTime.Now.ToString();
+            FileManager.SerializeCoreSave();
         }
 
         public static Week FindWeek(DateTime weekStartDate)
@@ -140,8 +141,8 @@ namespace CoreSys
             }
             else
             {
-                Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName");
-                return "Error! Contact Developer!";
+                Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName || TypeNo: " + type);
+                return "ErrNotFound";
                 //TODO, make this force a popup to define the queried type
             }
         }
@@ -153,9 +154,9 @@ namespace CoreSys
         /// <param name="w"></param>
         public static void GenerateSchedule(Week w)
         {
-            currentlyProcessing = true;
+            Debug.Log("Starting Schedule Generation");
+            currentlyProcessing = true;//This allows instanced objects to track whether the threaded generation is done or not
             week = w;
-            //Moved this out of the actual algorithm and put it in preprocessing
             Thread scheduleProcess = new Thread(new ThreadStart(SchedulingAlgorithm.StartScheduleGen));
             scheduleProcess.Start();
         }
@@ -167,6 +168,10 @@ namespace CoreSys
             if (weekList.ContainsKey(w.startDate))//This will overwrite the week in the event that it already existed and we are regenerating it.
             {
                 weekList.Remove(w.startDate);
+                weekList.Add(w.startDate, w);
+            }
+            else
+            {
                 weekList.Add(w.startDate, w);
             }
         }

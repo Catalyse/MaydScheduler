@@ -73,9 +73,38 @@ namespace CoreSys
             }
             catch (Exception ex)
             {
-                Debug.Log("FileNotFound Exception!");
+                Debug.Log("FileNotFound Exception! (Or something else this is a catch-all error)");
                 Debug.Log(ex.Message);
                 return default(T);
+            }
+        }
+
+        public static void SerializeCoreSave()
+        {
+            Thread serializeProcess = new Thread(new ThreadStart(ThreadedSerialize));
+            serializeProcess.Start();
+        }
+
+        private static void ThreadedSerialize()
+        {
+            try
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+                XmlSerializer serializer = new XmlSerializer(typeof(CoreSaveType));
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    serializer.Serialize(stream, CoreSystem.coreSave);
+                    stream.Position = 0;
+                    xmlDocument.Load(stream);
+                    xmlDocument.Save("CoreSave.xml");
+                    stream.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Serialization Error || CoreSystem || SerializeFile<T>");
+                Debug.Log(ex.Message);
+                Debug.Log(ex.InnerException);
             }
         }
 
@@ -85,21 +114,20 @@ namespace CoreSys
         /// <typeparam name="T"></typeparam>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static void DeserializeLargeFile(string fileName)
+        public static void DeserializeCoreSave(string fileName)
         {
-            Thread scheduleProcess = new Thread(new ThreadStart(SchedulingAlgorithm.StartScheduleGen));
-            scheduleProcess.Start();
+            Thread deserializeProcess = new Thread(new ThreadStart(ThreadedDeserialize));
+            deserializeProcess.Start();
         }
 
-        private static void ThreadedDeserialize(string fileName)
+        private static void ThreadedDeserialize()
         {
-            string file = fileName + ".xml";
             CoreSaveType returnObject;
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(CoreSaveType));
 
-                StreamReader reader = new StreamReader(file);
+                StreamReader reader = new StreamReader("CoreSave.xml");
                 if (reader == null)
                     throw new EmpListNotFoundErr();
                 returnObject = (CoreSaveType)serializer.Deserialize(reader);
@@ -109,7 +137,7 @@ namespace CoreSys
             }
             catch (Exception ex)
             {
-                Debug.Log("Deserialization Error!");
+                Debug.Log("Deserialization Error! (Or the file is missing, or something else)");
                 Debug.Log(ex.Message);
             }
         }

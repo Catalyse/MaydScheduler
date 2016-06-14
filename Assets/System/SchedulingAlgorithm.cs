@@ -46,15 +46,12 @@ namespace CoreSys
                     DailySchedule day = week.SelectDay(d);//make this pick days based on the priority
                     List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d, pos);
                     Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
-                    //List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
-                    float avgSkill = CalcAvgSkill(empList);
-                    
                     Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
                     
                     //Open loop
                     for (int i = 0; i < priorityList.Count; i++)
                     {
-                        if(!pickList.ContainsKey(i))
+                        if(!pickList.ContainsKey(i))//This initializes and entry in the dictionary for this priority level.
                             pickList.Add(i, new List<int>());
                         if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
                         {
@@ -100,8 +97,6 @@ namespace CoreSys
                     }
                 }
             }
-            //week.empList = employeeList;
-            //Need to return to CoreSys to interface since this will be threaded
             CoreSystem.GenerationComplete(week);
         }
 

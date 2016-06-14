@@ -12,7 +12,7 @@ namespace CoreSys.Windows
     {
         public Text title;
         public Week currentWeek;
-        public GameObject grid, dailyStaffing, weeklyConfig, chooseWeek, empSelection, availWindow;
+        public GameObject grid, dailyStaffing, weeklyConfig, chooseWeek, empSelection, availWindow, availPrompt;
         public PrefabList prefabs;
         private int currentEmp = 0;
         private bool waiting = false;
@@ -77,12 +77,23 @@ namespace CoreSys.Windows
             }
         }
 
+        /// TEMP AVAILABILITY CHANGE SECTION /// =============================================================================================================================== /
+
+        /// <summary>
+        /// This will prompt the user to see if anyone needs a temporary change to availability
+        /// </summary>
+        public void AvailabilityPrompt()
+        {
+            availPrompt.SetActive(true);
+        }
+
         /// <summary>
         /// This method will call the window manager to make a popup occur and show a list of active employee, then ask if they have any extra availability requirements.
         /// This will start the iteration through all employees needing a change.
         /// </summary>
         public void CheckTempDaysOff()
         {
+            availPrompt.SetActive(false);
             empSelection.SetActive(true);
             empSelection.GetComponent<EmpSelectionWindow>().GenerateEmpBars(currentWeek.empList);
         }
@@ -120,14 +131,17 @@ namespace CoreSys.Windows
         {
             availWindow.SetActive(false);
             empSelection.SetActive(false);
+            availPrompt.SetActive(false);
             GenerateSchedule();
         }
+
+        /// END TEMP AVAILABILITY CHANGE SECTION /// =========================================================================================================================== /
 
         public void GenerateFinalSetup()
         {
             dailyStaffing.SetActive(false);
             GenerateWrapperList();
-            CheckTempDaysOff();
+            AvailabilityPrompt();
         }
 
         private void GenerateSchedule()

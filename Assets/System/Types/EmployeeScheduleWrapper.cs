@@ -51,7 +51,10 @@ namespace CoreSys
             if (availabilityModified)
                 return availability;
             else
-                return EmployeeStorage.GetEmployee(employee).availability;
+            {//This fixes the direct memory interaction when modifying temp availability
+                availability = new Availability(EmployeeStorage.GetEmployee(employee).availability);
+                return availability;
+            }
         }
 
         public bool GetAvailability(int day)
@@ -61,40 +64,19 @@ namespace CoreSys
                 switch (day)
                 {
                     case 0:
-                        if (availability.sunday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.sunday.available;
                     case 1:
-                        if (availability.monday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.monday.available;
                     case 2:
-                        if (availability.tuesday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.tuesday.available;
                     case 3:
-                        if (availability.wednesday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.wednesday.available;
                     case 4:
-                        if (availability.thursday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.thursday.available;
                     case 5:
-                        if (availability.friday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.friday.available;
                     case 6:
-                        if (availability.saturday.available)
-                            return true;
-                        else
-                            return false;
+                        return availability.saturday.available;
                     default:
                         Debug.Log("Invalid case chosen! :: EmployeeManagement/Employee.cs :: GetAvailability(int day): Invalid Value for Day Thrown! :: Returning false!");
                         break;
