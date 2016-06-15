@@ -9,6 +9,8 @@ namespace CoreSys
     {
         //Begin vars  for storage of main thread info
         private static Week week;
+        //To know which days have been processed already
+        private static List<int> pickedDays = new List<int>();
         //These arent super important, may get rid of them
         private static int weeklyNeededShifts, weeklyAvailShifts;
         //                        position        day, count
@@ -111,14 +113,42 @@ namespace CoreSys
             {
                 for (int d = 0; d < 7; d++)
                 {
-                    DailySchedule day = week.SelectDay(d);//make this pick days based on the priority
+                    DailySchedule day = PickDay(pos);
                     Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GeneratePriorityList(employeePositionDictionary[pos], d);
+                    //         priorityListLevel, list of picks
                     Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
 
+                    for (int i = 0; i < priorityList.Count; i++)//init pick list
+                        pickList.Add(i, new List<int>());
                     //First we will assign the right number of employees to each day as best we can.
-                    
+                    for (int i = 0; i < priorityList.Count; i++)
+                    {
+
+                    }
                 }
             }
+        }
+
+        private static DailySchedule PickDay(int pos)
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if (!dailyAvailabilityStatus[pos][i] && !pickedDays.Contains(i))
+                {
+                    CoreSystem.ErrorCatch("PickDay() || Priority Picked: " + (i + 1));
+                    return week.SelectDay(i);
+                }
+            }
+            for (int i = 0; i < 7; i++)
+            {
+                if (!pickedDays.Contains(i))
+                {
+                    CoreSystem.ErrorCatch("PickDay() || Picked: " + (i + 1));
+                    return week.SelectDay(i);
+                }
+            }
+            CoreSystem.ErrorCatch("PickDay() Error! || Returning Null");
+            return null;//This is bad though, cause then we didnt pick one at all for some reason, this shouldn't ever happen as that means we tried to pick too many days
         }
 
         /// <summary>
