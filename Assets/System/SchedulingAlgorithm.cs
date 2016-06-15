@@ -23,9 +23,21 @@ namespace CoreSys
 
         private static void GeneratePositionLists()
         {
-            for (int i = 0; i < CoreSystem.positionList.Count; i++)
+            try
             {
-                employeeDictionary.Add(i, new List<EmployeeScheduleWrapper>());
+                for (int i = 0; i < CoreSystem.positionList.Count; i++)
+                {
+                    employeeDictionary.Add(i, new List<EmployeeScheduleWrapper>());
+                }
+
+                for (int i = 0; i < week.empList.Count; i++)
+                {
+                    employeeDictionary[week.empList[i].position].Add(week.empList[i]);
+                }
+            }
+            catch(Exception ex)
+            {
+                CoreSystem.ErrorCatch("GeneratePositionLists() Exception || ScheduleAlgorithm.cs", ex);
             }
         }
 

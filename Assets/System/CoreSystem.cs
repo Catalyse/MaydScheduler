@@ -177,6 +177,17 @@ namespace CoreSys
         }
 
         //Random Common Methods ======================================================================================
+        public static void ErrorCatch(string msg)
+        {
+            Debug.Log(msg);
+        }
+
+        public static void ErrorCatch(string msg, Exception ex)
+        {
+            Debug.Log(msg);
+            Debug.Log(ex.Message + "\n" + ex.InnerException);
+        }
+
         public static int RandomInt(int count)
         {
             System.Random gen = new System.Random();
