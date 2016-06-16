@@ -5,6 +5,14 @@ using System.Collections.Generic;
 
 namespace CoreSys
 {
+    /// <summary>
+    /// This Scheduling algorithm is the guts of this program.
+    /// It takes the information that is filled out in the GUI and processes it into a schedule.
+    /// This entire class is designed to be used as a threaded process
+    /// --//WARNING//-- If this class is NOT threaded your main thread will hang for 5+ seconds, growing longer with more employees.
+    /// Due to this class being threaded, it makes it harder to debug in the environment it is designed in, so there are going to be tons of --
+    /// -- CoreSystem.ErrorCatch methods to throw debug notes in the event of things not working correctly since we cannot step through it.
+    /// </summary>
     public static class NewSchedAlgo
     {
         //Begin vars  for storage of main thread info
@@ -17,7 +25,7 @@ namespace CoreSys
         private static Dictionary<int, Dictionary<int, int>> dailyNeededShifts, dailyAvailShifts;
         //                        position        day, status(true = enough shifts available, false = not enough shifts available)
         private static Dictionary<int, Dictionary<int, bool>> dailyAvailabilityStatus = new Dictionary<int, Dictionary<int, bool>>();
-        //                  Master emp list
+        //                  Master emp list  //Also this might not be needed
         private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
         //                        position, employeeList
         private static Dictionary<int, List<EmployeeScheduleWrapper>> employeePositionDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
@@ -77,7 +85,7 @@ namespace CoreSys
                 for (int i = 0; i < 7; i++)//days
                 {
                     int shifts = 0;
-                    for (int k = 0; k < week.empList.Count; k++)
+                    for (int k = 0; k < week.empList.Count; k++)//employee list
                     {
                         if (week.empList[k].GetAvailability(i))
                             shifts += 1;
@@ -113,10 +121,21 @@ namespace CoreSys
             {
                 for (int d = 0; d < 7; d++)
                 {
+                    //The day becomes critical if there are not enough employees for the day
+                    bool criticalDay = false;
+                    //This ratio will be of the % available compared to what is needed.
+                    float criticalRatio = 0.0f;
+                    //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
                     DailySchedule day = PickDay(pos);
+                    //This will generate 
                     Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GeneratePriorityList(employeePositionDictionary[pos], d);
                     //         priorityListLevel, list of picks
                     Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
+
+                    if (!dailyAvailabilityStatus[pos][d])//If this is false it is a critical day
+                    {
+                        criticalDay = true;
+                    }
 
                     for (int i = 0; i < priorityList.Count; i++)//init pick list
                         pickList.Add(i, new List<int>());
@@ -129,6 +148,12 @@ namespace CoreSys
             }
         }
 
+        /// <summary>
+        /// This picks a day based on if it is going to be understaffed first, then if all understaffed days are already picked, or there were none in the first place it picks the remaining days in order.
+        /// In theory this method will never throw the error at the end.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         private static DailySchedule PickDay(int pos)
         {
             for (int i = 0; i < 7; i++)
