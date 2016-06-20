@@ -9,11 +9,11 @@ namespace CoreSys
 {
     public class Week
     {
-        public int julianStartDay;
-        public DateTime startDate;
-        public int earliestStart, latestEnd;
-        public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily)
-        public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;
+        public int julianStartDay;//Needed before algorithm
+        public DateTime startDate;//Needed before algorithm
+        public int earliestStart, latestEnd;//idk what this is //FIXTHIS//
+        public List<EmployeeScheduleWrapper> empList;//Including temp avail, as well as shifts(which can also be found daily) //Needed before algorithm
+        public DailySchedule sunday, monday, tuesday, wednesday, thursday, friday, saturday;//Basic info needed before algorithm
 
         /// <summary>
         /// Week should not be initialized with the default constructor || This exists for serialization

@@ -8,13 +8,18 @@ namespace CoreSys
     /// <summary>
     /// This Scheduling algorithm is the guts of this program.
     /// It takes the information that is filled out in the GUI and processes it into a schedule.
-    /// This entire class is designed to be used as a threaded process
+    /// This entire class is designed to be used as a threaded process to avoid freezing on the main thread as its proccess time is heavy
+    /// Due to this class being threaded, it makes it harder to debug in the environment it is designed in, so there are going to be tons of -
+    /// - CoreSystem.ErrorCatch methods to throw debug notes in the event of things not working correctly since we cannot step through it.
     /// --//WARNING//-- If this class is NOT threaded your main thread will hang for 5+ seconds, growing longer with more employees.
-    /// Due to this class being threaded, it makes it harder to debug in the environment it is designed in, so there are going to be tons of --
-    /// -- CoreSystem.ErrorCatch methods to throw debug notes in the event of things not working correctly since we cannot step through it.
+    /// --//NOTE//-- This class is meant to be very heavy in processing time and relatively high in memory usage(compared to the rest of the program)
+    /// --//NOTE//-- If this class is to be adapted without CoreSystem.cs, CoreSystem.ErrorCatch methods will need to be removed. They are used solely for - 
+    /// --//TODO//-- Make variable shift algorithm
+    /// - debugging and will not cause any issues if removed
     /// </summary>
     public static class NewSchedAlgo
     {
+        //A lot of these vars are meant to be temporary within this method so we can minimize the amount of data that needs to be stored.
         //Begin vars  for storage of main thread info
         private static Week week;
         //To know which days have been processed already
@@ -29,26 +34,36 @@ namespace CoreSys
         private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();
         //                        position, employeeList
         private static Dictionary<int, List<EmployeeScheduleWrapper>> employeePositionDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
+        //                        position        day,      empList
+        private static Dictionary<int, Dictionary<int, List<EmployeeScheduleWrapper>>> dailyEmployeeList = new Dictionary<int,Dictionary<int,List<EmployeeScheduleWrapper>>>();
 
+        /// <summary>
+        /// This is the threaded method called to generate the schedule.
+        /// </summary>
         public static void StartScheduleGen()
         {
             week = CoreSystem.week;
             employeeList = week.empList;
             GeneratePositionLists();
             CalcPositionVars();
+            AnalyzeResources();
             GenerateSchedule();
         }
 
+        /// <summary>
+        /// This will separate the main employee list based on each position.  This can handle as many positions as there are, no limit.
+        /// Run count is (number of positions) + (number of employees);
+        /// </summary>
         private static void GeneratePositionLists()
         {
             try
             {
-                for (int i = 0; i < CoreSystem.positionList.Count; i++)
+                for (int i = 0; i < CoreSystem.positionList.Count; i++)//Create a list for each position
                 {
                     employeePositionDictionary.Add(i, new List<EmployeeScheduleWrapper>());
                 }
 
-                for (int i = 0; i < week.empList.Count; i++)
+                for (int i = 0; i < week.empList.Count; i++)//Sort employees into the lists made above.
                 {
                     employeePositionDictionary[week.empList[i].position].Add(week.empList[i]);
                 }
@@ -59,6 +74,9 @@ namespace CoreSys
             }
         }
 
+        /// <summary>
+        /// This will calculate if there are enough employees for the requested shifts for the week and for each day.
+        /// </summary>
         private static void CalcPositionVars()
         {
             weeklyNeededShifts = 0;
@@ -66,11 +84,12 @@ namespace CoreSys
             dailyNeededShifts = new Dictionary<int,Dictionary<int,int>>();
             dailyAvailShifts = new Dictionary<int,Dictionary<int,int>>();
 
-            for (int j = 0; j < CoreSystem.positionList.Count; j++)
+            //RunCount = PositionCount * 7
+            for (int j = 0; j < CoreSystem.positionList.Count; j++)//Position loop
             {
-                for (int i = 0; i < 7; i++)
+                for (int i = 0; i < 7; i++)//Day loop
                 {
-                    DailySchedule day = week.SelectDay(i);
+                    DailySchedule day = week.SelectDay(i);//Selects days in order
                     int shifts = day.openNeededShifts[j];
                     shifts += day.closeNeededShifts[j];
                     dailyNeededShifts[j][i] = shifts;
@@ -96,6 +115,9 @@ namespace CoreSys
             }
         }
 
+        /// <summary>
+        /// This will analyze data generated earlier in setup to decide if enough employees are available for each day.
+        /// </summary>
         private static void AnalyzeResources()
         {
             if (weeklyNeededShifts > weeklyAvailShifts)//We have less available employee shifts for the week than we need.
@@ -115,36 +137,75 @@ namespace CoreSys
             }
         }
 
+        /// <summary>
+        /// Primary scheduling algorithm.  This will use information generated in the setup to assign employees to each day.
+        /// This is designed for a two shift schedule
+        /// </summary>
         private static void GenerateSchedule()
         {
-            for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
+            try
             {
-                for (int d = 0; d < 7; d++)
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
                 {
-                    //The day becomes critical if there are not enough employees for the day
-                    bool criticalDay = false;
-                    //This ratio will be of the % available compared to what is needed.
-                    float criticalRatio = 0.0f;
-                    //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
-                    DailySchedule day = PickDay(pos);
-                    //This will generate 
-                    Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GeneratePriorityList(employeePositionDictionary[pos], d);
-                    //         priorityListLevel, list of picks
-                    Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
-
-                    if (!dailyAvailabilityStatus[pos][d])//If this is false it is a critical day
+                    for (int d = 0; d < 7; d++)
                     {
-                        criticalDay = true;
-                    }
+                        //The day becomes critical if there are not enough employees for the day
+                        bool criticalDay = false;
+                        //This ratio will be of the % available compared to what is needed.
+                        float criticalRatio = 1.0f;
+                        float criticalOpen = 1.0f;
+                        float criticalClose = 1.0f;
+                        //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
+                        DailySchedule day = PickDay(pos);
+                        //This converts the dayofweek enum to int for use in indexing
+                        int dayInt = CoreSystem.ConvertDoWToInt(day.dayOfWeek);
+                        //This will generate 
+                        Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GeneratePriorityList(employeePositionDictionary[pos], d);
+                        //         priorityListLevel, list of picks
+                        Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
+                        //init pick list
+                        for (int i = 0; i < priorityList.Count; i++)
+                            pickList.Add(i, new List<int>());
 
-                    for (int i = 0; i < priorityList.Count; i++)//init pick list
-                        pickList.Add(i, new List<int>());
-                    //First we will assign the right number of employees to each day as best we can.
-                    for (int i = 0; i < priorityList.Count; i++)
-                    {
+                        //First we will assign the right number of employees to each day as best we can.
+                        //This loop will run until either the correct number of employees is assigned, or until there are no more employees to be scheduled.
+                        for (int i = 0; i < priorityList.Count; i++)
+                        {
+                            for (int j = 0; j < priorityList[i].Count; j++)
+                            {
+                                if (dailyEmployeeList[dayInt].Count < dailyNeededShifts[pos][dayInt])
+                                {
+                                    dailyEmployeeList[pos][dayInt].Add(priorityList[i][j]);
+                                }
+                                else
+                                    break;
+                            }
+                            if (dailyEmployeeList[dayInt].Count >= dailyNeededShifts[pos][dayInt])
+                                break;
+                        }
 
+                        //If this is false it is a critical day
+                        if (!dailyAvailabilityStatus[pos][d])
+                        {
+                            criticalDay = true;
+                            criticalRatio = dailyAvailShifts[pos][dayInt] / dailyNeededShifts[pos][dayInt];
+                        }
+
+                        if (criticalDay)//If the day is critical we will modify the number of employees assigned to each shift by the critical ratio.
+                        {
+                            criticalOpen = day.openNeededShifts[pos];
+                            criticalClose = day.closeNeededShifts[pos];
+                            criticalOpen /= criticalRatio;
+                            criticalClose /= criticalRatio;
+                        }
+
+                        //Next we will assign shifts to the available employees we have picked, based on the critical ratio
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("GenerateSchedule() Exception", ex);
             }
         }
 
