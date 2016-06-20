@@ -155,6 +155,9 @@ namespace CoreSys
                         float criticalClose = 1.0f;
                         int openLoop = 0;
                         int closeLoop = 0;
+                        //These lists will hold the employees assigned to each shift until they can be organized.
+                        List<EmployeeScheduleWrapper> openShift = new List<EmployeeScheduleWrapper>();
+                        List<EmployeeScheduleWrapper> closeShift = new List<EmployeeScheduleWrapper>();
                         //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
                         DailySchedule day = PickDay(pos);
                         //This converts the dayofweek enum to int for use in indexing
@@ -215,7 +218,26 @@ namespace CoreSys
                             closeLoop = day.closeNeededShifts[pos];
                         }
 
-                        //Next we will assign shifts to the available employees we have picked, based on the critical ratio
+                        //Next we will assign shifts to the available employees we have picked, based on the loop counts
+                        try //special try box in the event of misindexing
+                        {
+                            //opening shifts loop
+                            for (int i = 0; i < openLoop; i++)
+                            {
+                                openShift.Add(dailyEmployeeList[pos][dayInt][i]);
+                            }
+                            //closing shifts loop
+                            for (int i = openLoop; i < (openLoop + closeLoop); i++)
+                            {
+                                closeShift.Add(dailyEmployeeList[pos][dayInt][i]);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            CoreSystem.ErrorCatch("GenerateSchedule.cs || Likely an OutOfIndex Error check logs", ex);
+                        }
+
+                        //Now we reorganize based on skill.
                     }
                 }
             }
@@ -251,6 +273,15 @@ namespace CoreSys
             }
             CoreSystem.ErrorCatch("PickDay() Error! || Returning Null");
             return null;//This is bad though, cause then we didnt pick one at all for some reason, this shouldn't ever happen as that means we tried to pick too many days
+        }
+
+        private static float CalculateSkillAvg(List<EmployeeScheduleWrapper> empList)
+        {
+            float avg = 0.0f;
+            for (int i = 0; i < empList.Count; i++)
+            {
+
+            }
         }
 
         /// <summary>

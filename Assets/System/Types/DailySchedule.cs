@@ -15,11 +15,6 @@ namespace CoreSys
         public SerializableDictionary<int, int> closeNeededShifts = new SerializableDictionary<int,int>();
         public SerializableDictionary<int, int> openScheduledShifts = new SerializableDictionary<int, int>();
         public SerializableDictionary<int, int> closeScheduledShifts = new SerializableDictionary<int, int>();
-        //Dictionary<(position), List<(Employees)>>
-        //public SerializableDictionary<int, List<EmployeeScheduleWrapper>> employeeList = new SerializableDictionary<int, List<EmployeeScheduleWrapper>>();
-        //Dictionary<(Hour), List<(scheduled shifts)>>
-        //This was redesigned for open/close specific shifting, not meant to handle hourly anymore. However it should be redesigned to be more flexible in the future.
-        //public Dictionary<int, List<Shift>> openShifts = new Dictionary<int, List<Shift>>(), closeShifts = new Dictionary<int, List<Shift>>();
         
         public SerializableDictionary<EmployeeScheduleWrapper, Shift> shiftDictionary = new SerializableDictionary<EmployeeScheduleWrapper, Shift>();
         //This was changed from being a list to a single value since you cannot have more than one shift in a day.
