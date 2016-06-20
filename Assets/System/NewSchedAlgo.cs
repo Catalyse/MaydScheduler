@@ -150,6 +150,7 @@ namespace CoreSys
                     for (int d = 0; d < 7; d++)
                     {
                         //This ratio will be of the % available compared to what is needed.
+                        float dailySkillAvg = 0.0f;
                         float criticalRatio = 1.0f;
                         float criticalOpen = 1.0f;
                         float criticalClose = 1.0f;
@@ -238,6 +239,11 @@ namespace CoreSys
                         }
 
                         //Now we reorganize based on skill.
+                        dailySkillAvg = CalculateSkillAvg(dailyEmployeeList[pos][dayInt]);
+                        float openSkillAvg = CalculateSkillAvg(openShift);
+                        float closeSkillAvg = CalculateSkillAvg(closeShift);
+
+
                     }
                 }
             }
@@ -280,8 +286,10 @@ namespace CoreSys
             float avg = 0.0f;
             for (int i = 0; i < empList.Count; i++)
             {
-
+                avg += empList[i].skill;
             }
+            avg /= empList.Count;
+            return avg;
         }
 
         /// <summary>
