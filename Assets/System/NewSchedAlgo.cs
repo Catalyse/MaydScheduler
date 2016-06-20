@@ -149,12 +149,12 @@ namespace CoreSys
                 {
                     for (int d = 0; d < 7; d++)
                     {
-                        //The day becomes critical if there are not enough employees for the day
-                        bool criticalDay = false;
                         //This ratio will be of the % available compared to what is needed.
                         float criticalRatio = 1.0f;
                         float criticalOpen = 1.0f;
                         float criticalClose = 1.0f;
+                        int openLoop = 0;
+                        int closeLoop = 0;
                         //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
                         DailySchedule day = PickDay(pos);
                         //This converts the dayofweek enum to int for use in indexing
@@ -184,19 +184,35 @@ namespace CoreSys
                                 break;
                         }
 
+                        //Next we will analyze the day and see if its critical.  If it is we will make assignment ratios
                         //If this is false it is a critical day
                         if (!dailyAvailabilityStatus[pos][d])
                         {
-                            criticalDay = true;
                             criticalRatio = dailyAvailShifts[pos][dayInt] / dailyNeededShifts[pos][dayInt];
-                        }
-
-                        if (criticalDay)//If the day is critical we will modify the number of employees assigned to each shift by the critical ratio.
-                        {
                             criticalOpen = day.openNeededShifts[pos];
                             criticalClose = day.closeNeededShifts[pos];
                             criticalOpen /= criticalRatio;
                             criticalClose /= criticalRatio;
+
+                            //In this section we will assign loop vars
+                            //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                            //more open shifts needed
+                            if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                            {
+                                openLoop = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                                closeLoop = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                            }
+                            //More close shifts needed
+                            else
+                            {
+                                openLoop = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                                closeLoop = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                            }
+                        }
+                        else//day is not critical, assign the loop size to be exactly what we need.
+                        {
+                            openLoop = day.openNeededShifts[pos];
+                            closeLoop = day.closeNeededShifts[pos];
                         }
 
                         //Next we will assign shifts to the available employees we have picked, based on the critical ratio
