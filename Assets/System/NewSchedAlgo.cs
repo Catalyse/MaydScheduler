@@ -35,7 +35,7 @@ namespace CoreSys
         //                        position, employeeList
         private static Dictionary<int, List<EmployeeScheduleWrapper>> employeePositionDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
         //                        position        day,      empList
-        private static Dictionary<int, Dictionary<int, List<EmployeeScheduleWrapper>>> dailyEmployeeList = new Dictionary<int,Dictionary<int,List<EmployeeScheduleWrapper>>>();
+        //private static Dictionary<int, Dictionary<int, List<EmployeeScheduleWrapper>>> dailyEmployeeList = new Dictionary<int,Dictionary<int,List<EmployeeScheduleWrapper>>>();
 
         /// <summary>
         /// This is the threaded method called to generate the schedule.
@@ -149,16 +149,10 @@ namespace CoreSys
                 {
                     for (int d = 0; d < 7; d++)
                     {
-                        //This ratio will be of the % available compared to what is needed.
-                        float dailySkillAvg = 0.0f;
-                        float criticalRatio = 1.0f;
-                        float criticalOpen = 1.0f;
-                        float criticalClose = 1.0f;
-                        int openLoop = 0;
-                        int closeLoop = 0;
                         //These lists will hold the employees assigned to each shift until they can be organized.
                         List<EmployeeScheduleWrapper> openShift = new List<EmployeeScheduleWrapper>();
                         List<EmployeeScheduleWrapper> closeShift = new List<EmployeeScheduleWrapper>();
+                        List<EmployeeScheduleWrapper> dailyEmployeeList = new List<EmployeeScheduleWrapper>();
                         //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
                         DailySchedule day = PickDay(pos);
                         //This converts the dayofweek enum to int for use in indexing
@@ -177,79 +171,97 @@ namespace CoreSys
                         {
                             for (int j = 0; j < priorityList[i].Count; j++)
                             {
-                                if (dailyEmployeeList[dayInt].Count < dailyNeededShifts[pos][dayInt])
+                                if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
                                 {
-                                    dailyEmployeeList[pos][dayInt].Add(priorityList[i][j]);
+                                    dailyEmployeeList.Add(priorityList[i][j]);
                                 }
                                 else
                                     break;
                             }
-                            if (dailyEmployeeList[dayInt].Count >= dailyNeededShifts[pos][dayInt])
+                            if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
                                 break;
                         }
 
-                        //Next we will analyze the day and see if its critical.  If it is we will make assignment ratios
-                        //If this is false it is a critical day
-                        if (!dailyAvailabilityStatus[pos][d])
-                        {
-                            criticalRatio = dailyAvailShifts[pos][dayInt] / dailyNeededShifts[pos][dayInt];
-                            criticalOpen = day.openNeededShifts[pos];
-                            criticalClose = day.closeNeededShifts[pos];
-                            criticalOpen /= criticalRatio;
-                            criticalClose /= criticalRatio;
-
-                            //In this section we will assign loop vars
-                            //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
-                            //more open shifts needed
-                            if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
-                            {
-                                openLoop = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
-                                closeLoop = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
-                            }
-                            //More close shifts needed
-                            else
-                            {
-                                openLoop = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
-                                closeLoop = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
-                            }
-                        }
-                        else//day is not critical, assign the loop size to be exactly what we need.
-                        {
-                            openLoop = day.openNeededShifts[pos];
-                            closeLoop = day.closeNeededShifts[pos];
-                        }
-
-                        //Next we will assign shifts to the available employees we have picked, based on the loop counts
-                        try //special try box in the event of misindexing
-                        {
-                            //opening shifts loop
-                            for (int i = 0; i < openLoop; i++)
-                            {
-                                openShift.Add(dailyEmployeeList[pos][dayInt][i]);
-                            }
-                            //closing shifts loop
-                            for (int i = openLoop; i < (openLoop + closeLoop); i++)
-                            {
-                                closeShift.Add(dailyEmployeeList[pos][dayInt][i]);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            CoreSystem.ErrorCatch("GenerateSchedule.cs || Likely an OutOfIndex Error check logs", ex);
-                        }
-
-                        //Now we reorganize based on skill.
-                        dailySkillAvg = CalculateSkillAvg(dailyEmployeeList[pos][dayInt]);
-                        float openSkillAvg = CalculateSkillAvg(openShift);
-                        float closeSkillAvg = CalculateSkillAvg(closeShift);
-
-
+                        //Next we will assign shifts.
+                        AssignShifts(dailyEmployeeList, day, dayInt, pos);
                     }
                 }
             }
             catch (Exception ex)
             {
                 CoreSystem.ErrorCatch("GenerateSchedule() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This uses the Best-Worst Method, where the best and worst employees are put together for the sake of training.
+        /// If all employees are generally of average skill the same effect will result.
+        /// Example:
+        /// Employees Assigned to Day: 13 || Daily Average = 6.1
+        /// Skill Levels of Employees: 10,8,8,7,7,2,4,6,6,5,4,7,5
+        /// W = Pick Worst, B = Pick Best
+        /// Need 7 for Open Shift, 6 for close
+        /// Starting with Open
+        /// Add | Avg |Ineq | DAvg| Action
+        /// 10  | 10  | >   | 6.1 | W
+        /// 2   | 6   | <   | 6.1 | B
+        /// 8   | 6.6 | >   | 6.1 | W
+        /// 4   | 6   | <   | 6.1 | B
+        /// 8   | 6.4 | >   | 6.1 | W
+        /// 4   | 6   | <   | 6.1 | B
+        /// 7   | 6.14| >   | 6.1 | Done
+        /// The remaining people left over should have closer skill levels to the average, making the second shift also average
+        /// </summary>
+        /// <param name="empList"></param>
+        /// <param name="day"></param>
+        private static void AssignShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day, int dayInt, int pos)
+        {
+            float dailyAvg = CalculateSkillAvg(empList);
+            float criticalRatio = 1.0f;
+            float criticalOpen = 1.0f;
+            float criticalClose = 1.0f;
+            int openEmpCount = 0;
+            int closeEmpCount = 0;
+
+            if (!dailyAvailabilityStatus[pos][dayInt])
+            {
+                criticalRatio = dailyAvailShifts[pos][dayInt] / dailyNeededShifts[pos][dayInt];
+                criticalOpen = day.openNeededShifts[pos];
+                criticalClose = day.closeNeededShifts[pos];
+                criticalOpen /= criticalRatio;
+                criticalClose /= criticalRatio;
+
+                //In this section we will assign the correct number of employees for each shift
+                //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                //more open shifts needed
+                if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                {
+                    openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                    closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                }
+                //More close shifts needed
+                else
+                {
+                    openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                    closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                }
+            }
+            else//day is not critical, assign the number of employees to be exactly what we need.
+            {
+                openEmpCount = day.openNeededShifts[pos];
+                closeEmpCount = day.closeNeededShifts[pos];
+            }
+
+            //In order to prevent certain employees from always opening we will simply randomly pick the first assigned shift.
+            bool openFirst = CoreSystem.RandomBool();
+
+            if (openFirst)
+            {
+
+            }
+            else
+            {
+
             }
         }
 
