@@ -1,7 +1,7 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VZScheduler.CSharp", "VZScheduler.CSharp.csproj", "{8C2799D0-E4C3-C742-B042-13826B48E83C}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{2A9B04D7-DCE2-120A-E772-170088CAEE63}") = "VZScheduler", "Assembly-CSharp.csproj", "{637A2772-85B2-65E2-873C-5A482F3AA8C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +9,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C2799D0-E4C3-C742-B042-13826B48E83C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C2799D0-E4C3-C742-B042-13826B48E83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C2799D0-E4C3-C742-B042-13826B48E83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C2799D0-E4C3-C742-B042-13826B48E83C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{637A2772-85B2-65E2-873C-5A482F3AA8C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637A2772-85B2-65E2-873C-5A482F3AA8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637A2772-85B2-65E2-873C-5A482F3AA8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637A2772-85B2-65E2-873C-5A482F3AA8C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Errors;
 using CoreSys.Windows;
+using System.Threading;
+using CoreSys.Employees;
 
 namespace CoreSys
 {
@@ -18,10 +20,13 @@ namespace CoreSys
     
     /// <summary>
     /// This class serves as the central control point for the program
+    /// Or reference point rather since it doesnt really have much direct control
     /// </summary>
     public static class CoreSystem
     {
-        private static CoreSaveType coreSave;
+        public static CoreSettingsType coreSettings;
+        public static CoreSaveType coreSave;
+        public static bool coreSettingsLoaded = false;
         public static bool coreSaveLoaded = false;
         //public static bool systemInitialized; 
         //public static int currentWeekID;
@@ -29,11 +34,14 @@ namespace CoreSys
         public static int defaultOpenAvail, defaultCloseAvail;
         public static float skillLevelCap;
         public static SerializableDictionary<int, string> positionList = new SerializableDictionary<int, string>();
-        //public static Dictionary<int, DailySchedule> dayList = new Dictionary<int, DailySchedule>();
-        //public static Dictionary<int, Week> weekList = new Dictionary<int, Week>();
         public static SerializableDictionary<DateTime, Week> weekList = new SerializableDictionary<DateTime, Week>();
         public static List<string> savedFileList = new List<string>();
         public static string GenerationDate;
+
+        //This section is for thread management of the scheduling algorithm
+        public static Week week;
+        public static bool currentlyProcessing = false;//This is for unity update loops to check if the subthread for the scheudle is still running.
+        public static bool loadingCoreSave = false;
 
         public static void DebugStop()
         {
@@ -43,47 +51,78 @@ namespace CoreSys
         /// <summary>
         /// This method is used to load default system settings from file
         /// </summary>
-        public static void LoadCoreSave()
+        public static void LoadCoreSettings()
         {
-            if (CheckIfFileExists("CoreSaveFile"))
+            if (FileManager.CheckIfFileExists("CoreSettings"))
             {
-                coreSave = new CoreSaveType();
-                coreSave = DeserializeFile<CoreSaveType>("CoreSaveFile");
-                defaultShift = coreSave.defaultShift;
-                defaultOpenAvail = coreSave.defaultOpenAvail;
-                defaultCloseAvail = coreSave.defaultCloseAvail;
-                minShift = coreSave.minShift;
-                maxShift = coreSave.maxShift;
-                skillLevelCap = coreSave.skillLevelCap;
-                positionList = coreSave.positionList;
-                weekList = coreSave.weekList;
-                savedFileList = coreSave.savedFileList;
+                coreSettings = new CoreSettingsType();
+                coreSettings = FileManager.DeserializeFile<CoreSettingsType>("CoreSettings");
+                defaultShift = coreSettings.defaultShift;
+                defaultOpenAvail = coreSettings.defaultOpenAvail;
+                defaultCloseAvail = coreSettings.defaultCloseAvail;
+                minShift = coreSettings.minShift;
+                maxShift = coreSettings.maxShift;
+                skillLevelCap = coreSettings.skillLevelCap;
+                positionList = coreSettings.positionList;
+                savedFileList = coreSettings.savedFileList;
                 GenerationDate = DateTime.Now.ToString();
-                coreSaveLoaded = true;
-                Debug.Log("CoreSave File Loaded!");
+                coreSettingsLoaded = true;
+                Debug.Log("Core Settings File Loaded!");
             }
             else
             {
-                coreSaveLoaded = false;
-                Debug.Log("CoreSave File not found!");
+                coreSettingsLoaded = false;
+                Debug.Log("Core Settings File not found!");
+                coreSettings = new CoreSettingsType();
+                coreSettings.GenerationDate = DateTime.Now.ToString();//THis sets the gen date, although if a save is never completed on a weeklist then the gen date wont be saved
             }
         }
 
         public static void CoreSettingsChanged()
         {
-            coreSave = new CoreSaveType();
-            coreSave.defaultShift = defaultShift;
-            coreSave.defaultOpenAvail = defaultOpenAvail;
-            coreSave.defaultCloseAvail = defaultCloseAvail;
-            coreSave.minShift = minShift;
-            coreSave.maxShift = maxShift;
-            coreSave.skillLevelCap = skillLevelCap;
-            coreSave.positionList = positionList;
+            coreSettings = new CoreSettingsType();
+            coreSettings.defaultShift = defaultShift;
+            coreSettings.defaultOpenAvail = defaultOpenAvail;
+            coreSettings.defaultCloseAvail = defaultCloseAvail;
+            coreSettings.minShift = minShift;
+            coreSettings.maxShift = maxShift;
+            coreSettings.skillLevelCap = skillLevelCap;
+            coreSettings.positionList = positionList;
+            coreSettings.savedFileList = savedFileList;
+            coreSettings.LastModified = DateTime.Now.ToString();
+            FileManager.SerializeFile<CoreSettingsType>(coreSettings, "CoreSettings");
+            Debug.Log("Core Settings File Modified! Core Settings File Saved!");
+        }
+
+        public static void LoadCoreSave()
+        {
+            if (FileManager.CheckIfFileExists("CoreSave"))
+            {
+                coreSave = new CoreSaveType();
+                FileManager.DeserializeCoreSave("CoreSettings");
+                coreSaveLoaded = true;
+            }
+            else
+            {
+                coreSaveLoaded = false;
+                Debug.Log("Core Save File not found!");
+                coreSave = new CoreSaveType();
+                coreSave.GenerationDate = DateTime.Now.ToString(); //THis sets the gen date, although if a save is never completed on a weeklist then the gen date wont be saved
+            }
+        }
+
+        public static void CoreSaveLoaded(CoreSaveType save)//This exists because the load is threaded
+        {
+            coreSave = save;
+            coreSaveLoaded = true;
+            weekList = coreSave.weekList;
+        }
+
+        public static void CoreSaveChanged()
+        {
             coreSave.weekList = weekList;
-            coreSave.savedFileList = savedFileList;
-            coreSave.GenerationDate = DateTime.Now.ToString();
-            SerializeFile<CoreSaveType>(coreSave, "CoreSaveFile");
-            Debug.Log("CoreSave File Modified! CoreSave File Saved!");
+            coreSave.LastModified = DateTime.Now.ToString();
+            FileManager.SerializeCoreSave();
         }
 
         public static Week FindWeek(DateTime weekStartDate)
@@ -102,13 +141,53 @@ namespace CoreSys
             }
             else
             {
-                Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName");
-                return "Error! Contact Developer!";
+                Debug.Log("Position that does not exist was queried for! || CoreSystem.cs || GetPositionName || TypeNo: " + type);
+                return "ErrNotFound";
                 //TODO, make this force a popup to define the queried type
             }
         }
 
+        /// <summary>
+        /// Method to begin thread for schedule generation
+        /// Also generates wrapper list due to temp availability
+        /// </summary>
+        /// <param name="w"></param>
+        public static void GenerateSchedule(Week w)
+        {
+            Debug.Log("Starting Schedule Generation");
+            currentlyProcessing = true;//This allows instanced objects to track whether the threaded generation is done or not
+            week = w;
+            Thread scheduleProcess = new Thread(new ThreadStart(SchedulingAlgorithm.StartScheduleGen));
+            scheduleProcess.Start();
+        }
+
+        public static void GenerationComplete(Week w)
+        {
+            week = w;
+            currentlyProcessing = false;
+            if (weekList.ContainsKey(w.startDate))//This will overwrite the week in the event that it already existed and we are regenerating it.
+            {
+                weekList.Remove(w.startDate);
+                weekList.Add(w.startDate, w);
+            }
+            else
+            {
+                weekList.Add(w.startDate, w);
+            }
+        }
+
         //Random Common Methods ======================================================================================
+        public static void ErrorCatch(string msg)
+        {
+            Debug.Log(msg);
+        }
+
+        public static void ErrorCatch(string msg, Exception ex)
+        {
+            Debug.Log(msg);
+            Debug.Log(ex.Message + "\n" + ex.InnerException + "\n" + ex.StackTrace);
+        }
+
         public static int RandomInt(int count)
         {
             System.Random gen = new System.Random();
@@ -137,71 +216,28 @@ namespace CoreSys
                 return time;
         }
 
-        //FILE SERIALIZATION ========================================================================================
-        public static bool CheckIfFileExists(string fileName)
+        public static int ConvertDoWToInt(DayOfWeek d)
         {
-            fileName = fileName + ".xml";
-            try
+            switch (d)
             {
-                StreamReader reader = new StreamReader(fileName);
-                reader.Close();
-                return true;
-            }
-            catch//filenotfound
-            {
-                return false;
+                case DayOfWeek.Sunday:
+                    return 0;
+                case DayOfWeek.Monday:
+                    return 1;
+                case DayOfWeek.Tuesday:
+                    return 2;
+                case DayOfWeek.Wednesday:
+                    return 3;
+                case DayOfWeek.Thursday:
+                    return 4;
+                case DayOfWeek.Friday:
+                    return 5;
+                case DayOfWeek.Saturday:
+                    return 6;
+                default:
+                    Debug.Log("ConvertDoWToInt() Error || Invalid DayOfWeek provided");
+                    return -1;
             }
         }
-
-        public static void SerializeFile<T>(T objectToSerialize, string fileName)
-        {
-            fileName = fileName + ".xml";
-            try
-            {
-                XmlDocument xmlDocument = new XmlDocument();
-                XmlSerializer serializer = new XmlSerializer(objectToSerialize.GetType());
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    serializer.Serialize(stream, objectToSerialize);
-                    stream.Position = 0;
-                    xmlDocument.Load(stream);
-                    xmlDocument.Save(fileName);
-                    stream.Close();
-                }
-                if (fileName != "CoreSaveFile")
-                    savedFileList.Add(fileName);
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("Serialization Error || CoreSystem || SerializeFile<T>");
-                Debug.Log(ex.Message);
-                Debug.Log(ex.InnerException);
-            }
-        }
-
-        public static T DeserializeFile<T> (string fileName)
-        {
-            string file = fileName + ".xml";
-            T returnObject;
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-                StreamReader reader = new StreamReader(file);
-                if (reader == null)
-                    throw new EmpListNotFoundErr();
-                returnObject = (T)serializer.Deserialize(reader);
-                reader.Close();
-
-                return returnObject;
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("FileNotFound Exception!");
-                Debug.Log(ex.Message);
-                return default(T);
-            }
-        }
-        //FILE SERIALIZATION ========================================================================================
     }
 }

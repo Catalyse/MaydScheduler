@@ -52,6 +52,24 @@ namespace CoreSys.Employees
             }
         }
 
+        public static Employee GetEmployee(int empID)
+        {
+            try
+            {
+                for (int i = 0; i < employeeList.Count; i++)
+                {
+                    if (employeeList[i].empID == empID)
+                        return employeeList[i];
+                }
+                throw new EmpNotFoundErr();
+            }
+            catch (EmpNotFoundErr e)
+            {
+                e.ThrowMsg();
+                return null;
+            }
+        }
+
         private static void SortList()
         {
             //Starts false so if list is already in order do nothing

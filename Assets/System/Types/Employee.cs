@@ -15,7 +15,7 @@ namespace CoreSys.Employees
         public int position;
         public int hourTarget;//If fulltime/parttime
         public int shiftPreference;
-        public float skillLevel;
+        public int skillLevel;
         public bool active, overtimeAllowed;
         public Availability availability { get; set; }
         //set if prior week had 3 close 2 open

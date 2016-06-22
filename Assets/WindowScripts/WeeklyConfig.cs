@@ -10,7 +10,7 @@ using CoreSys.Windows;
 /// </summary>
 namespace CoreSys
 {
-    public class WeeklyConfig : Window
+    public class WeeklyConfig : MonoBehaviour
     {
         public ScheduleWindow parent;
         public Toggle sunday, monday, tuesday, wednesday, thursday, friday, saturday;

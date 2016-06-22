@@ -7,8 +7,9 @@ namespace CoreSys.Employees
 {
     public class EmployeeBar : MonoBehaviour
     {
-        public Text name, title, id, status;
+        public Text eName, title, id, status;
         public Employee employee;
+        public EmployeeScheduleWrapper employeeWrap;
         public Toggle barToggle;
         private int tempStatus;
 
@@ -23,7 +24,7 @@ namespace CoreSys.Employees
         public void EmployeeBarSet(Employee emp)
         {
             employee = emp;
-            name.text = emp.empLastName + ", " + emp.empFirstName;
+            eName.text = emp.empLastName + ", " + emp.empFirstName;
             id.text = emp.empID.ToString();
             title.text = CoreSystem.GetPositionName(emp.position);
             if (emp.active)
@@ -35,6 +36,19 @@ namespace CoreSys.Employees
             }
             else
                 tempStatus = 0;
+            SetBarText();
+        }
+
+        public void EmployeeBarSet(EmployeeScheduleWrapper emp)
+        {
+            employeeWrap = emp;
+            eName.text = emp.lName +", " + emp.fName;
+            id.text = emp.employee.ToString();
+            title.text = CoreSystem.GetPositionName(emp.position);
+            if (emp.maxHours >= 40)
+                tempStatus = 2;
+            else
+                tempStatus = 1;
             SetBarText();
         }
 

@@ -1,442 +1,557 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using CoreSys.Employees;
 
 namespace CoreSys
 {
+    /// <summary>
+    /// This Scheduling algorithm is the guts of this program.
+    /// It takes the information that is filled out in the GUI and processes it into a schedule.
+    /// This entire class is designed to be used as a threaded process to avoid freezing on the main thread as its proccess time is heavy
+    /// Due to this class being threaded, it makes it harder to debug in the environment it is designed in, so there are going to be tons of -
+    /// - CoreSystem.ErrorCatch methods to throw debug notes in the event of things not working correctly since we cannot step through it.
+    /// --//WARNING//-- If this class is NOT threaded your main thread will hang for 5+ seconds, growing longer with more employees.
+    /// --//NOTE//-- This class is meant to be very heavy in processing time and relatively high in memory usage(compared to the rest of the program)
+    /// --//NOTE//-- If this class is to be adapted without CoreSystem.cs, CoreSystem.ErrorCatch methods will need to be removed. They are used solely for - 
+    /// --//TODO//-- Make variable shift algorithm
+    /// - debugging and will not cause any issues if removed
+    /// </summary>
     public static class SchedulingAlgorithm
     {
-        private static List<EmployeeScheduleWrapper> employeeList = new List<EmployeeScheduleWrapper>();//Master list holding all employees for the schedule period.
-        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeeDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();//Use this as a list of all employees of a given position
-        private static Dictionary<int, DailySchedule> currentSchedule = new Dictionary<int, DailySchedule>();
-
-        public static void GenerateScheduleSetup(Week week, List<Employee> empList)
-        {
-            GenerateWrapperList(empList);//Puts all employees into a wrapper, then sorts them by position into the empDictionary
-            CheckTempDaysOff();
-            employeeDictionary.Add(0, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(1, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(2, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(3, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(4, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(5, new List<EmployeeScheduleWrapper>());
-            employeeDictionary.Add(6, new List<EmployeeScheduleWrapper>());
-        }
-
-        public static Week GenerateSchedule(Week week)
-        {
-            GenerateScheduleSetup(week, EmployeeStorage.employeeList);
-            for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
-            {
-                for (int d = 0; d < 7; d++)
-                {
-                    DailySchedule day = week.SelectDay(d);//make this pick days based on the priority
-                    List<EmployeeScheduleWrapper> empList = GenerateAvailabilityList(d, pos);
-                    Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GenerateSortList(empList);
-                    List<EmployeeScheduleWrapper> restrictionList = GenerateRestrictionList(empList, week.SelectDay(d));
-                    float avgSkill = CalcAvgSkill(empList);
-                    
-                    Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
-                    
-                    //Open loop
-                    for (int i = 0; i < priorityList.Count; i++)
-                    {
-                        if(!pickList.ContainsKey(i))
-                            pickList.Add(i, new List<int>());
-                        if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
-                        {
-                            for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
-                            {
-                                pickList[i] = GenerateShiftOpen(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                if (day.openScheduledShifts.ContainsKey(pos))
-                                    day.openScheduledShifts[pos]++;
-                                else
-                                    day.openScheduledShifts.Add(pos, 1);//Create dictionary entry and add first value
-                                if(day.openNeededShifts[pos] <= day.openScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
-                                    break;
-                            }
-                        }
-                        if (!day.openScheduledShifts.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
-                            day.openScheduledShifts.Add(pos, 0);
-                        if(day.openNeededShifts[pos] <= day.openScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
-                            break;
-                    }
-                    
-                    //Close loop
-                    for (int i = 0; i < priorityList.Count; i++)
-                    {
-                        if (!pickList.ContainsKey(i))
-                            pickList.Add(i, new List<int>());
-                        if(pickList[i].Count < priorityList[i].Count)//check to make sure we still have valid picks remaining
-                        {
-                            for (int j = 0; j < (priorityList[i].Count - pickList[i].Count); j++)
-                            {
-                                pickList[i] = GenerateShiftClose(pickList[i], priorityList[i], day);//Need to add a debug call to CoreSytem to check if memory in the master dictionary has been changed accordingly
-                                if (day.closeScheduledShifts.ContainsKey(pos))
-                                    day.closeScheduledShifts[pos]++;
-                                else
-                                    day.closeScheduledShifts.Add(pos, 1);
-                                if(day.closeNeededShifts[pos] <= day.closeScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
-                                    break;
-                            }
-                        }
-                        if (!day.closeScheduledShifts.ContainsKey(pos))//If the open scheduled dictionary doesnt get initialized then no one from that position is needed
-                            day.closeScheduledShifts.Add(pos, 0);
-                        if(day.closeNeededShifts[pos] <= day.closeScheduledShifts[pos])//Though hopefully its never greater than, if it is ive failed.
-                            break;
-                    }
-                }
-            }
-            week.empList = employeeList;
-            return week;
-        }
-
-        private static List<int> GenerateShiftOpen(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
-        {
-            int pick = GenerateRandomNumber(pickList, sortList.Count);
-            int shiftLength = CoreSystem.defaultShift;
-            pickList.Add(pick);
-            if(sortList[pick].employee.shiftPreference != shiftLength)
-                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
-            Shift newShift = new Shift(sortList[pick].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);//Need to make this adaptive to shift
-            sortList[pick].shiftList.Add(newShift);
-            sortList[pick].scheduledHours += shiftLength;
-            if(day.shiftDictionary.ContainsKey(sortList[pick]))
-            {
-                day.shiftDictionary[sortList[pick]].Add(newShift);
-            }
-            else 
-            {
-                List<Shift> newShiftList = new List<Shift>();
-                newShiftList.Add(newShift);
-                day.shiftDictionary.Add(sortList[pick], newShiftList);
-            }
-            return pickList;
-        }
-
-        private static List<int> GenerateShiftClose(List<int> pickList, List<EmployeeScheduleWrapper> sortList, DailySchedule day)
-        {
-            int pick = GenerateRandomNumber(pickList, sortList.Count);
-            int shiftLength = CoreSystem.defaultShift;
-            pickList.Add(pick);
-            if (sortList[pick].employee.shiftPreference != shiftLength)
-                shiftLength = sortList[pick].employee.shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
-            Shift newShift = new Shift(sortList[pick].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);//Need to make this adaptive to shift
-            sortList[pick].shiftList.Add(newShift);
-            sortList[pick].scheduledHours += shiftLength;
-            if (day.shiftDictionary.ContainsKey(sortList[pick]))
-            {
-                day.shiftDictionary[sortList[pick]].Add(newShift);
-            }
-            else
-            {
-                List<Shift> newShiftList = new List<Shift>();
-                newShiftList.Add(newShift);
-                day.shiftDictionary.Add(sortList[pick], newShiftList);
-            }
-            return pickList;
-        }
+        //A lot of these vars are meant to be temporary within this method so we can minimize the amount of data that needs to be stored.
+        //Begin vars  for storage of main thread info
+        private static Week week;
+        //To know which days have been processed already
+        private static List<int> pickedDays = new List<int>();
+        //These arent super important, may get rid of them
+        private static int weeklyNeededShifts, weeklyAvailShifts;
+        //                        position        day, count
+        private static Dictionary<int, Dictionary<int, int>> dailyNeededShifts, dailyAvailShifts;
+        //                        position        day, status(true = enough shifts available, false = not enough shifts available)
+        private static Dictionary<int, Dictionary<int, bool>> dailyAvailabilityStatus = new Dictionary<int, Dictionary<int, bool>>();
+        //                        position, employeeList
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> employeePositionDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
 
         /// <summary>
-        /// Runs a loop to find a random number that hasnt already been chosen
+        /// This is the threaded method called to generate the schedule.
         /// </summary>
-        private static int GenerateRandomNumber(List<int> pickList, int max)
+        public static void StartScheduleGen()
         {
-            int temp = 0;
-            if(pickList.Count < max)//This is a partial fix.  This will check to see if the max is less than the number of picks already made theoretically skipping 
+            try
             {
-                while(true)//yes i know infinite stfu //TODO FIX THIS
-                {
-                    temp = CoreSystem.RandomInt(max);
-                    if (!pickList.Contains(temp))
-                    {
-                        return temp;
-                    }                   
-                }
+                week = CoreSystem.week;
+                GeneratePositionLists();
+                CalcPositionVars();
+                AnalyzeResources();
+                GenerateSchedule();
             }
-            return -1;//If the check fails return -1
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("StartScheduleGen() Exception", ex);
+            }
         }
 
         /// <summary>
-        /// Calculates the average skill level of a list of employees
+        /// This will separate the main employee list based on each position.  This can handle as many positions as there are, no limit.
+        /// Run count is (number of positions) + (number of employees);
+        /// </summary>
+        private static void GeneratePositionLists()
+        {
+            try
+            {
+                for (int i = 0; i < CoreSystem.positionList.Count; i++)//Create a list for each position
+                {
+                    employeePositionDictionary.Add(i, new List<EmployeeScheduleWrapper>());
+                }
+
+                for (int i = 0; i < week.empList.Count; i++)//Sort employees into the lists made above.
+                {
+                    employeePositionDictionary[week.empList[i].position].Add(week.empList[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("GeneratePositionLists() Exception || ScheduleAlgorithm.cs", ex);
+            }
+        }
+
+        /// <summary>
+        /// This will calculate if there are enough employees for the requested shifts for the week and for each day.
+        /// </summary>
+        private static void CalcPositionVars()
+        {
+            try
+            {
+                weeklyNeededShifts = 0;
+                weeklyAvailShifts = 0;
+                dailyNeededShifts = new Dictionary<int, Dictionary<int, int>>();
+                dailyAvailShifts = new Dictionary<int, Dictionary<int, int>>();
+
+                //RunCount = PositionCount * 7
+                for (int j = 0; j < CoreSystem.positionList.Count; j++)//Position loop
+                {
+                    dailyNeededShifts.Add(j, new Dictionary<int, int>());
+                    for (int i = 0; i < 7; i++)//Day loop
+                    {
+                        DailySchedule day = week.SelectDay(i);//Selects days in order
+                        int shifts = 0;
+                        day.openNeededShifts.TryGetValue(j, out shifts);
+                        shifts += day.closeNeededShifts[j];
+                        dailyNeededShifts[j].Add(i, shifts);
+                        weeklyNeededShifts += shifts;
+                    }
+                }
+
+                //yes its a triple loop. shhh
+                //RunCount = PositionCount * 7 * NoOfActiveEmployeesInEachPosition
+                for (int j = 0; j < CoreSystem.positionList.Count; j++)//positions
+                {
+                    dailyAvailShifts.Add(j, new Dictionary<int, int>());
+                    for (int i = 0; i < 7; i++)//days
+                    {
+                        int shifts = 0;
+                        for (int k = 0; k < week.empList.Count; k++)//employee list
+                        {
+                            if (week.empList[k].GetAvailability(i) && week.empList[k].position == j)//FIXTHIS// This causes unneccesary calls
+                                shifts += 1;
+                        }
+                        weeklyAvailShifts += shifts;
+                        dailyAvailShifts[j].Add(i, shifts);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("CalcPositionVars() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This will analyze data generated earlier in setup to decide if enough employees are available for each day.
+        /// </summary>
+        private static void AnalyzeResources()
+        {
+            try
+            {
+                if (weeklyNeededShifts > weeklyAvailShifts)//We have less available employee shifts for the week than we need.
+                    CoreSystem.ErrorCatch("Not enough Available shifts for the week!");
+                for (int k = 0; k < CoreSystem.positionList.Count; k++)
+                {
+                    dailyAvailabilityStatus.Add(k, new Dictionary<int, bool>());
+                    for (int i = 0; i < 7; i++)
+                    {
+                        if (dailyAvailShifts[k][i] < dailyNeededShifts[k][i])
+                        {
+                            dailyAvailabilityStatus[k].Add(i, false);
+                            CoreSystem.ErrorCatch("Not enough available shifts for day: " + (i + 1) + " Position: " + (k+1));
+                        }
+                        else
+                            dailyAvailabilityStatus[k].Add(i, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("AnalyzeResources() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// Primary scheduling algorithm.  This will use information generated in the setup to assign employees to each day.
+        /// This is designed for a two shift schedule
+        /// </summary>
+        private static void GenerateSchedule()
+        {
+            try
+            {
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
+                {
+                    pickedDays.Clear();//This is for the pickdays() method, to clear the list upon entering a new position
+                    for (int d = 0; d < 7; d++)
+                    {
+                        //These lists will hold the employees assigned to each shift until they can be organized.
+                        List<EmployeeScheduleWrapper> dailyEmployeeList = new List<EmployeeScheduleWrapper>();
+                        //This will pick days based on if they are critical or not, if all critical days have been selected, or there are none, it will pick in order from sunday to saturday(ignoring ones already picked)
+                        DailySchedule day = PickDay(pos);
+                        //This converts the dayofweek enum to int for use in indexing
+                        int dayInt = CoreSystem.ConvertDoWToInt(day.dayOfWeek);
+                        //This will generate 
+                        Dictionary<int, List<EmployeeScheduleWrapper>> priorityList = GeneratePriorityList(employeePositionDictionary[pos], d);
+                        //         priorityListLevel, list of picks
+                        Dictionary<int, List<int>> pickList = new Dictionary<int, List<int>>();
+                        //init pick list
+                        for (int i = 0; i < priorityList.Count; i++)
+                            pickList.Add(i, new List<int>());
+
+                        //First we will assign the right number of employees to each day as best we can.
+                        //This loop will run until either the correct number of employees is assigned, or until there are no more employees to be scheduled.
+                        for (int i = 0; i < priorityList.Count; i++)
+                        {
+                            for (int j = 0; j < priorityList[i].Count; j++)
+                            {
+                                if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
+                                {
+                                    dailyEmployeeList.Add(priorityList[i][j]);
+                                }
+                                else
+                                    break;
+                            }
+                            if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
+                                break;
+                        }
+
+                        //Next we will assign shifts.
+                        AssignShifts(dailyEmployeeList, day, dayInt, pos);
+                    }
+                }
+                CoreSystem.GenerationComplete(week);
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("GenerateSchedule() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This uses the Best-Worst Method, where the best and worst employees are put together for the sake of training.
+        /// If all employees are generally of average skill the same effect will result.
+        /// Example:
+        /// Employees Assigned to Day: 13 || Daily Average = 6.1
+        /// Skill Levels of Employees: 10,8,8,7,7,2,4,6,6,5,4,7,5
+        /// W = Pick Worst, B = Pick Best
+        /// Need 7 for Open Shift, 6 for close
+        /// Starting with Open
+        /// Add | Avg |Ineq | DAvg| Action
+        /// 10  | 10  |  >  | 6.1 | W
+        /// 2   | 6   |  <  | 6.1 | B
+        /// 8   | 6.6 |  >  | 6.1 | W
+        /// 4   | 6   |  <  | 6.1 | B
+        /// 8   | 6.4 |  >  | 6.1 | W
+        /// 4   | 6   |  <  | 6.1 | B
+        /// 7   | 6.14|  >  | 6.1 | Done
+        /// The remaining people left over should have closer skill levels to the average, making the second shift also average
+        /// </summary>
+        /// <param name="empList"></param>
+        /// <param name="day"></param>
+        private static void AssignShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day, int dayInt, int pos)
+        {
+            try
+            {
+                //This is the daily average skill of the employees assigned to the day
+                float dailyAvg = CalculateSkillAvg(empList);
+                //These ratios will be used if the day is critical
+                float criticalRatio = 1.0f;
+                float criticalOpen = 1.0f;
+                float criticalClose = 1.0f;
+                //These are the calculated number of employees for each shift
+                int openEmpCount = 0;
+                int closeEmpCount = 0;
+
+                //If this statement is true, the day is critical.
+                if (!dailyAvailabilityStatus[pos][dayInt])
+                {
+                    criticalRatio = (float)dailyAvailShifts[pos][dayInt] / (float)dailyNeededShifts[pos][dayInt];
+                    criticalOpen = (float)day.openNeededShifts[pos];
+                    criticalClose = (float)day.closeNeededShifts[pos];
+                    criticalOpen *= criticalRatio;
+                    criticalClose *= criticalRatio;
+
+                    //In this section we will assign the correct number of employees for each shift
+                    //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                    //more open shifts needed
+                    if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                    {
+                        openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                        closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                    }
+                    //More close shifts needed
+                    else
+                    {
+                        openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                        closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                    }
+                }
+                else//day is not critical, assign the number of employees to be exactly what we need.
+                {
+                    openEmpCount = day.openNeededShifts[pos];
+                    closeEmpCount = day.closeNeededShifts[pos];
+                }
+
+                //In order to prevent certain employees from always opening we will simply randomly pick the first assigned shift.
+                bool openFirst = CoreSystem.RandomBool();
+                //This will sort the employee list so we have them in order of skill(worst to best 0 - N)
+                Dictionary<int, EmployeeScheduleWrapper> sortedEmployees = SortList(empList);
+                //These will be the lists that are returns to be processed into shifts
+                List<EmployeeScheduleWrapper> openShift = new List<EmployeeScheduleWrapper>();
+                List<EmployeeScheduleWrapper> closeShift = new List<EmployeeScheduleWrapper>();
+                //These iterators will allow us to walk through the sorted list without repeating employees.
+                int bestIterator = (empList.Count - 1);
+                int worstIterator = 0;
+
+                if (openFirst)
+                {
+                    openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
+                    bestIterator--;
+                    for (int i = 0; i < openEmpCount - 1; i++)
+                    {
+                        if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        {
+                            openShift.Add(sortedEmployees[bestIterator]);
+                            bestIterator--;
+                        }
+                        else//else the average is higher than the daily so we add the worst employee
+                        {
+                            openShift.Add(sortedEmployees[worstIterator]);
+                            worstIterator++;
+                        }
+                    }
+                    //Then we process the close shift, which generally will have a more average level of staff
+                    closeShift.Add(sortedEmployees[bestIterator]);
+                    bestIterator--;
+                    for (int i = 0; i < closeEmpCount - 1; i++)
+                    {
+                        if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        {
+                            closeShift.Add(sortedEmployees[bestIterator]);
+                            bestIterator--;
+                        }
+                        else//else the average is higher than the daily so we add the worst employee
+                        {
+                            closeShift.Add(sortedEmployees[worstIterator]);
+                            worstIterator++;
+                        }
+                    }
+                }
+                else
+                {
+                    //Process close shift first.
+                    closeShift.Add(sortedEmployees[bestIterator]);
+                    bestIterator--;
+                    for (int i = 0; i < closeEmpCount - 1; i++)
+                    {
+                        if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        {
+                            closeShift.Add(sortedEmployees[bestIterator]);
+                            bestIterator--;
+                        }
+                        else//else the average is higher than the daily so we add the worst employee
+                        {
+                            closeShift.Add(sortedEmployees[worstIterator]);
+                            worstIterator++;
+                        }
+                    }
+                    //Then we process the open shift which will have a generally more average level of skill
+                    openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
+                    bestIterator--;
+                    for (int i = 0; i < openEmpCount - 1; i++)
+                    {
+                        if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        {
+                            openShift.Add(sortedEmployees[bestIterator]);
+                            bestIterator--;
+                        }
+                        else//else the average is higher than the daily so we add the worst employee
+                        {
+                            openShift.Add(sortedEmployees[worstIterator]);
+                            worstIterator++;
+                        }
+                    }
+                }
+
+                GenerateOpenShifts(openShift, day);
+                GenerateCloseShifts(closeShift, day);
+            }
+            catch(Exception ex)
+            {
+                CoreSystem.ErrorCatch("AssignShifts() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This will generate a sorted list of employees by skill from lowest to highest
         /// </summary>
         /// <param name="empList"></param>
         /// <returns></returns>
-        private static float CalcAvgSkill(List<EmployeeScheduleWrapper> empList)
+        private static Dictionary<int, EmployeeScheduleWrapper> SortList(List<EmployeeScheduleWrapper> empList)
         {
-            float average = 0.0f;
-            for (int i = 0; i < empList.Count; i++)
+            try
             {
-                average += empList[i].employee.skillLevel;
-            }
-            average = average / empList.Count;
-            return average;
-        }
+                List<EmployeeScheduleWrapper> tempList = new List<EmployeeScheduleWrapper>(empList);
 
-        /// <summary>
-        /// This method accepts a list of employees, then adds all active employees to a wrapper for more information to be placed on top of them without affecting the base saved data
-        /// </summary>
-        /// <param name="empList">Unsorted list of all employees in the system</param>
-        private static void GenerateWrapperList(List<Employee> empList)
-        {
-            for (int i = 0; i < empList.Count; i++)
-            {
-                if (empList[i].active)//Check if the employee is active
+                Dictionary<int, EmployeeScheduleWrapper> returnDict = new Dictionary<int, EmployeeScheduleWrapper>();
+                int currentEntry = 0;
+                while (true)
                 {
-                    EmployeeScheduleWrapper newWrapper = new EmployeeScheduleWrapper(empList[i]);
-                    employeeList.Add(newWrapper);
+                    try
+                    {
+                        EmployeeScheduleWrapper temp = tempList[0];
+                        for (int i = 1; i < tempList.Count; i++)
+                        {
+                            if (tempList[i].skill < temp.skill)
+                                temp = tempList[i];
+                        }
+                        returnDict.Add(currentEntry, temp);
+                        currentEntry++;
+                        tempList.Remove(temp);
+                        if (tempList.Count < 1)
+                            break;
+                    }
+                    catch
+                    {
+                        break;
+                    }
                 }
+                return returnDict;
             }
-        }
-
-        /// <summary>
-        /// This method iterates through each employee on the active list, and finds out if they are available for each day of the week.
-        /// This method makes wrappers for both employee position types
-        /// </summary>
-        private static List<EmployeeScheduleWrapper> GenerateAvailabilityList(int day, int pos)
-        {
-            List<EmployeeScheduleWrapper> returnList = new List<EmployeeScheduleWrapper>();
-            for (int j = 0; j < employeeList.Count; j++)
+            catch (Exception ex)
             {
-                //Check to make sure they can 1. work that day and 2. have hours left to be scheduled
-                if (employeeList[j].GetAvailability(day) && employeeList[j].scheduledHours < employeeList[j].maxHours && employeeList[j].employee.position == pos)
-                {
-                    returnList.Add(employeeList[j]);
-                    employeeDictionary[day].Add(employeeList[j]);//This is extra data, check if useful
-                }
-            }
-            return returnList;
-        }
-        
-        private static void CalculateManHours(List<DailySchedule> dayList)
-        {
-            for(int j = 0; j < CoreSystem.positionList.Count; j++)
-            {
-                for(int i = 0; i < dayList.Count; i++)
-                {
-                    //int dailyEmpsNeeded = dayList
-                }
+                CoreSystem.ErrorCatch("SortList() Exception", ex);
+                return null;
             }
         }
 
-        private static Dictionary<int, List<EmployeeScheduleWrapper>> GenerateSortList(List<EmployeeScheduleWrapper> masterList)
+        private static void GenerateOpenShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day)
         {
-            Dictionary<int, List<EmployeeScheduleWrapper>> returnDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
-
-            //All categories are based on default shift
-            for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
+            try
             {
-                returnDictionary.Add(i, new List<EmployeeScheduleWrapper>());
-                for (int j = 0; j < masterList.Count; j++)
+                //This is the shift as defined in system settings
+                int shiftLength = CoreSystem.defaultShift;
+
+                for (int i = 0; i < empList.Count; i++)
                 {
-                    if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours >= (CoreSystem.defaultShift * i))
-                    {
-                        returnDictionary[i].Add(masterList[j]);
-                    }
+                    if (EmployeeStorage.GetEmployee(empList[i].employee).shiftPreference != shiftLength)
+                        shiftLength = EmployeeStorage.GetEmployee(empList[i].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+                    Shift newShift = new Shift(empList[i].employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);
+                    empList[i].shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
+                    empList[i].scheduledHours += shiftLength;//Adding to users total scheduled hours
+                    day.shiftDictionary.Add(empList[i], newShift);
                 }
             }
-            return returnDictionary;
-        }
-
-        private static List<EmployeeScheduleWrapper> GenerateRestrictionList(List<EmployeeScheduleWrapper> masterList, DailySchedule day)
-        {
-            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();
-            switch (day.dayOfWeek)
+            catch (Exception ex)
             {
-                case DayOfWeek.Sunday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.sunday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Monday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.monday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Tuesday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.tuesday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Wednesday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.wednesday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Thursday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.thursday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Friday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.friday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                case DayOfWeek.Saturday:
-                    for (int i = 0; i < masterList.Count; i++)
-                    {
-                        if (masterList[i].availability.saturday.openAvail == false)
-                        {
-                            restrictionList.Add(masterList[i]);
-                        }
-                    }
-                    return restrictionList;
-                default:
-                    Debug.Log("This error is literally impossible to get to, BUT THAT BEING SAID || ERROR || SchedulingAlgorithm.cs || GenerateRestrictionList || Default case chosen");
-                    return null;//Totally fucked up return but again, should be impossible to hit this error.
+                CoreSystem.ErrorCatch("GenerateOpenShifts() Exception", ex);
             }
         }
 
-        private static void GenerateDay(DailySchedule day, List<EmployeeScheduleWrapper> empList)
+        private static void GenerateCloseShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day)
         {
-            List<EmployeeScheduleWrapper> restrictionList = new List<EmployeeScheduleWrapper>();//Holds a list of people who do not have open availability this day, but are able to work.
-            //Dictionary of the scheduling tiers.  Tier 0: no shifts || Tier 1: Up to one shift of default length || Tier 2: up to 2 || Tier 3: up to 3 || Tier 4: up to 4
-            Dictionary<int, List<EmployeeScheduleWrapper>> tierList = new Dictionary<int, List<EmployeeScheduleWrapper>>();
-
-            restrictionList = GenerateRestrictionList(empList, day);
-            tierList = GenerateSortList(empList);
-        }
-
-        private static RestrictedReturn CheckRestricted(EmployeeScheduleWrapper emp, DailySchedule day, bool open)
-        {
-            RestrictedReturn empStatus = new RestrictedReturn();
-            if (open)//open shift check
+            try
             {
-                if (emp.availability[day.dayOfWeek].startTime > day.openTime)//cannot start, reject.
+                //This is the shift as defined in system settings
+                int shiftLength = CoreSystem.defaultShift;
+
+                for (int i = 0; i < empList.Count; i++)
                 {
-                    empStatus.canWork = false;
-                    return empStatus;
-                }
-                else//Figure out how long they can work//minshift 4 hours
-                {
-                    if (day.openTime + CoreSystem.defaultShift <= emp.availability[day.dayOfWeek].endTime)
-                    {//No restriction
-                        empStatus.canWork = true;
-                        empStatus.maxShift = 8;
-                        return empStatus;
-                    }
-                    else
-                    {//loop till we find when they can start working as long as it is greater than the min shift length allowed
-                        int i = (day.openTime + CoreSystem.defaultShift);
-                        for (; i > (day.openTime + CoreSystem.minShift); i--)
-                        {
-                            if (i <= emp.availability[day.dayOfWeek].endTime)
-                            {
-                                empStatus.canWork = true;
-                                empStatus.maxShift = (i - day.openTime);
-                                return empStatus;
-                            }
-                        }//If it exits the loop they cannot work shift is too short
-                        empStatus.canWork = false;
-                        return empStatus;
-                    }
+                    if (EmployeeStorage.GetEmployee(empList[i].employee).shiftPreference != shiftLength)
+                        shiftLength = EmployeeStorage.GetEmployee(empList[i].employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+                    Shift newShift = new Shift(empList[i].employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);
+                    //The shift is also stored on the employee so we can easier extract each employees shifts for drawing on the GUI later
+                    empList[i].shiftList.Add(newShift);
+                    //Adding to users total scheduled hours
+                    empList[i].scheduledHours += shiftLength;
+                    day.shiftDictionary.Add(empList[i], newShift);
                 }
             }
-            else//close shift check
+            catch(Exception ex)
             {
-                if (emp.availability[day.dayOfWeek].endTime < day.closeTime)//cannot close, reject.
-                {
-                    empStatus.canWork = false;
-                    return empStatus;
-                }
-                else//Figure out how long they can work//minshift 4 hours
-                {
-                    if (day.closeTime - CoreSystem.defaultShift >= emp.availability[day.dayOfWeek].startTime)
-                    {//No restriction
-                        empStatus.canWork = true;
-                        empStatus.maxShift = 8;
-                        return empStatus;
-                    }
-                    else
-                    {//loop till we find when they can start working as long as it is greater than the min shift length allowed
-                        int i = (day.openTime + CoreSystem.defaultShift);
-                        for (; i > (day.openTime + CoreSystem.minShift); i--)
-                        {
-                            if (i <= emp.availability[day.dayOfWeek].endTime)
-                            {
-                                empStatus.canWork = true;
-                                empStatus.maxShift = (i - day.openTime);
-                                return empStatus;
-                            }
-                        }//If it exits the loop they cannot work shift is too short
-                        empStatus.canWork = false;
-                        return empStatus;
-                    }
-                }
+                CoreSystem.ErrorCatch("GenerateCloseShifts() Exception", ex);
             }
         }
 
         /// <summary>
-        /// This method will call the window manager to make a popup occur and show a list of active employee, then ask if they have any extra availability requirements.
+        /// This picks a day based on if it is going to be understaffed first, then if all understaffed days are already picked, or there were none in the first place it picks the remaining days in order.
+        /// In theory this method will never throw the error at the end.
         /// </summary>
-        private static void CheckTempDaysOff()
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        private static DailySchedule PickDay(int pos)
         {
-            //Call Window for temp days off
-        }
-
-        /* //This is being replaced with the total hours for the week
-        private static List<int> calcScheduleOrder(Week week, int type)
-        {
-            List<int> retList = new List<int>();
-            if (type == 0)
-            {//SS position type
+            try
+            {
                 for (int i = 0; i < 7; i++)
                 {
-                    retList.Add(week.sDailyTotalNeeds[i]);
-                }
-                bool sortAgain = false;
-                int current;
-                int next;
-                do
-                {
-                    for (int i = 0; i < 6; i++)
+                    if (!dailyAvailabilityStatus[pos][i] && !pickedDays.Contains(i))
                     {
-                        current = retList[i];
-                        next = retList[i + 1];
-                        if (current < next)
-                        {
-                            retList[i] = next;
-                            retList[i + 1] = current;
-                            sortAgain = true;
-                        }
+                        CoreSystem.ErrorCatch("PickDay() || Priority Picked: " + (i + 1));
+                        pickedDays.Add(i);
+                        return week.SelectDay(i);
                     }
-                } while (sortAgain);
-            }
-            else
-            {//For experience position type // TODO make this generic
+                }
                 for (int i = 0; i < 7; i++)
                 {
-                    retList.Add(week.eDailyTotalNeeds[i]);
+                    if (!pickedDays.Contains(i))
+                    {
+                        CoreSystem.ErrorCatch("PickDay() || Picked: " + (i + 1));
+                        pickedDays.Add(i);
+                        return week.SelectDay(i);
+                    }
                 }
+                CoreSystem.ErrorCatch("PickDay() Error! || Returning Null");
+                return null;//This is bad though, cause then we didnt pick one at all for some reason, this shouldn't ever happen as that means we tried to pick too many days
             }
-            return retList;
-        }*/
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("PickDay() Exception", ex);
+                return null;
+            }
+        }
+
+        private static float CalculateSkillAvg(List<EmployeeScheduleWrapper> empList)
+        {
+            try
+            {
+                float avg = 0.0f;
+                for (int i = 0; i < empList.Count; i++)
+                {
+                    avg += empList[i].skill;
+                }
+                avg /= empList.Count;
+                return avg;
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("CalculateSkillAvg() Exception", ex);
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// This generates a priority list for each day based on the number of hours each employee has already been scheduled
+        /// with the goal being to schedule those with less shifts first to evenly schedule employees.
+        /// </summary>
+        /// <param name="masterList"></param>
+        /// <returns></returns>
+        private static Dictionary<int, List<EmployeeScheduleWrapper>> GeneratePriorityList(List<EmployeeScheduleWrapper> masterList, int day)
+        {
+            try
+            {
+                int count = 0;
+                Dictionary<int, List<EmployeeScheduleWrapper>> returnDictionary = new Dictionary<int, List<EmployeeScheduleWrapper>>();
+
+                //All categories are based on default shift
+                for (int i = 0; i < 5; i++)//because 5 list categories(though this can be expanded easily)
+                {
+                    returnDictionary.Add(i, new List<EmployeeScheduleWrapper>());
+                    for (int j = 0; j < masterList.Count; j++)
+                    {
+                        if (masterList[j].scheduledHours < (CoreSystem.defaultShift * (i + 1)) && masterList[j].scheduledHours >= (CoreSystem.defaultShift * i) && masterList[j].GetAvailability(day))//Added checking for day so we dont need to recheck availability later.
+                        {
+                            returnDictionary[i].Add(masterList[j]);
+                            count++;
+                        }
+                    }
+                    if (count >= masterList.Count)
+                        break;
+                }
+                return returnDictionary;
+            }
+            catch (Exception ex)
+            {
+                CoreSystem.ErrorCatch("GeneratePriorityList() Exception", ex);
+                return null;
+            }
+        }
     }
 }

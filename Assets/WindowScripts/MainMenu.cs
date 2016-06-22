@@ -19,8 +19,8 @@ namespace CoreSys.Windows
 
         public void Start()
         {
-            CoreSystem.LoadCoreSave();
-            if (CoreSystem.coreSaveLoaded == false)
+            CoreSystem.LoadCoreSettings();
+            if (CoreSystem.coreSettingsLoaded == false)
             {
                 WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);
             }
@@ -29,26 +29,26 @@ namespace CoreSys.Windows
         public void NewWeek()
         {
             WindowInstantiator.SpawnWindow(prefabs.prefabList[0]);
-            Destroy(this.gameObject);
+            CloseWindow();
         }
 
         public void CurrentWeek()
         {
             WindowInstantiator.SpawnWindow(prefabs.prefabList[1]);
-            Destroy(this.gameObject);
+            CloseWindow();
         }
 
         public void EmployeeManagement()
         {
             GameObject newWindow = WindowInstantiator.SpawnWindow(prefabs.prefabList[2]);
             newWindow.GetComponent<EmployeeManagement>().GenerateUI();
-            Destroy(this.gameObject);
+            CloseWindow();
         }
 
         public void ScheduleHistory()
         {
             WindowInstantiator.SpawnWindow(prefabs.prefabList[3]);
-            Destroy(this.gameObject);
+            CloseWindow();
         }
 
         public void ExitApp()

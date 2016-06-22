@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace CoreSys
 {
@@ -16,8 +17,16 @@ namespace CoreSys
         }
         public void OnEnable()
         {
-            if(!CanvasSetWindow)
-                manager.WindowActivated(this);
+            try
+            {
+                if (!CanvasSetWindow)
+                    manager.WindowActivated(this);
+            }
+            catch (NullReferenceException)
+            {
+                Debug.Log("Window cannot be initialized because manager has not been set. Window existed before scene started");
+			}
+
         }
         public void CloseWindow()
         {

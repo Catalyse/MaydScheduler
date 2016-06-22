@@ -15,7 +15,7 @@ namespace CoreSys.Windows
 
         public void Start()
         {
-            if (CoreSystem.coreSaveLoaded)
+            if (CoreSystem.coreSettingsLoaded)
             {
                 shiftLength.text = CoreSystem.defaultShift.ToString();
                 minShift.text = CoreSystem.minShift.ToString();

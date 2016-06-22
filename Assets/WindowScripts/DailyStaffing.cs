@@ -9,7 +9,7 @@ namespace CoreSys
     /// <summary>
     /// Daily Staffing requirements window script.
     /// </summary>
-    public class DailyStaffing : Window
+    public class DailyStaffing : MonoBehaviour
     {
         public ScheduleWindow parent;
         public InputField sundayOpen, mondayOpen, tuesdayOpen, wednesdayOpen, thursdayOpen, fridayOpen, saturdayOpen;
@@ -141,7 +141,7 @@ namespace CoreSys
             }
             if (currentSubmit == maxSubmit - 1)//last position met 
             {
-                parent.GenerateSchedule();
+                parent.GenerateFinalSetup();
             }
             currentSubmit++;
             position.text = CoreSystem.GetPositionName(currentSubmit);

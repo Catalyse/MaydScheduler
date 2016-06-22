@@ -7,13 +7,13 @@ namespace CoreSys
 {
     public class Shift//This should be expanded to hold more data
     {
-        public Employee employee;
+        public int employee;
         public int startShift, endShift;
         public DayOfWeek date;
         
         public Shift() { }
         
-        public Shift(Employee emp, int start, int end, DayOfWeek d)//may need to float these or something to handle non hourly incremental shifts 
+        public Shift(int emp, int start, int end, DayOfWeek d)//may need to float these or something to handle non hourly incremental shifts 
         {
             employee = emp;
             startShift = start;
