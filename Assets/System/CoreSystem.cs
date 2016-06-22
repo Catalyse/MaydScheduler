@@ -185,7 +185,7 @@ namespace CoreSys
         public static void ErrorCatch(string msg, Exception ex)
         {
             Debug.Log(msg);
-            Debug.Log(ex.Message + "\n" + ex.InnerException);
+            Debug.Log(ex.Message + "\n" + ex.InnerException + "\n" + ex.StackTrace);
         }
 
         public static int RandomInt(int count)
