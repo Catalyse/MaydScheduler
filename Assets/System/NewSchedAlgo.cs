@@ -203,13 +203,13 @@ namespace CoreSys
         /// Need 7 for Open Shift, 6 for close
         /// Starting with Open
         /// Add | Avg |Ineq | DAvg| Action
-        /// 10  | 10  | >   | 6.1 | W
-        /// 2   | 6   | <   | 6.1 | B
-        /// 8   | 6.6 | >   | 6.1 | W
-        /// 4   | 6   | <   | 6.1 | B
-        /// 8   | 6.4 | >   | 6.1 | W
-        /// 4   | 6   | <   | 6.1 | B
-        /// 7   | 6.14| >   | 6.1 | Done
+        /// 10  | 10  |  >  | 6.1 | W
+        /// 2   | 6   |  <  | 6.1 | B
+        /// 8   | 6.6 |  >  | 6.1 | W
+        /// 4   | 6   |  <  | 6.1 | B
+        /// 8   | 6.4 |  >  | 6.1 | W
+        /// 4   | 6   |  <  | 6.1 | B
+        /// 7   | 6.14|  >  | 6.1 | Done
         /// The remaining people left over should have closer skill levels to the average, making the second shift also average
         /// </summary>
         /// <param name="empList"></param>
@@ -263,6 +263,32 @@ namespace CoreSys
             {
 
             }
+        }
+
+        /// <summary>
+        /// This will generate a sorted list of employees by skill from lowest to highest
+        /// </summary>
+        /// <param name="empList"></param>
+        /// <returns></returns>
+        private static Dictionary<int, EmployeeScheduleWrapper> SortList(List<EmployeeScheduleWrapper> empList)
+        {
+            Dictionary<int, EmployeeScheduleWrapper> returnDict = new Dictionary<int, EmployeeScheduleWrapper>();
+            int currentEntry = 0;
+            while (true)
+            {
+                EmployeeScheduleWrapper temp = empList[0];
+                for (int i = 1; i < empList.Count; i++)
+                {
+                    if (empList[i].skill < temp.skill)
+                        temp = empList[i];
+                }
+                returnDict.Add(currentEntry, temp);
+                currentEntry++;
+                empList.Remove(temp);
+                if (empList.Count < 1)
+                    break;
+            }
+            return returnDict;
         }
 
         /// <summary>
