@@ -26,9 +26,11 @@ namespace CoreSys
         //To know which days have been processed already
         private static List<int> pickedDays = new List<int>();
         //These arent super important, may get rid of them
-        private static int weeklyNeededShifts, weeklyAvailShifts;
+        private static Dictionary<int, int> weeklyNeededShifts = new Dictionary<int,int>(), weeklyAvailShifts = new Dictionary<int,int>();
+        //                        position, status(true = enough shifts available, false = not enough shifts available)
+        private static Dictionary<int, bool> weeklyAvailabilityStatus = new Dictionary<int, bool>();
         //                        position        day, count
-        private static Dictionary<int, Dictionary<int, int>> dailyNeededShifts, dailyAvailShifts;
+        private static Dictionary<int, Dictionary<int, int>> dailyNeededShifts = new Dictionary<int,Dictionary<int,int>>(), dailyAvailShifts = new Dictionary<int,Dictionary<int,int>>();
         //                        position        day, status(true = enough shifts available, false = not enough shifts available)
         private static Dictionary<int, Dictionary<int, bool>> dailyAvailabilityStatus = new Dictionary<int, Dictionary<int, bool>>();
         //                        position, employeeList
@@ -84,14 +86,10 @@ namespace CoreSys
         {
             try
             {
-                weeklyNeededShifts = 0;
-                weeklyAvailShifts = 0;
-                dailyNeededShifts = new Dictionary<int, Dictionary<int, int>>();
-                dailyAvailShifts = new Dictionary<int, Dictionary<int, int>>();
-
                 //RunCount = PositionCount * 7
                 for (int j = 0; j < CoreSystem.positionList.Count; j++)//Position loop
                 {
+                    weeklyNeededShifts.Add(j, 0);
                     dailyNeededShifts.Add(j, new Dictionary<int, int>());
                     for (int i = 0; i < 7; i++)//Day loop
                     {
@@ -100,7 +98,7 @@ namespace CoreSys
                         day.openNeededShifts.TryGetValue(j, out shifts);
                         shifts += day.closeNeededShifts[j];
                         dailyNeededShifts[j].Add(i, shifts);
-                        weeklyNeededShifts += shifts;
+                        weeklyNeededShifts[j] += shifts;
                     }
                 }
 
@@ -108,6 +106,7 @@ namespace CoreSys
                 //RunCount = PositionCount * 7 * NoOfActiveEmployeesInEachPosition
                 for (int j = 0; j < CoreSystem.positionList.Count; j++)//positions
                 {
+                    weeklyAvailShifts.Add(j, 0);
                     dailyAvailShifts.Add(j, new Dictionary<int, int>());
                     for (int i = 0; i < 7; i++)//days
                     {
@@ -117,7 +116,7 @@ namespace CoreSys
                             if (week.empList[k].GetAvailability(i) && week.empList[k].position == j)//FIXTHIS// This causes unneccesary calls
                                 shifts += 1;
                         }
-                        weeklyAvailShifts += shifts;
+                        weeklyAvailShifts[j] += shifts;
                         dailyAvailShifts[j].Add(i, shifts);
                     }
                 }
@@ -135,10 +134,10 @@ namespace CoreSys
         {
             try
             {
-                if (weeklyNeededShifts > weeklyAvailShifts)//We have less available employee shifts for the week than we need.
-                    CoreSystem.ErrorCatch("Not enough Available shifts for the week!");
                 for (int k = 0; k < CoreSystem.positionList.Count; k++)
                 {
+                    if (weeklyNeededShifts[k] > weeklyAvailShifts[k])//We have less available employee shifts for the week than we need.
+                        CoreSystem.ErrorCatch("Not enough Available shifts for the week! Position: " + CoreSystem.GetPositionName(k));
                     dailyAvailabilityStatus.Add(k, new Dictionary<int, bool>());
                     for (int i = 0; i < 7; i++)
                     {
