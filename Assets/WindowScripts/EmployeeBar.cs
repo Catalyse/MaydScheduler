@@ -45,7 +45,7 @@ namespace CoreSys.Employees
             eName.text = emp.lName +", " + emp.fName;
             id.text = emp.employee.ToString();
             title.text = CoreSystem.GetPositionName(emp.position);
-            if (emp.maxHours >= 40)
+            if (emp.hourTarget >= 40)
                 tempStatus = 2;
             else
                 tempStatus = 1;

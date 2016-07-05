@@ -15,8 +15,8 @@ namespace CoreSys
     /// --//WARNING//-- If this class is NOT threaded your main thread will hang for 5+ seconds, growing longer with more employees.
     /// --//NOTE//-- This class is meant to be very heavy in processing time and relatively high in memory usage(compared to the rest of the program)
     /// --//NOTE//-- If this class is to be adapted without CoreSystem.cs, CoreSystem.ErrorCatch methods will need to be removed. They are used solely for - 
-    /// --//TODO//-- Make variable shift algorithm
-    /// - debugging and will not cause any issues if removed
+    ///              - debugging in the unity engine since the scheduling algorithm does not contain the unity library(which is not threadsafe)
+    /// --//TODO//-- Make variable(multiple) shift algorithm
     /// </summary>
     public static class SchedulingAlgorithm
     {
@@ -87,37 +87,46 @@ namespace CoreSys
             try
             {
                 //RunCount = PositionCount * 7
-                for (int j = 0; j < CoreSystem.positionList.Count; j++)//Position loop
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)//Position loop
                 {
-                    weeklyNeededShifts.Add(j, 0);
-                    dailyNeededShifts.Add(j, new Dictionary<int, int>());
+                    weeklyNeededShifts.Add(pos, 0);
+                    dailyNeededShifts.Add(pos, new Dictionary<int, int>());
                     for (int i = 0; i < 7; i++)//Day loop
                     {
                         DailySchedule day = week.SelectDay(i);//Selects days in order
                         int shifts = 0;
-                        day.openNeededShifts.TryGetValue(j, out shifts);
-                        shifts += day.closeNeededShifts[j];
-                        dailyNeededShifts[j].Add(i, shifts);
-                        weeklyNeededShifts[j] += shifts;
+                        day.openNeededShifts.TryGetValue(pos, out shifts);
+                        shifts += day.closeNeededShifts[pos];
+                        dailyNeededShifts[pos].Add(i, shifts);
+                        weeklyNeededShifts[pos] += shifts;
                     }
                 }
 
                 //yes its a triple loop. shhh
                 //RunCount = PositionCount * 7 * NoOfActiveEmployeesInEachPosition
-                for (int j = 0; j < CoreSystem.positionList.Count; j++)//positions
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)//positions
                 {
-                    weeklyAvailShifts.Add(j, 0);
-                    dailyAvailShifts.Add(j, new Dictionary<int, int>());
+
+                    dailyAvailShifts.Add(pos, new Dictionary<int, int>());
                     for (int i = 0; i < 7; i++)//days
                     {
                         int shifts = 0;
-                        for (int k = 0; k < week.empList.Count; k++)//employee list
+                        for (int k = 0; k < employeePositionDictionary[pos].Count; k++)//employee list
                         {
-                            if (week.empList[k].GetAvailability(i) && week.empList[k].position == j)//FIXTHIS// This causes unneccesary calls
+                            if (employeePositionDictionary[pos][k].GetAvailability(i))//isfixed
                                 shifts += 1;
                         }
-                        weeklyAvailShifts[j] += shifts;
-                        dailyAvailShifts[j].Add(i, shifts);
+                        dailyAvailShifts[pos].Add(i, shifts);
+                    }
+                }
+
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
+                {
+                    weeklyAvailShifts.Add(pos, 0);
+                    for (int i = 0; i < employeePositionDictionary[pos].Count; i++)
+                    {
+                        //Should probably review this, it makes a LOT of calls to get an int. But its fine for now
+						weeklyAvailShifts[pos] += employeePositionDictionary[pos][i].hourTarget / EmployeeStorage.GetEmployee(employeePositionDictionary[pos][i].employee).shiftPreference;
                     }
                 }
             }
@@ -190,43 +199,20 @@ namespace CoreSys
                             pickList.Add(i, new List<int>());
 
                         //First we will assign the right number of employees to each day as best we can.
-                        //Ultimately what this means is we are going to check if we have enough people to schedule for the entire week.  If we dont we will purposely underschedule --
-                        //-- then process finalization later.
                         //This loop will run until either the correct number of employees is assigned, or until there are no more employees to be scheduled.
-                        if (weeklyAvailabilityStatus[pos])
+                        for (int i = 0; i < priorityList.Count; i++)
                         {
-                            for (int i = 0; i < priorityList.Count; i++)
+                            for (int j = 0; j < priorityList[i].Count; j++)
                             {
-                                for (int j = 0; j < priorityList[i].Count; j++)
+                                if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
                                 {
-                                    if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
-                                    {
-                                        dailyEmployeeList.Add(priorityList[i][j]);
-                                    }
-                                    else
-                                        break;
+                                    dailyEmployeeList.Add(priorityList[i][j]);
                                 }
-                                if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
+                                else
                                     break;
                             }
-                        }
-                        else//this will handle limited staff counts
-                        {
-
-                            for (int i = 0; i < priorityList.Count; i++)
-                            {
-                                for (int j = 0; j < priorityList[i].Count; j++)
-                                {
-                                    if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
-                                    {
-                                        dailyEmployeeList.Add(priorityList[i][j]);
-                                    }
-                                    else
-                                        break;
-                                }
-                                if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
-                                    break;
-                            }
+                            if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
+                                break;
                         }
 
                         //Next we will assign shifts. (BestworstMethod)
@@ -277,18 +263,51 @@ namespace CoreSys
                 int openEmpCount = 0;
                 int closeEmpCount = 0;
 
-                if (!weeklyAvailabilityStatus[pos])
+                if (weeklyAvailabilityStatus[pos])
+                {
+                    //If this statement is true, the day is critical.
+                    if (!dailyAvailabilityStatus[pos][dayInt])
+                    {
+                        dailyCriticalRatio = (float)dailyAvailShifts[pos][dayInt] / (float)dailyNeededShifts[pos][dayInt];
+                        criticalOpen = (float)day.openNeededShifts[pos];
+                        criticalClose = (float)day.closeNeededShifts[pos];
+                        criticalOpen *= dailyCriticalRatio;
+                        criticalClose *= dailyCriticalRatio;
+
+                        if (criticalClose + criticalOpen > empList.Count)
+                        {
+                            CoreSystem.ErrorCatch("AssignShiftsBW() || Method is requesting more shifts than were provided to it, will fail out no shifts for position: " +
+                                CoreSystem.GetPositionName(pos) + " will be assigned.");
+                        }
+
+                        //In this section we will assign the correct number of employees for each shift
+                        //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                        //more open shifts needed
+                        if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                        {
+                            openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                            closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                        }
+                        //More close shifts needed
+                        else
+                        {
+                            openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                            closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                        }
+                    }
+                    else//day is not critical, assign the number of employees to be exactly what we need.
+                    {
+                        openEmpCount = day.openNeededShifts[pos];
+                        closeEmpCount = day.closeNeededShifts[pos];
+                    }
+                }
+                else//weekly status takes precedent
                 {
                     weeklyCriticalRatio = (float)weeklyAvailShifts[pos] / (float)weeklyNeededShifts[pos];
-                }
-                //If this statement is true, the day is critical.
-                if (!dailyAvailabilityStatus[pos][dayInt])
-                {
-                    dailyCriticalRatio = (float)dailyAvailShifts[pos][dayInt] / (float)dailyNeededShifts[pos][dayInt];
                     criticalOpen = (float)day.openNeededShifts[pos];
                     criticalClose = (float)day.closeNeededShifts[pos];
-                    criticalOpen *= dailyCriticalRatio;
-                    criticalClose *= dailyCriticalRatio;
+                    criticalOpen *= weeklyCriticalRatio;
+                    criticalClose *= weeklyCriticalRatio;
 
                     //In this section we will assign the correct number of employees for each shift
                     //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
@@ -305,12 +324,6 @@ namespace CoreSys
                         closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
                     }
                 }
-                else//day is not critical, assign the number of employees to be exactly what we need.
-                {
-                    openEmpCount = day.openNeededShifts[pos];
-                    closeEmpCount = day.closeNeededShifts[pos];
-                }
-
                 //In order to prevent certain employees from always opening we will simply randomly pick the first assigned shift.
                 bool openFirst = CoreSystem.RandomBool();
                 //This will sort the employee list so we have them in order of skill(worst to best 0 - N)
@@ -392,12 +405,34 @@ namespace CoreSys
                     }
                 }
 
-                GenerateOpenShifts(openShift, day);
-                GenerateCloseShifts(closeShift, day);
+                GenerateOpenShifts(openShift, day, pos);
+                GenerateCloseShifts(closeShift, day, pos);
             }
             catch(Exception ex)
             {
                 CoreSystem.ErrorCatch("AssignShifts() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This method will fill the schedule with the remaining shifts.
+        /// </summary>
+        private static void ScheduleFill()
+        {
+            for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
+            {
+                List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
+                //         day, count
+                Dictionary<int, int> remainingShiftsNeeded = new Dictionary<int, int>();
+                for (int i = 0; i < 7; i++)
+                {
+                    DailySchedule temp = week.SelectDay(i);
+                    remainingShiftsNeeded.Add(i, ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos])));
+                }
+                for (int i = 0; i < employeePositionDictionary[pos].Count; i++)
+                {
+
+                }
             }
         }
 
@@ -444,7 +479,7 @@ namespace CoreSys
             }
         }
 
-        private static void GenerateOpenShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day)
+        private static void GenerateOpenShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day, int pos)
         {
             try
             {
@@ -459,6 +494,10 @@ namespace CoreSys
                     empList[i].shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
                     empList[i].scheduledHours += shiftLength;//Adding to users total scheduled hours
                     day.shiftDictionary.Add(empList[i], newShift);
+                    if (day.openScheduledShifts.ContainsKey(pos))
+                        day.openScheduledShifts[pos]++;
+                    else
+                        day.openScheduledShifts.Add(pos, 1);
                 }
             }
             catch (Exception ex)
@@ -467,7 +506,7 @@ namespace CoreSys
             }
         }
 
-        private static void GenerateCloseShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day)
+        private static void GenerateCloseShifts(List<EmployeeScheduleWrapper> empList, DailySchedule day, int pos)
         {
             try
             {
@@ -484,6 +523,10 @@ namespace CoreSys
                     //Adding to users total scheduled hours
                     empList[i].scheduledHours += shiftLength;
                     day.shiftDictionary.Add(empList[i], newShift);
+                    if (day.closeScheduledShifts.ContainsKey(pos))
+                        day.closeScheduledShifts[pos]++;
+                    else
+                        day.closeScheduledShifts.Add(pos, 1);
                 }
             }
             catch(Exception ex)
