@@ -424,14 +424,54 @@ namespace CoreSys
                 List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
                 //         day, count
                 Dictionary<int, int> remainingShiftsNeeded = new Dictionary<int, int>();
+                List<int> remainingShiftsList = new List<int>();
+                int totalShiftsNeeded = 0;
                 for (int i = 0; i < 7; i++)
                 {
                     DailySchedule temp = week.SelectDay(i);
-                    remainingShiftsNeeded.Add(i, ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos])));
+                    int shiftsNeeded = ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos]));
+                    remainingShiftsNeeded.Add(i, shiftsNeeded);
+                    remainingShiftsList.Add(shiftsNeeded);
+                    totalShiftsNeeded += shiftsNeeded;
                 }
+                //We will store the index of the days we want to pick first here.
+                List<int> dayPickOrder = new List<int>();
+                dayPickOrder.Add(0);
+                bool inserted = false;
+                for (int i = 1; i < 7; i++)
+                {
+                    inserted = false;
+                    for (int k = 0; k < dayPickOrder.Count; k++)
+                    {
+                        if (remainingShiftsList[i] > remainingShiftsList[k])
+                        {
+                            //do nothing
+                        }
+                        else
+                        {//We want to insert this day to be higher in the order since it needs more shifts
+                            dayPickOrder.Insert(k, i);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted)//If it was not higher than any of them add it to the end.
+                        dayPickOrder.Add(remainingShiftsList[i]);
+                }
+
                 for (int i = 0; i < employeePositionDictionary[pos].Count; i++)
                 {
-
+                    //this means we have less scheduled hours than the amount we want to hit.
+                    if (employeePositionDictionary[pos][i].scheduledHours < employeePositionDictionary[pos][i].hourTarget)
+                    {
+                        employeesNeedingShifts.Add(employeePositionDictionary[pos][i]);
+                    }
+                    CoreSystem.ErrorCatch("ScheduleFill reports " + employeesNeedingShifts.Count + " employees still need shifts.");
+                }
+                //end analysis section
+                //Start shift addition section.
+                for (int i = 0; i < 7; i++)
+                {
+                    
                 }
             }
         }
