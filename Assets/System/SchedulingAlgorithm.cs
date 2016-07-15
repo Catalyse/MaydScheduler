@@ -416,6 +416,7 @@ namespace CoreSys
 
         /// <summary>
         /// This method will fill the schedule with the remaining shifts.
+        /// This particular iteration is for handling an underscheduled week, and getting people to their minimums
         /// </summary>
         private static void ScheduleFill()
         {
@@ -458,21 +459,104 @@ namespace CoreSys
                         dayPickOrder.Add(remainingShiftsList[i]);
                 }
 
-                for (int i = 0; i < employeePositionDictionary[pos].Count; i++)
-                {
-                    //this means we have less scheduled hours than the amount we want to hit.
-                    if (employeePositionDictionary[pos][i].scheduledHours < employeePositionDictionary[pos][i].hourTarget)
-                    {
-                        employeesNeedingShifts.Add(employeePositionDictionary[pos][i]);
-                    }
-                    CoreSystem.ErrorCatch("ScheduleFill reports " + employeesNeedingShifts.Count + " employees still need shifts.");
-                }
+                employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+
                 //end analysis section
                 //Start shift addition section.
-                for (int i = 0; i < 7; i++)
+                while (true)//This loop will run till we run out employees needing shifts
                 {
-                    
+                    for (int i = 0; i < 7; i++)
+                    {
+                        EmployeeScheduleWrapper emp = RecursionChoose(employeesNeedingShifts, 0, i);
+                        if (emp != null)//The only reason we would get null back is if either no one else can work that day or we are out of people.
+                        {
+                            ScheduleEmployee(emp, week.SelectDay(i));
+                        }
+                    }
+                    //rebuild the list now that we have scheduled various people.
+                    employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+                    if (employeesNeedingShifts.Count < 1)
+                        break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="empList">This must be a list that can be modified so that the same thing isnt picked twice</param>
+        /// <param name="i">The initial call should always start at 0</param>
+        /// <param name="day">This is the day we are picking for</param>
+        /// <returns></returns>
+        private static EmployeeScheduleWrapper RecursionChoose(List<EmployeeScheduleWrapper> empList, int i, int day)
+        {
+            EmployeeScheduleWrapper temp;
+            if (empList[i].GetAvailability(day))
+            {
+                temp = empList[i];
+                empList.Remove(temp);
+                return temp;
+            }
+            else if ((i + 1) >= empList.Count)//This means weve hit last index. (or higher which would be bad)
+            {
+                return null;
+            }
+            else//recursion
+            {
+                return RecursionChoose(empList, i + 1, day);
+            }
+        }
+
+        private static List<EmployeeScheduleWrapper> CheckIfShiftsNeeded(List<EmployeeScheduleWrapper> empList)
+        {
+            List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
+            for (int i = 0; i < empList.Count; i++)
+            {
+                //this means we have less scheduled hours than the amount we want to hit.
+                if (empList[i].scheduledHours < empList[i].hourTarget)
+                {
+                    employeesNeedingShifts.Add(empList[i]);
+                }
+            }
+            CoreSystem.ErrorCatch("CheckIfShiftsNeeded reports " + employeesNeedingShifts.Count + " employees still need shifts.");
+            return employeesNeedingShifts;
+        }
+
+        /// <summary>
+        /// This will generate a shift for a single employee, choosing morning or night based on what has less. (defaulting to close if they have the same number of shifts)
+        /// </summary>
+        /// <param name="emp">employee to be scheduled</param>
+        /// <param name="day">day to schedule them</param>
+        private static void ScheduleEmployee(EmployeeScheduleWrapper emp, DailySchedule day)
+        {
+            int pos = emp.position;
+            if (day.openScheduledShifts[pos] < day.closeScheduledShifts[pos])
+            {
+                int shiftLength = CoreSystem.defaultShift;
+                if (EmployeeStorage.GetEmployee(emp.employee).shiftPreference != shiftLength)
+                    shiftLength = EmployeeStorage.GetEmployee(emp.employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+                Shift newShift = new Shift(emp.employee, day.openTime, (day.openTime + shiftLength), day.date.DayOfWeek);
+                emp.shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
+                emp.scheduledHours += shiftLength;//Adding to users total scheduled hours
+                day.shiftDictionary.Add(emp, newShift);
+                if (day.openScheduledShifts.ContainsKey(pos))
+                    day.openScheduledShifts[pos]++;
+                else
+                    day.openScheduledShifts.Add(pos, 1);
+            }
+            else
+            {
+                int shiftLength = CoreSystem.defaultShift;
+                if (EmployeeStorage.GetEmployee(emp.employee).shiftPreference != shiftLength)
+                    shiftLength = EmployeeStorage.GetEmployee(emp.employee).shiftPreference;//Need to add settings on how to handle shift length preferences, but for now its fine
+                Shift newShift = new Shift(emp.employee, day.closeTime - shiftLength, day.closeTime, day.date.DayOfWeek);
+                emp.shiftList.Add(newShift);//Adding shift to the employee wrapper so we can sort shifts by employee later.
+                emp.scheduledHours += shiftLength;//Adding to users total scheduled hours
+                day.shiftDictionary.Add(emp, newShift);
+                if (day.closeScheduledShifts.ContainsKey(pos))
+                    day.closeScheduledShifts[pos]++;
+                else
+                    day.closeScheduledShifts.Add(pos, 1);
             }
         }
 
