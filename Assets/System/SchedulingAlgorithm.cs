@@ -411,7 +411,7 @@ namespace CoreSys
             }
             catch(Exception ex)
             {
-                CoreSystem.ErrorCatch("AssignShifts() Exception", ex);
+                CoreSystem.ErrorCatch("AssignShiftsBW() Exception", ex);
             }
         }
 
@@ -423,28 +423,7 @@ namespace CoreSys
         {
             for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
             {
-                List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
-                employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
-
-                //end analysis section
-                //Start shift addition section.
-                while (true)//This loop will run till we run out employees needing shifts
-                {
-                    for (int i = 0; i < 7; i++)
-                    {
-                        EmployeeScheduleWrapper emp = RecursionChoose(employeesNeedingShifts, 0, i);
-                        if (emp != null)//The only reason we would get null back is if either no one else can work that day or we are out of people.
-                        {
-                            ScheduleEmployee(emp, week.SelectDay(i));
-                        }
-                    }
-                    //rebuild the list now that we have scheduled various people.
-                    employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
-                    if (employeesNeedingShifts.Count < 1)
-                        break;
-                }
                 //         day, count
-                /* This bit is currently not needed, though I think it might be useful elsewhere.
                 Dictionary<int, int> remainingShiftsNeeded = new Dictionary<int, int>();
                 List<int> remainingShiftsList = new List<int>();
                 int totalShiftsNeeded = 0;
@@ -478,7 +457,35 @@ namespace CoreSys
                     }
                     if (!inserted)//If it was not higher than any of them add it to the end.
                         dayPickOrder.Add(remainingShiftsList[i]);
-                }*/
+                }
+
+                List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
+                employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+
+                //end analysis section
+                //Start shift addition section.
+                while (true)//This loop will run till we run out employees needing shifts
+                {
+                    for (int i = 0; i < 7; i++)
+                    {
+                        DailySchedule day = week.SelectDay(dayPickOrder[i]);
+                        for (int e = 0; e < employeesNeedingShifts.Count; e++)
+                        {
+                            //This will make sure they can work that day, and arent already scheduled that day
+                            if (employeesNeedingShifts[e].GetAvailability(CoreSystem.ConvertDoWToInt(day.dayOfWeek)) && !day.shiftDictionary.ContainsKey(employeesNeedingShifts[e]))
+                            {
+                                ScheduleEmployee(employeesNeedingShifts[e], day);
+                                employeesNeedingShifts.Remove(employeesNeedingShifts[e]);
+                                break;
+                            }
+                        }
+                    }
+                    //rebuild the list now that we have scheduled various people.
+                    employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+                    if (employeesNeedingShifts.Count < 1 || employeesNeedingShifts == null)
+                        break;
+                }
+                
             }
         }
 
