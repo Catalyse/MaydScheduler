@@ -340,33 +340,36 @@ namespace CoreSys
                 {
                     openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
                     bestIterator--;
-                    for (int i = 0; i < openEmpCount - 1; i++)
+                    if (empList.Count > 1)//This will prevent further scheduling if there is only one employee available.
                     {
-                        if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        for (int i = 0; i < openEmpCount - 1; i++)
                         {
-                            openShift.Add(sortedEmployees[bestIterator]);
-                            bestIterator--;
+                            if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                openShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator--;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                openShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
                         }
-                        else//else the average is higher than the daily so we add the worst employee
+                        //Then we process the close shift, which generally will have a more average level of staff
+                        closeShift.Add(sortedEmployees[bestIterator]);
+                        bestIterator--;
+                        for (int i = 0; i < closeEmpCount - 1; i++)
                         {
-                            openShift.Add(sortedEmployees[worstIterator]);
-                            worstIterator++;
-                        }
-                    }
-                    //Then we process the close shift, which generally will have a more average level of staff
-                    closeShift.Add(sortedEmployees[bestIterator]);
-                    bestIterator--;
-                    for (int i = 0; i < closeEmpCount - 1; i++)
-                    {
-                        if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
-                        {
-                            closeShift.Add(sortedEmployees[bestIterator]);
-                            bestIterator--;
-                        }
-                        else//else the average is higher than the daily so we add the worst employee
-                        {
-                            closeShift.Add(sortedEmployees[worstIterator]);
-                            worstIterator++;
+                            if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                closeShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator--;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                closeShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
                         }
                     }
                 }
@@ -375,33 +378,36 @@ namespace CoreSys
                     //Process close shift first.
                     closeShift.Add(sortedEmployees[bestIterator]);
                     bestIterator--;
-                    for (int i = 0; i < closeEmpCount - 1; i++)
+                    if (empList.Count > 1)
                     {
-                        if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                        for (int i = 0; i < closeEmpCount - 1; i++)
                         {
-                            closeShift.Add(sortedEmployees[bestIterator]);
-                            bestIterator--;
+                            if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                closeShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator--;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                closeShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
                         }
-                        else//else the average is higher than the daily so we add the worst employee
+                        //Then we process the open shift which will have a generally more average level of skill
+                        openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
+                        bestIterator--;
+                        for (int i = 0; i < openEmpCount - 1; i++)
                         {
-                            closeShift.Add(sortedEmployees[worstIterator]);
-                            worstIterator++;
-                        }
-                    }
-                    //Then we process the open shift which will have a generally more average level of skill
-                    openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
-                    bestIterator--;
-                    for (int i = 0; i < openEmpCount - 1; i++)
-                    {
-                        if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
-                        {
-                            openShift.Add(sortedEmployees[bestIterator]);
-                            bestIterator--;
-                        }
-                        else//else the average is higher than the daily so we add the worst employee
-                        {
-                            openShift.Add(sortedEmployees[worstIterator]);
-                            worstIterator++;
+                            if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                openShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator--;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                openShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
                         }
                     }
                 }
@@ -421,71 +427,97 @@ namespace CoreSys
         /// </summary>
         private static void ScheduleFill()
         {
-            for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
+            try
             {
-                //         day, count
-                Dictionary<int, int> remainingShiftsNeeded = new Dictionary<int, int>();
-                List<int> remainingShiftsList = new List<int>();
-                int totalShiftsNeeded = 0;
-                for (int i = 0; i < 7; i++)
+                for (int pos = 0; pos < CoreSystem.positionList.Count; pos++)
                 {
-                    DailySchedule temp = week.SelectDay(i);
-                    int shiftsNeeded = ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos]));
-                    remainingShiftsNeeded.Add(i, shiftsNeeded);
-                    remainingShiftsList.Add(shiftsNeeded);
-                    totalShiftsNeeded += shiftsNeeded;
-                }
-                //We will store the index of the days we want to pick first here.
-                List<int> dayPickOrder = new List<int>();
-                dayPickOrder.Add(0);
-                bool inserted = false;
-                for (int i = 1; i < 7; i++)
-                {
-                    inserted = false;
-                    for (int k = 0; k < dayPickOrder.Count; k++)
-                    {
-                        if (remainingShiftsList[i] > remainingShiftsList[k])
-                        {
-                            //do nothing
-                        }
-                        else
-                        {//We want to insert this day to be higher in the order since it needs more shifts
-                            dayPickOrder.Insert(k, i);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted)//If it was not higher than any of them add it to the end.
-                        dayPickOrder.Add(remainingShiftsList[i]);
-                }
-
-                List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
-                employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
-
-                //end analysis section
-                //Start shift addition section.
-                while (true)//This loop will run till we run out employees needing shifts
-                {
+                    //         day, count
+                    Dictionary<int, int> remainingShiftsNeeded = new Dictionary<int, int>();
+                    List<int> remainingShiftsList = new List<int>();
+                    int totalShiftsNeeded = 0;
                     for (int i = 0; i < 7; i++)
                     {
-                        DailySchedule day = week.SelectDay(dayPickOrder[i]);
-                        for (int e = 0; e < employeesNeedingShifts.Count; e++)
+                        int shiftsNeeded = 0;
+                        DailySchedule temp = week.SelectDay(i);
+                        try
                         {
-                            //This will make sure they can work that day, and arent already scheduled that day
-                            if (employeesNeedingShifts[e].GetAvailability(CoreSystem.ConvertDoWToInt(day.dayOfWeek)) && !day.shiftDictionary.ContainsKey(employeesNeedingShifts[e]))
+                            shiftsNeeded = ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos]));
+                        }
+                        catch
+                        {
+                            if (!temp.openScheduledShifts.ContainsKey(pos) && !temp.closeScheduledShifts.ContainsKey(pos))//both null
                             {
-                                ScheduleEmployee(employeesNeedingShifts[e], day);
-                                employeesNeedingShifts.Remove(employeesNeedingShifts[e]);
+                                shiftsNeeded = (temp.openNeededShifts[pos] + temp.closeNeededShifts[pos]);
+                            }
+                            else if (!temp.openScheduledShifts.ContainsKey(pos))//just open
+                            {
+                                shiftsNeeded = (temp.openNeededShifts[pos] + (temp.closeNeededShifts[pos] - temp.closeScheduledShifts[pos]));
+                            }
+                            else//just close
+                            {
+                                shiftsNeeded = ((temp.openNeededShifts[pos] - temp.openScheduledShifts[pos]) + temp.closeNeededShifts[pos]);
+                            }
+                        }
+                        remainingShiftsNeeded.Add(i, shiftsNeeded);
+                        remainingShiftsList.Add(shiftsNeeded);
+                        totalShiftsNeeded += shiftsNeeded;
+                    }
+                    //We will store the index of the days we want to pick first here.
+                    List<int> dayPickOrder = new List<int>();
+                    dayPickOrder.Add(0);
+                    bool inserted = false;
+                    for (int i = 1; i < 7; i++)
+                    {
+                        inserted = false;
+                        for (int k = 0; k < dayPickOrder.Count; k++)
+                        {
+                            if (remainingShiftsList[i] > remainingShiftsList[k])
+                            {
+                                //do nothing
+                            }
+                            else
+                            {//We want to insert this day to be higher in the order since it needs more shifts
+                                dayPickOrder.Insert(k, i);
+                                inserted = true;
                                 break;
                             }
                         }
+                        if (!inserted)//If it was not higher than any of them add it to the end.
+                            dayPickOrder.Add(remainingShiftsList[i]);
                     }
-                    //rebuild the list now that we have scheduled various people.
+
+                    List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
                     employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
-                    if (employeesNeedingShifts.Count < 1 || employeesNeedingShifts == null)
-                        break;
+
+                    //end analysis section
+                    //Start shift addition section.
+                    while (true)//This loop will run till we run out employees needing shifts
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            DailySchedule day = week.SelectDay(dayPickOrder[i]);
+                            for (int e = 0; e < employeesNeedingShifts.Count; e++)
+                            {
+                                //This will make sure they can work that day, and arent already scheduled that day
+                                if (employeesNeedingShifts[e].GetAvailability(CoreSystem.ConvertDoWToInt(day.dayOfWeek)) && !day.shiftDictionary.ContainsKey(employeesNeedingShifts[e]))
+                                {
+                                    ScheduleEmployee(employeesNeedingShifts[e], day);
+                                    employeesNeedingShifts.Remove(employeesNeedingShifts[e]);
+                                    break;
+                                }
+                            }
+                        }
+                        //rebuild the list now that we have scheduled various people.
+                        employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+                        if (employeesNeedingShifts.Count < 1 || employeesNeedingShifts == null)
+                            break;
+                    }
+
                 }
-                
+            }
+            catch (Exception e)
+            {
+                CoreSystem.ErrorCatch("ScheduleFill() Exception", e);
             }
         }
 

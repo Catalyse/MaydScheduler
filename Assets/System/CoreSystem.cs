@@ -174,6 +174,7 @@ namespace CoreSys
             {
                 weekList.Add(w.startDate, w);
             }
+            CoreSaveChanged();
         }
 
         //Random Common Methods ======================================================================================
