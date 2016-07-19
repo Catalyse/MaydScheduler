@@ -198,6 +198,94 @@ namespace CoreSys
                         for (int i = 0; i < priorityList.Count; i++)
                             pickList.Add(i, new List<int>());
 
+                        //These ratios will be used if the day is critical
+                        float weeklyCriticalRatio = 1.0f;
+                        float dailyCriticalRatio = 1.0f;
+                        float criticalOpen = 1.0f;
+                        float criticalClose = 1.0f;
+                        //These are the calculated number of employees for each shift
+                        int openEmpCount = 0;
+                        int closeEmpCount = 0;
+
+                        if (weeklyAvailabilityStatus[pos])
+                        {
+                            //If this statement is true, the day is critical.
+                            if (!dailyAvailabilityStatus[pos][dayInt])
+                            {
+                                dailyCriticalRatio = (float)dailyAvailShifts[pos][dayInt] / (float)dailyNeededShifts[pos][dayInt];
+                                criticalOpen = (float)day.openNeededShifts[pos];
+                                criticalClose = (float)day.closeNeededShifts[pos];
+                                criticalOpen *= dailyCriticalRatio;
+                                criticalClose *= dailyCriticalRatio;
+
+                                if (criticalClose + criticalOpen > empList.Count)
+                                {
+                                    CoreSystem.ErrorCatch("AssignShiftsBW() || Method is requesting more shifts than were provided to it, will fail out no shifts for position: " +
+                                        CoreSystem.GetPositionName(pos) + " will be assigned.");
+                                }
+
+                                //In this section we will assign the correct number of employees for each shift
+                                //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                                //more open shifts needed
+                                if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                                {
+                                    openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                                    closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                                }
+                                //even shift count
+                                else if (day.openNeededShifts[pos] == day.closeNeededShifts[pos])
+                                {
+                                    openEmpCount = (int)Math.Floor(criticalOpen);
+                                    closeEmpCount = (int)Math.Floor(criticalClose);
+                                }
+                                //More close shifts needed
+                                else
+                                {
+                                    openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                                    closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                                }
+                            }
+                            else//day is not critical, assign the number of employees to be exactly what we need.
+                            {
+                                openEmpCount = day.openNeededShifts[pos];
+                                closeEmpCount = day.closeNeededShifts[pos];
+                            }
+
+                            if (openEmpCount + closeEmpCount > empList.Count)
+                                CoreSystem.ErrorCatch("AssignShiftsBW() Error || Open and Close employee count too high.");
+                        }
+                        else//weekly status takes precedent
+                        {
+                            weeklyCriticalRatio = (float)weeklyAvailShifts[pos] / (float)weeklyNeededShifts[pos];
+                            criticalOpen = (float)day.openNeededShifts[pos];
+                            criticalClose = (float)day.closeNeededShifts[pos];
+                            criticalOpen *= weeklyCriticalRatio;
+                            criticalClose *= weeklyCriticalRatio;
+
+                            //In this section we will assign the correct number of employees for each shift
+                            //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
+                            //more open shifts needed
+                            if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
+                            {
+                                openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
+                                closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
+                            }
+                            //even shift count
+                            else if (day.openNeededShifts[pos] == day.closeNeededShifts[pos])
+                            {
+                                openEmpCount = (int)Math.Floor(criticalOpen);
+                                closeEmpCount = (int)Math.Floor(criticalClose);
+                            }
+                            //More close shifts needed
+                            else
+                            {
+                                openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
+                                closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
+                            }
+
+                            if (openEmpCount + closeEmpCount > empList.Count)
+                                CoreSystem.ErrorCatch("AssignShiftsBW() Error || Open and Close employee count too high.");
+                        }
                         //First we will assign the right number of employees to each day as best we can.
                         //This loop will run until either the correct number of employees is assigned, or until there are no more employees to be scheduled.
                         for (int i = 0; i < priorityList.Count; i++)
@@ -216,7 +304,7 @@ namespace CoreSys
                         }
 
                         //Next we will assign shifts. (BestworstMethod)
-                        AssignShiftsBW(dailyEmployeeList, day, dayInt, pos);
+                        AssignShiftsBW(dailyEmployeeList, day, openEmpCount, closeEmpCount, pos);
                     }
                 }
                 ScheduleFill();
@@ -249,82 +337,12 @@ namespace CoreSys
         /// </summary>
         /// <param name="empList"></param>
         /// <param name="day"></param>
-        private static void AssignShiftsBW(List<EmployeeScheduleWrapper> empList, DailySchedule day, int dayInt, int pos)
+        private static void AssignShiftsBW(List<EmployeeScheduleWrapper> empList, DailySchedule day, int openEmpCount, int closeEmpCount, int pos)
         {
             try
             {
                 //This is the daily average skill of the employees assigned to the day
                 float dailyAvg = CalculateSkillAvg(empList);
-                //These ratios will be used if the day is critical
-                float weeklyCriticalRatio = 1.0f;
-                float dailyCriticalRatio = 1.0f;
-                float criticalOpen = 1.0f;
-                float criticalClose = 1.0f;
-                //These are the calculated number of employees for each shift
-                int openEmpCount = 0;
-                int closeEmpCount = 0;
-
-                if (weeklyAvailabilityStatus[pos])
-                {
-                    //If this statement is true, the day is critical.
-                    if (!dailyAvailabilityStatus[pos][dayInt])
-                    {
-                        dailyCriticalRatio = (float)dailyAvailShifts[pos][dayInt] / (float)dailyNeededShifts[pos][dayInt];
-                        criticalOpen = (float)day.openNeededShifts[pos];
-                        criticalClose = (float)day.closeNeededShifts[pos];
-                        criticalOpen *= dailyCriticalRatio;
-                        criticalClose *= dailyCriticalRatio;
-
-                        if (criticalClose + criticalOpen > empList.Count)
-                        {
-                            CoreSystem.ErrorCatch("AssignShiftsBW() || Method is requesting more shifts than were provided to it, will fail out no shifts for position: " +
-                                CoreSystem.GetPositionName(pos) + " will be assigned.");
-                        }
-
-                        //In this section we will assign the correct number of employees for each shift
-                        //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
-                        //more open shifts needed
-                        if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
-                        {
-                            openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
-                            closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
-                        }
-                        //More close shifts needed
-                        else
-                        {
-                            openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
-                            closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
-                        }
-                    }
-                    else//day is not critical, assign the number of employees to be exactly what we need.
-                    {
-                        openEmpCount = day.openNeededShifts[pos];
-                        closeEmpCount = day.closeNeededShifts[pos];
-                    }
-                }
-                else//weekly status takes precedent
-                {
-                    weeklyCriticalRatio = (float)weeklyAvailShifts[pos] / (float)weeklyNeededShifts[pos];
-                    criticalOpen = (float)day.openNeededShifts[pos];
-                    criticalClose = (float)day.closeNeededShifts[pos];
-                    criticalOpen *= weeklyCriticalRatio;
-                    criticalClose *= weeklyCriticalRatio;
-
-                    //In this section we will assign the correct number of employees for each shift
-                    //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
-                    //more open shifts needed
-                    if (day.openNeededShifts[pos] > day.closeNeededShifts[pos])
-                    {
-                        openEmpCount = (int)Math.Floor(criticalOpen);//move to lower value for larger shift.
-                        closeEmpCount = (int)Math.Ceiling(criticalClose);//round up for smaller shift.
-                    }
-                    //More close shifts needed
-                    else
-                    {
-                        openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
-                        closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
-                    }
-                }
                 //In order to prevent certain employees from always opening we will simply randomly pick the first assigned shift.
                 bool openFirst = CoreSystem.RandomBool();
                 //This will sort the employee list so we have them in order of skill(worst to best 0 - N)

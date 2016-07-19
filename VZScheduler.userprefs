@@ -8,10 +8,10 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="437" column="1" />
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="518" column="1" />
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="454" column="1" />
-      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="459" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="530" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="466" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="471" column="1" />
+      <Breakpoint file="X:\Documents\VZScheduler\Assets\System\SchedulingAlgorithm.cs" line="262" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
