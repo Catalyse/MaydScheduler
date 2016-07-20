@@ -33,8 +33,6 @@ namespace CoreSys.Windows
                 {
                     currentWeek = CoreSystem.week;
                     DrawSchedule();
-                    CoreSystem.weekList[currentWeek.startDate] = currentWeek;
-                    CoreSystem.CoreSettingsChanged();
                     waiting = false;
                 }
             }
@@ -98,6 +96,10 @@ namespace CoreSys.Windows
             empSelection.GetComponent<EmpSelectionWindow>().GenerateEmpBars(currentWeek.empList);
         }
 
+        /// <summary>
+        /// This will loop through the employees selected to have an availability change
+        /// </summary>
+        /// <param name="empList"></param>
         public void StartAvailLoop(List<EmployeeScheduleWrapper> empList)
         {
             empSelection.SetActive(false);
@@ -107,6 +109,10 @@ namespace CoreSys.Windows
             availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].GetEntireAvail(), AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
         }
 
+        /// <summary>
+        /// This is a callback from the loop to change temp avail
+        /// </summary>
+        /// <param name="avail"></param>
         public void AvailLoopCallback(Availability avail)
         {
             AvailChangeList[currentEmp].SetTempAvailability(avail);
@@ -117,6 +123,9 @@ namespace CoreSys.Windows
                 availWindow.GetComponent<AvailabilityWindow>().SetToggles(AvailChangeList[currentEmp].GetEntireAvail(), AvailChangeList[currentEmp].lName + ", " + AvailChangeList[currentEmp].fName);
         }
 
+        /// <summary>
+        /// THis is called on completion of the availability loop
+        /// </summary>
         private void CompleteAvailChange()
         {
             availWindow.SetActive(false);
@@ -127,6 +136,9 @@ namespace CoreSys.Windows
             GenerateSchedule();
         }
 
+        /// <summary>
+        /// THis cancels the loop where its at, we may need to do more cleanup versus just disabling the windows
+        /// </summary>
         public void AvailChangeCancel()
         {
             availWindow.SetActive(false);

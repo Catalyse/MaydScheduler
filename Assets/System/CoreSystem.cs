@@ -120,9 +120,19 @@ namespace CoreSys
 
         public static void CoreSaveChanged()
         {
-            coreSave.weekList = weekList;
-            coreSave.LastModified = DateTime.Now.ToString();
-            FileManager.SerializeCoreSave();
+            if (coreSave != null)
+            {
+                coreSave.weekList = weekList;
+                coreSave.LastModified = DateTime.Now.ToString();
+                FileManager.SerializeCoreSave();
+            }
+            else
+            {
+                coreSave = new CoreSaveType();
+                coreSave.weekList = weekList;
+                coreSave.LastModified = DateTime.Now.ToString();
+                FileManager.SerializeCoreSave();
+            }
         }
 
         public static Week FindWeek(DateTime weekStartDate)
@@ -174,6 +184,7 @@ namespace CoreSys
             {
                 weekList.Add(w.startDate, w);
             }
+            CoreSaveChanged();
         }
 
         //Random Common Methods ======================================================================================
