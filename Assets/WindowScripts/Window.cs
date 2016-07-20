@@ -28,7 +28,7 @@ namespace CoreSys
 			}
 
         }
-        public void CloseWindow()
+        public virtual void CloseWindow()
         {
             manager.WindowDeactivated(this);
             Destroy(this.transform.gameObject);

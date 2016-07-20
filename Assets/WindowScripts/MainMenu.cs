@@ -19,8 +19,11 @@ namespace CoreSys.Windows
 
         public void Start()
         {
-            CoreSystem.LoadCoreSettings();
             if (CoreSystem.coreSettingsLoaded == false)
+            {
+                CoreSystem.LoadCoreSettings();
+            }
+            if (CoreSystem.coreSettingsLoaded == false)//If its still false then there were no core settings, however this will also prevent it from reloading the settings multiple times
             {
                 WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);
             }
@@ -48,6 +51,12 @@ namespace CoreSys.Windows
         public void ScheduleHistory()
         {
             WindowInstantiator.SpawnWindow(prefabs.prefabList[3]);
+            CloseWindow();
+        }
+
+        public void SettingsWindow()
+        {
+            WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);
             CloseWindow();
         }
 

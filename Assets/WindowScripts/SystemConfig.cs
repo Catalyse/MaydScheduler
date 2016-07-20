@@ -31,7 +31,19 @@ namespace CoreSys.Windows
             }
         }
 
-        private void ErrorTextFade()
+		public override void CloseWindow()
+		{
+			if (CoreSystem.coreSettingsLoaded)
+			{
+				base.CloseWindow();
+			}
+			else
+			{
+				//Do not close because you need to set the settings
+			}
+		}
+
+		private void ErrorTextFade()
         {
             //TODO this
         }

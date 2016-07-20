@@ -48,6 +48,16 @@ namespace CoreSys
 
         private void CheckForEmptyScreen()
         {
+            RestartCheck:
+            for (int i = 0; i < activeWindowList.Count; i++)
+            {
+                if (activeWindowList[i] == null)
+                {
+                    activeWindowList.RemoveAt(i);
+                    activeWindows--;
+                    goto RestartCheck;
+                }
+            }
             if(activeWindows <= 0 && systemActive)
             {
                 activeWindows = 0;

@@ -31,7 +31,8 @@ namespace CoreSys
 
         public static void SerializeFile<T>(T objectToSerialize, string fileName)
         {
-            fileName = fileName + ".xml";
+            string directory = Directory.GetCurrentDirectory();
+            fileName = directory +  "\\" + fileName + ".xml";
             try
             {
                 XmlDocument xmlDocument = new XmlDocument();
@@ -57,13 +58,14 @@ namespace CoreSys
 
         public static T DeserializeFile<T>(string fileName)
         {
-            string file = fileName + ".xml";
+            string directory = Directory.GetCurrentDirectory();
+            fileName = directory +  "\\" +fileName + ".xml";
             T returnObject;
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
 
-                StreamReader reader = new StreamReader(file);
+                StreamReader reader = new StreamReader(fileName);
                 if (reader == null)
                     throw new EmpListNotFoundErr();
                 returnObject = (T)serializer.Deserialize(reader);
@@ -89,6 +91,7 @@ namespace CoreSys
         {
             try
             {
+                string directory = Directory.GetCurrentDirectory();
                 XmlDocument xmlDocument = new XmlDocument();
                 XmlSerializer serializer = new XmlSerializer(typeof(CoreSaveType));
                 using (MemoryStream stream = new MemoryStream())
@@ -96,7 +99,7 @@ namespace CoreSys
                     serializer.Serialize(stream, CoreSystem.coreSave);
                     stream.Position = 0;
                     xmlDocument.Load(stream);
-                    xmlDocument.Save("CoreSave.xml");
+                    xmlDocument.Save(directory +  "\\" +"CoreSave.xml");
                     stream.Close();
                 }
             }
@@ -125,9 +128,10 @@ namespace CoreSys
             CoreSaveType returnObject;
             try
             {
+                string directory = Directory.GetCurrentDirectory();
                 XmlSerializer serializer = new XmlSerializer(typeof(CoreSaveType));
 
-                StreamReader reader = new StreamReader("CoreSave.xml");
+                StreamReader reader = new StreamReader(directory +  "\\" +"CoreSave.xml");
                 if (reader == null)
                     throw new EmpListNotFoundErr();
                 returnObject = (CoreSaveType)serializer.Deserialize(reader);
