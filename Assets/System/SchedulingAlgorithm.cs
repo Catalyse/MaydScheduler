@@ -218,12 +218,6 @@ namespace CoreSys
                                 criticalOpen *= dailyCriticalRatio;
                                 criticalClose *= dailyCriticalRatio;
 
-                                if (criticalClose + criticalOpen > empList.Count)
-                                {
-                                    CoreSystem.ErrorCatch("AssignShiftsBW() || Method is requesting more shifts than were provided to it, will fail out no shifts for position: " +
-                                        CoreSystem.GetPositionName(pos) + " will be assigned.");
-                                }
-
                                 //In this section we will assign the correct number of employees for each shift
                                 //We will also assign the extra member to the smaller of the shifts if there is a tiebreaker.
                                 //more open shifts needed
@@ -250,9 +244,6 @@ namespace CoreSys
                                 openEmpCount = day.openNeededShifts[pos];
                                 closeEmpCount = day.closeNeededShifts[pos];
                             }
-
-                            if (openEmpCount + closeEmpCount > empList.Count)
-                                CoreSystem.ErrorCatch("AssignShiftsBW() Error || Open and Close employee count too high.");
                         }
                         else//weekly status takes precedent
                         {
@@ -282,9 +273,6 @@ namespace CoreSys
                                 openEmpCount = (int)Math.Ceiling(criticalOpen);//round up for smaller shift.
                                 closeEmpCount = (int)Math.Floor(criticalClose);//move to lower value for larger shift.
                             }
-
-                            if (openEmpCount + closeEmpCount > empList.Count)
-                                CoreSystem.ErrorCatch("AssignShiftsBW() Error || Open and Close employee count too high.");
                         }
                         //First we will assign the right number of employees to each day as best we can.
                         //This loop will run until either the correct number of employees is assigned, or until there are no more employees to be scheduled.
@@ -292,14 +280,14 @@ namespace CoreSys
                         {
                             for (int j = 0; j < priorityList[i].Count; j++)
                             {
-                                if (dailyEmployeeList.Count < dailyNeededShifts[pos][dayInt])
+                                if (dailyEmployeeList.Count < (openEmpCount + closeEmpCount))
                                 {
                                     dailyEmployeeList.Add(priorityList[i][j]);
                                 }
                                 else
                                     break;
                             }
-                            if (dailyEmployeeList.Count >= dailyNeededShifts[pos][dayInt])
+                            if (dailyEmployeeList.Count >= (openEmpCount + closeEmpCount))
                                 break;
                         }
 
@@ -357,7 +345,7 @@ namespace CoreSys
                 if (openFirst)
                 {
                     openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
-                    bestIterator--;
+                    bestIterator -= 1;
                     if (empList.Count > 1)//This will prevent further scheduling if there is only one employee available.
                     {
                         for (int i = 0; i < openEmpCount - 1; i++)
@@ -365,7 +353,7 @@ namespace CoreSys
                             if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
                             {
                                 openShift.Add(sortedEmployees[bestIterator]);
-                                bestIterator--;
+                                bestIterator -= 1;
                             }
                             else//else the average is higher than the daily so we add the worst employee
                             {
@@ -375,13 +363,13 @@ namespace CoreSys
                         }
                         //Then we process the close shift, which generally will have a more average level of staff
                         closeShift.Add(sortedEmployees[bestIterator]);
-                        bestIterator--;
+                        bestIterator -= 1;
                         for (int i = 0; i < closeEmpCount - 1; i++)
                         {
                             if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
                             {
                                 closeShift.Add(sortedEmployees[bestIterator]);
-                                bestIterator--;
+                                bestIterator -= 1;
                             }
                             else//else the average is higher than the daily so we add the worst employee
                             {
@@ -395,7 +383,7 @@ namespace CoreSys
                 {
                     //Process close shift first.
                     closeShift.Add(sortedEmployees[bestIterator]);
-                    bestIterator--;
+                    bestIterator -= 1;
                     if (empList.Count > 1)
                     {
                         for (int i = 0; i < closeEmpCount - 1; i++)
@@ -403,7 +391,7 @@ namespace CoreSys
                             if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
                             {
                                 closeShift.Add(sortedEmployees[bestIterator]);
-                                bestIterator--;
+                                bestIterator -= 1;
                             }
                             else//else the average is higher than the daily so we add the worst employee
                             {
@@ -413,13 +401,13 @@ namespace CoreSys
                         }
                         //Then we process the open shift which will have a generally more average level of skill
                         openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
-                        bestIterator--;
+                        bestIterator -= 1;
                         for (int i = 0; i < openEmpCount - 1; i++)
                         {
                             if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
                             {
                                 openShift.Add(sortedEmployees[bestIterator]);
-                                bestIterator--;
+                                bestIterator -= 1;
                             }
                             else//else the average is higher than the daily so we add the worst employee
                             {
@@ -434,6 +422,113 @@ namespace CoreSys
                 GenerateCloseShifts(closeShift, day, pos);
             }
             catch(Exception ex)
+            {
+                CoreSystem.ErrorCatch("AssignShiftsBW() Exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// This method uses the Diversity method to schedule people
+        /// </summary>
+        /// <param name="empList"></param>
+        /// <param name="day"></param>
+        private static void AssignShiftsDM(List<EmployeeScheduleWrapper> empList, DailySchedule day, int openEmpCount, int closeEmpCount, int pos)
+        {
+            try
+            {
+                //This is the daily average skill of the employees assigned to the day
+                float dailyAvg = CalculateSkillAvg(empList);
+                //In order to prevent certain employees from always opening we will simply randomly pick the first assigned shift.
+                bool openFirst = CoreSystem.RandomBool();
+                //This will sort the employee list so we have them in order of skill(worst to best 0 - N)
+                Dictionary<int, EmployeeScheduleWrapper> sortedEmployees = SortList(empList);
+                //These will be the lists that are returns to be processed into shifts
+                List<EmployeeScheduleWrapper> openShift = new List<EmployeeScheduleWrapper>();
+                List<EmployeeScheduleWrapper> closeShift = new List<EmployeeScheduleWrapper>();
+                //These iterators will allow us to walk through the sorted list without repeating employees.
+                int bestIterator = (empList.Count - 1);
+                int worstIterator = 0;
+
+                if (openFirst)
+                {
+                    openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
+                    bestIterator -= 1;
+                    if (empList.Count > 1)//This will prevent further scheduling if there is only one employee available.
+                    {
+                        for (int i = 0; i < openEmpCount - 1; i++)
+                        {
+                            if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                openShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator -= 1;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                openShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
+                        }
+                        //Then we process the close shift, which generally will have a more average level of staff
+                        closeShift.Add(sortedEmployees[bestIterator]);
+                        bestIterator -= 1;
+                        for (int i = 0; i < closeEmpCount - 1; i++)
+                        {
+                            if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                closeShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator -= 1;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                closeShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    //Process close shift first.
+                    closeShift.Add(sortedEmployees[bestIterator]);
+                    bestIterator -= 1;
+                    if (empList.Count > 1)
+                    {
+                        for (int i = 0; i < closeEmpCount - 1; i++)
+                        {
+                            if (CalculateSkillAvg(closeShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                closeShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator -= 1;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                closeShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
+                        }
+                        //Then we process the open shift which will have a generally more average level of skill
+                        openShift.Add(sortedEmployees[bestIterator]);//start by adding best employee
+                        bestIterator -= 1;
+                        for (int i = 0; i < openEmpCount - 1; i++)
+                        {
+                            if (CalculateSkillAvg(openShift) <= dailyAvg)//if the average is less than the daily we add the best employee
+                            {
+                                openShift.Add(sortedEmployees[bestIterator]);
+                                bestIterator -= 1;
+                            }
+                            else//else the average is higher than the daily so we add the worst employee
+                            {
+                                openShift.Add(sortedEmployees[worstIterator]);
+                                worstIterator++;
+                            }
+                        }
+                    }
+                }
+
+                GenerateOpenShifts(openShift, day, pos);
+                GenerateCloseShifts(closeShift, day, pos);
+            }
+            catch (Exception ex)
             {
                 CoreSystem.ErrorCatch("AssignShiftsBW() Exception", ex);
             }
@@ -505,7 +600,7 @@ namespace CoreSys
                     }
 
                     List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
-                    employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+                    employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos], pos);
 
                     //end analysis section
                     //Start shift addition section.
@@ -526,7 +621,7 @@ namespace CoreSys
                             }
                         }
                         //rebuild the list now that we have scheduled various people.
-                        employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos]);
+                        employeesNeedingShifts = CheckIfShiftsNeeded(employeePositionDictionary[pos], pos);
                         if (employeesNeedingShifts.Count < 1 || employeesNeedingShifts == null)
                             break;
                     }
@@ -546,7 +641,7 @@ namespace CoreSys
         /// <param name="i">The initial call should always start at 0</param>
         /// <param name="day">This is the day we are picking for</param>
         /// <returns></returns>
-        private static EmployeeScheduleWrapper RecursionChoose(List<EmployeeScheduleWrapper> empList, int i, int day)
+        /*private static EmployeeScheduleWrapper RecursionChoose(List<EmployeeScheduleWrapper> empList, int i, int day)
         {
             EmployeeScheduleWrapper temp;
             if (empList[i].GetAvailability(day))
@@ -563,9 +658,9 @@ namespace CoreSys
             {
                 return RecursionChoose(empList, i + 1, day);
             }
-        }
+        }*/
 
-        private static List<EmployeeScheduleWrapper> CheckIfShiftsNeeded(List<EmployeeScheduleWrapper> empList)
+        private static List<EmployeeScheduleWrapper> CheckIfShiftsNeeded(List<EmployeeScheduleWrapper> empList, int pos)
         {
             List<EmployeeScheduleWrapper> employeesNeedingShifts = new List<EmployeeScheduleWrapper>();
             for (int i = 0; i < empList.Count; i++)
@@ -576,7 +671,7 @@ namespace CoreSys
                     employeesNeedingShifts.Add(empList[i]);
                 }
             }
-            CoreSystem.ErrorCatch("CheckIfShiftsNeeded reports " + employeesNeedingShifts.Count + " employees still need shifts.");
+            CoreSystem.ErrorCatch("CheckIfShiftsNeeded reports " + employeesNeedingShifts.Count + " " + CoreSystem.GetPositionName(pos) + "s still need shifts.");
             return employeesNeedingShifts;
         }
 
