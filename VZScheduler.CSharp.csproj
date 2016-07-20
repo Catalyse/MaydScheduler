@@ -80,6 +80,7 @@
     <Compile Include="Assets\System\SubSystem\CurrentTime.cs" />
     <Compile Include="Assets\System\SubSystem\LoadingSpin.cs" />
     <Compile Include="Assets\System\SubSystem\StartSplash.cs" />
+    <Compile Include="Assets\System\SystemMessages.cs" />
     <Compile Include="Assets\System\Types\Availability.cs" />
     <Compile Include="Assets\System\Types\CoreSaveType.cs" />
     <Compile Include="Assets\System\Types\CoreSettingsType.cs" />
