@@ -191,11 +191,13 @@ namespace CoreSys
         public static void ErrorCatch(string msg)
         {
             Debug.Log(msg);
+            SystemMessages.ThrowMessage(msg);
         }
 
         public static void ErrorCatch(string msg, Exception ex)
         {
             Debug.Log(msg);
+            SystemMessages.ThrowMessage(msg);
             Debug.Log(ex.Message + "\n" + ex.InnerException + "\n" + ex.StackTrace);
         }
 

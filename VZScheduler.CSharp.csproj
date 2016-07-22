@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.6f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -58,12 +60,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -75,8 +71,11 @@
     <Compile Include="Assets\System\EmpListSerializer.cs" />
     <Compile Include="Assets\System\EmployeeStorage.cs" />
     <Compile Include="Assets\System\FileManager.cs" />
+    <Compile Include="Assets\System\NetworkIO.cs" />
+    <Compile Include="Assets\System\NetworkTypes\ServerMessage.cs" />
     <Compile Include="Assets\System\RetiredSchedAlgo.cs" />
     <Compile Include="Assets\System\SchedulingAlgorithm.cs" />
+    <Compile Include="Assets\System\ServerCommand.cs" />
     <Compile Include="Assets\System\SubSystem\CurrentTime.cs" />
     <Compile Include="Assets\System\SubSystem\LoadingSpin.cs" />
     <Compile Include="Assets\System\SubSystem\StartSplash.cs" />
@@ -114,5 +113,6 @@
     <Compile Include="Assets\WindowScripts\WindowInstantiator.cs" />
     <Compile Include="Assets\WindowScripts\WindowManagement.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
