@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using System.Net.Sockets;
 
-namespace CoreSys.Networking
+namespace CoreSys
 {
     /// <summary>
     /// Small instancible class that can serialize/send and receive/deserialize
