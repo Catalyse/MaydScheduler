@@ -19,10 +19,10 @@ namespace CoreSys.Windows
 
         public void Start()
         {
-            if (CoreSystem.coreSettingsLoaded == false)
-            {
-                CoreSystem.LoadCoreSettings();
-            }
+            //if (CoreSystem.coreSettingsLoaded == false)
+            //{
+            //    CoreSystem.LoadCoreSettings();
+            //}
             if (CoreSystem.coreSettingsLoaded == false)//If its still false then there were no core settings, however this will also prevent it from reloading the settings multiple times
             {
                 WindowInstantiator.SpawnWindow(prefabs.prefabList[4]);

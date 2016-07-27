@@ -28,13 +28,13 @@ namespace CoreSys
                 Color alpha = loadingImage.color;
                 if (alpha.a < 1f)
                 {
-                    alpha.a = Mathf.Lerp(alpha.a, 1f, Time.deltaTime * 2);//fade out
+                    alpha.a = Mathf.Lerp(alpha.a, 1f, Time.deltaTime * 2);//fade in
                 }
                 loadingImage.color = alpha;
                 alpha = loadingText.color;
                 if (alpha.a < 1f)
                 {
-                    alpha.a = Mathf.Lerp(alpha.a, 1f, Time.deltaTime * 2);//fade out
+                    alpha.a = Mathf.Lerp(alpha.a, 1f, Time.deltaTime * 2);//fade in
                 }
                 loadingText.color = alpha;
             }
@@ -43,13 +43,13 @@ namespace CoreSys
                 Color alpha = loadingImage.color;
                 if (alpha.a > 0f)
                 {
-                    alpha.a = Mathf.Lerp(alpha.a, 0f, Time.deltaTime * 2);//fade in
+                    alpha.a = Mathf.Lerp(alpha.a, 0f, Time.deltaTime * 2);//fade out
                 }
                 loadingImage.color = alpha;
                 alpha = loadingText.color;
                 if (alpha.a > 0f)
                 {
-                    alpha.a = Mathf.Lerp(alpha.a, 0f, Time.deltaTime * 2);//fade in
+                    alpha.a = Mathf.Lerp(alpha.a, 0f, Time.deltaTime * 2);//fade out
                 }
                 loadingText.color = alpha;
             }

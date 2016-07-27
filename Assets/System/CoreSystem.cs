@@ -1,14 +1,7 @@
 ﻿using UnityEngine;
 using System;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Collections;
 using System.Collections.Generic;
-using CoreSys.Errors;
-using CoreSys.Windows;
 using System.Threading;
-using CoreSys.Employees;
 
 namespace CoreSys
 {
@@ -28,9 +21,7 @@ namespace CoreSys
         public static CoreSaveType coreSave;
         public static bool coreSettingsLoaded = false;
         public static bool coreSaveLoaded = false;
-        //public static bool systemInitialized; 
-        //public static int currentWeekID;
-        public static int defaultShift, minShift, maxShift;//Need to make config window
+        public static int defaultShift, minShift, maxShift;
         public static int defaultOpenAvail, defaultCloseAvail;
         public static float skillLevelCap;
         public static SerializableDictionary<int, string> positionList = new SerializableDictionary<int, string>();
@@ -38,15 +29,14 @@ namespace CoreSys
         public static List<string> savedFileList = new List<string>();
         public static string GenerationDate;
 
+        //Networking Section
+        public static bool networkLoading = false;
+        public static bool networkFailure = false;
+
         //This section is for thread management of the scheduling algorithm
         public static Week week;
-        public static bool currentlyProcessing = false;//This is for unity update loops to check if the subthread for the scheudle is still running.
+        public static bool currentlyProcessing = false;//This is for unity update loops to check if the subthread for the schedule is still running.
         public static bool loadingCoreSave = false;
-
-        public static void DebugStop()
-        {
-            Debug.Log("Debug Stop!");//Throw debug marker here
-        }
 
         /// <summary>
         /// This method is used to load default system settings from file
@@ -90,8 +80,26 @@ namespace CoreSys
             coreSettings.positionList = positionList;
             coreSettings.savedFileList = savedFileList;
             coreSettings.LastModified = DateTime.Now.ToString();
-            FileManager.SerializeFile<CoreSettingsType>(coreSettings, "CoreSettings");
+            //FileManager.SerializeFile<CoreSettingsType>(coreSettings, "CoreSettings");
+            NetworkIO.SendCoreSettings();
             Debug.Log("Core Settings File Modified! Core Settings File Saved!");
+        }
+
+        public static void CoreSettingsLoaded(CoreSettingsType settings)
+        {
+            coreSettings = new CoreSettingsType();
+            coreSettings = settings;
+            defaultShift = coreSettings.defaultShift;
+            defaultOpenAvail = coreSettings.defaultOpenAvail;
+            defaultCloseAvail = coreSettings.defaultCloseAvail;
+            minShift = coreSettings.minShift;
+            maxShift = coreSettings.maxShift;
+            skillLevelCap = coreSettings.skillLevelCap;
+            positionList = coreSettings.positionList;
+            savedFileList = coreSettings.savedFileList;
+            GenerationDate = DateTime.Now.ToString();
+            coreSettingsLoaded = true;
+            Debug.Log("Core Settings File Loaded!");
         }
 
         public static void LoadCoreSave()
@@ -111,28 +119,31 @@ namespace CoreSys
             }
         }
 
-        public static void CoreSaveLoaded(CoreSaveType save)//This exists because the load is threaded
-        {
-            coreSave = save;
-            coreSaveLoaded = true;
-            weekList = coreSave.weekList;
-        }
-
         public static void CoreSaveChanged()
         {
             if (coreSave != null)
             {
                 coreSave.weekList = weekList;
                 coreSave.LastModified = DateTime.Now.ToString();
-                FileManager.SerializeCoreSave();
+                //FileManager.SerializeCoreSave();
+                NetworkIO.SendCoreSave();
             }
             else
             {
                 coreSave = new CoreSaveType();
                 coreSave.weekList = weekList;
                 coreSave.LastModified = DateTime.Now.ToString();
-                FileManager.SerializeCoreSave();
+                //FileManager.SerializeCoreSave();
+                NetworkIO.SendCoreSave();
             }
+        }
+
+        public static void CoreSaveLoaded(CoreSaveType save)//This exists because the load is threaded
+        {
+            coreSave = save;
+            coreSaveLoaded = true;
+            weekList = coreSave.weekList;
+            NetworkIO.SendCoreSave();
         }
 
         public static Week FindWeek(DateTime weekStartDate)
